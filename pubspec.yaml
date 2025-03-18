@@ -27,7 +27,7 @@ dependencies:
   dartz: ^0.10.1
   json_annotation: ^4.9.0
   flutter_native_splash: ^2.4.4
-  hugeicons: ^0.0.7
+  hugeicons: ^0.0.10
   flutter_svg: ^2.0.17
   country_code_picker: ^3.2.0
   shimmer: ^3.0.0
