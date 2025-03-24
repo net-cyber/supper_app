@@ -3,7 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:super_app/application/app/bloc/app_bloc.dart';
+import 'package:super_app/core/application/app/bloc/app_bloc.dart';
 import 'package:super_app/core/router/router.dart';
 import 'package:super_app/core/router/slide_transition.dart';
 import 'package:super_app/core/theme/app_theme.dart';

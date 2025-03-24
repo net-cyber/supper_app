@@ -5,13 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:super_app/application/auth/splash/bloc/splash_bloc.dart';
-import 'package:super_app/application/auth/splash/bloc/splash_event.dart';
-import 'package:super_app/application/auth/splash/bloc/splash_state.dart';
+import 'package:super_app/features/auth/application/splash/bloc/splash_bloc.dart';
+import 'package:super_app/features/auth/application/splash/bloc/splash_event.dart';
+import 'package:super_app/features/auth/application/splash/bloc/splash_state.dart';
 import 'package:super_app/core/constants/app_constants.dart';
-import 'package:super_app/presentation/widgets/loading.dart';
+import 'package:super_app/core/presentation/widgets/loading.dart';
 
-import '../../../../core/router/route_name.dart';
+import '../../../../../core/router/route_name.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});

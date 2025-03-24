@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:super_app/application/auth/signup/bloc/signup_bloc.dart';
-import 'package:super_app/application/auth/signup/bloc/signup_event.dart';
+import 'package:super_app/features/auth/application/signup/bloc/signup_bloc.dart';
+import 'package:super_app/features/auth/application/signup/bloc/signup_event.dart';
 import 'package:super_app/core/constants/app_constants.dart';
-import 'package:super_app/presentation/widgets/buttons/text_elevated_button.dart';
-import 'package:super_app/presentation/widgets/text_fields/outline_bordered_text_field.dart';
+import 'package:super_app/core/presentation/widgets/buttons/text_elevated_button.dart';
+import 'package:super_app/core/presentation/widgets/text_fields/outline_bordered_text_field.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});

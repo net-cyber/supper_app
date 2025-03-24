@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:super_app/domain/auth/value_objects.dart';
+import 'package:super_app/features/auth/domain/value_objects.dart';
 
 part 'login_state.freezed.dart';
 

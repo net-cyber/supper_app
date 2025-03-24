@@ -6,13 +6,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:super_app/application/auth/login/bloc/login_bloc.dart';
-import 'package:super_app/application/auth/login/bloc/login_event.dart';
+import 'package:super_app/features/auth/application/login/bloc/login_bloc.dart';
+import 'package:super_app/features/auth/application/login/bloc/login_event.dart';
 import 'package:super_app/core/constants/app_constants.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/presentation/widgets/buttons/text_button_unfilled.dart';
-import 'package:super_app/presentation/widgets/buttons/text_elevated_button.dart';
-import 'package:super_app/presentation/widgets/text_fields/outline_bordered_text_field.dart';
+import 'package:super_app/core/presentation/widgets/buttons/text_button_unfilled.dart';
+import 'package:super_app/core/presentation/widgets/buttons/text_elevated_button.dart';
+import 'package:super_app/core/presentation/widgets/text_fields/outline_bordered_text_field.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

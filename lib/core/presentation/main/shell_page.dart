@@ -55,26 +55,14 @@ class ShellPage extends StatelessWidget {
                   'History',
                   1,
                 ),
-                _buildNavItem(
-                  context,
-                  HugeIcons.strokeRoundedMailSend01,
-                  HugeIcons.strokeRoundedMailSend01,
-                  'Send',
-                  2,
-                ),
-                _buildNavItem(
-                  context,
-                  HugeIcons.strokeRoundedCreditCard,
-                  HugeIcons.strokeRoundedCreditCard,
-                  'Cards',
-                  3,
-                ),
+                
+                
                 _buildNavItem(
                   context,
                   HugeIcons.strokeRoundedAccountSetting01,
                   HugeIcons.strokeRoundedAccountSetting01,
                   'Profile',
-                  4,
+                  2,
                 ),
               ],
             ),

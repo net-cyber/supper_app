@@ -5,13 +5,13 @@ import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/features/mortgages/presentation/screens/available_properties_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/property_detail_screen.dart';
-import 'package:super_app/presentation/auth/pages/login/login_screen.dart';
-import 'package:super_app/presentation/auth/pages/signup/signup_screen.dart';
-import 'package:super_app/presentation/auth/pages/splash/splash_screen.dart';
-import 'package:super_app/presentation/home/pages/history/history_screen.dart';
-import 'package:super_app/presentation/home/pages/main/main_screen.dart';
-import 'package:super_app/presentation/home/pages/profile/profile_screen.dart';
-import 'package:super_app/presentation/home/pages/shell_page.dart';
+import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/signup/signup_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/splash/splash_screen.dart';
+import 'package:super_app/features/history/presentation/history_screen.dart';
+import 'package:super_app/core/presentation/main/main_screen.dart';
+import 'package:super_app/features/profile/presentation/profile_screen.dart';
+import 'package:super_app/core/presentation/main/shell_page.dart';
 
 
 final router = GoRouter(
@@ -73,10 +73,10 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              name: RouteName.history,
-              path: '/${RouteName.history}',
-              builder: (context, state) => const HistoryScreen(),
-            ),
+      name: RouteName.mortgageDashboard,
+      path: '/${RouteName.mortgageDashboard}',
+      builder: (context, state) => const MortgageDashboardScreen(),
+    ),
           ],
         ),
         // Profile Branch
@@ -142,11 +142,7 @@ final router = GoRouter(
       path: '/${RouteName.availableProperties}',
       builder: (context, state) => const AvailablePropertiesScreen(),
     ),
-    GoRoute(
-      name: RouteName.mortgageDashboard,
-      path: '/${RouteName.mortgageDashboard}',
-      builder: (context, state) => const MortgageDashboardScreen(),
-    ),
+   
 
      
    

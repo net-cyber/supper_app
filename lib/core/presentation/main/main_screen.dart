@@ -310,7 +310,7 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.account_balance_rounded,
         'label': 'Send To\nGoh Betoch',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.availableProperties,  
+        'route': RouteName.sendCash,  
       },
       {
         'icon': Icons.swap_horiz_rounded,
@@ -412,46 +412,55 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.home_rounded,
         'label': 'Mortgage Loans',
         'color': Color(0xFF4A6FE5),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.account_balance_rounded,
         'label': 'Deposits',
         'color': Color(0xFF2EC4B6),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.person_rounded,
         'label': 'Personal Loans',
         'color': Color(0xFFFF9F1C),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.directions_car_rounded,
         'label': 'Vehicle Loans',
         'color': Color(0xFFE71D36),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.home_repair_service_rounded,
         'label': 'Home Equity',
         'color': Color(0xFF8338EC),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.chair_rounded,
         'label': 'Furniture Loans',
         'color': Color(0xFF3A86FF),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.apartment_rounded,
         'label': 'Construction',
         'color': Color(0xFFFF006E),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.business_rounded,
         'label': 'Commercial',
         'color': Color(0xFF06D6A0),
+        'route' : RouteName.availableProperties,
       },
       {
         'icon': Icons.public_rounded,
         'label': 'International',
         'color': Color(0xFFFFBE0B),
+        'route' : RouteName.availableProperties,
       },
     ];
 
@@ -502,6 +511,7 @@ class _MainScreenState extends State<MainScreen> {
                 icon: services[index]['icon'] as IconData,
                 label: services[index]['label'] as String,
                 color: services[index]['color'] as Color,
+                route: services[index]['route'] as String
               );
             },
           ),
@@ -514,12 +524,13 @@ class _MainScreenState extends State<MainScreen> {
     required IconData icon,
     required String label,
     required Color color,
+    required String route,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          // Handle service tap
+          context.pushNamed(route);
         },
         borderRadius: BorderRadius.circular(24.r),
         child: Container(

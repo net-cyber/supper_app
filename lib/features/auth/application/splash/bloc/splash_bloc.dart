@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:super_app/application/auth/splash/bloc/splash_event.dart';
-import 'package:super_app/application/auth/splash/bloc/splash_state.dart';
+import 'package:super_app/features/auth/application/splash/bloc/splash_event.dart';
+import 'package:super_app/features/auth/application/splash/bloc/splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc() : super(const SplashState()) {
