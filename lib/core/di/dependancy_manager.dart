@@ -8,3 +8,4 @@ void setUpDependencies() {
   getIt.registerLazySingleton<HttpService>(HttpService.new);
 
 }
+
