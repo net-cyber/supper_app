@@ -197,6 +197,15 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                       // Full Name field
                       _buildTextField(
                         controller: _fullNameController,
+                        label: 'User Name',
+                        hint: 'Enter Your user name',
+                        icon: Icons.person_outline,
+                      ),
+                      
+                      SizedBox(height: 20.h),
+                      // Full Name field
+                      _buildTextField(
+                        controller: _fullNameController,
                         label: 'Full Name',
                         hint: 'Enter your full name',
                         icon: Icons.person_outline,
