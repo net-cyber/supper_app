@@ -1,13 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_user.dart';
+part of 'registration_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AuthUserImpl _$$AuthUserImplFromJson(Map<String, dynamic> json) =>
-    _$AuthUserImpl(
+_$RegistrationResponseImpl _$$RegistrationResponseImplFromJson(
+        Map<String, dynamic> json) =>
+    _$RegistrationResponseImpl(
       username: json['username'] as String,
       full_name: json['full_name'] as String,
       international_phone_number: json['international_phone_number'] as String,
@@ -16,7 +17,8 @@ _$AuthUserImpl _$$AuthUserImplFromJson(Map<String, dynamic> json) =>
       created_at: DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$AuthUserImplToJson(_$AuthUserImpl instance) =>
+Map<String, dynamic> _$$RegistrationResponseImplToJson(
+        _$RegistrationResponseImpl instance) =>
     <String, dynamic>{
       'username': instance.username,
       'full_name': instance.full_name,

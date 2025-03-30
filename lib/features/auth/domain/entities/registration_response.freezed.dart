@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'auth_user.dart';
+part of 'registration_response.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,32 +14,33 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-AuthUser _$AuthUserFromJson(Map<String, dynamic> json) {
-  return _AuthUser.fromJson(json);
+RegistrationResponse _$RegistrationResponseFromJson(Map<String, dynamic> json) {
+  return _RegistrationResponse.fromJson(json);
 }
 
 /// @nodoc
-mixin _$AuthUser {
+mixin _$RegistrationResponse {
   String get username => throw _privateConstructorUsedError;
   String get full_name => throw _privateConstructorUsedError;
   String get international_phone_number => throw _privateConstructorUsedError;
   DateTime get password_changed_at => throw _privateConstructorUsedError;
   DateTime get created_at => throw _privateConstructorUsedError;
 
-  /// Serializes this AuthUser to a JSON map.
+  /// Serializes this RegistrationResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of AuthUser
+  /// Create a copy of RegistrationResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthUserCopyWith<AuthUser> get copyWith =>
+  $RegistrationResponseCopyWith<RegistrationResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AuthUserCopyWith<$Res> {
-  factory $AuthUserCopyWith(AuthUser value, $Res Function(AuthUser) then) =
-      _$AuthUserCopyWithImpl<$Res, AuthUser>;
+abstract class $RegistrationResponseCopyWith<$Res> {
+  factory $RegistrationResponseCopyWith(RegistrationResponse value,
+          $Res Function(RegistrationResponse) then) =
+      _$RegistrationResponseCopyWithImpl<$Res, RegistrationResponse>;
   @useResult
   $Res call(
       {String username,
@@ -50,16 +51,17 @@ abstract class $AuthUserCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
-    implements $AuthUserCopyWith<$Res> {
-  _$AuthUserCopyWithImpl(this._value, this._then);
+class _$RegistrationResponseCopyWithImpl<$Res,
+        $Val extends RegistrationResponse>
+    implements $RegistrationResponseCopyWith<$Res> {
+  _$RegistrationResponseCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of AuthUser
+  /// Create a copy of RegistrationResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -96,11 +98,11 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
 }
 
 /// @nodoc
-abstract class _$$AuthUserImplCopyWith<$Res>
-    implements $AuthUserCopyWith<$Res> {
-  factory _$$AuthUserImplCopyWith(
-          _$AuthUserImpl value, $Res Function(_$AuthUserImpl) then) =
-      __$$AuthUserImplCopyWithImpl<$Res>;
+abstract class _$$RegistrationResponseImplCopyWith<$Res>
+    implements $RegistrationResponseCopyWith<$Res> {
+  factory _$$RegistrationResponseImplCopyWith(_$RegistrationResponseImpl value,
+          $Res Function(_$RegistrationResponseImpl) then) =
+      __$$RegistrationResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -112,14 +114,14 @@ abstract class _$$AuthUserImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$AuthUserImplCopyWithImpl<$Res>
-    extends _$AuthUserCopyWithImpl<$Res, _$AuthUserImpl>
-    implements _$$AuthUserImplCopyWith<$Res> {
-  __$$AuthUserImplCopyWithImpl(
-      _$AuthUserImpl _value, $Res Function(_$AuthUserImpl) _then)
+class __$$RegistrationResponseImplCopyWithImpl<$Res>
+    extends _$RegistrationResponseCopyWithImpl<$Res, _$RegistrationResponseImpl>
+    implements _$$RegistrationResponseImplCopyWith<$Res> {
+  __$$RegistrationResponseImplCopyWithImpl(_$RegistrationResponseImpl _value,
+      $Res Function(_$RegistrationResponseImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AuthUser
+  /// Create a copy of RegistrationResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -130,7 +132,7 @@ class __$$AuthUserImplCopyWithImpl<$Res>
     Object? password_changed_at = null,
     Object? created_at = null,
   }) {
-    return _then(_$AuthUserImpl(
+    return _then(_$RegistrationResponseImpl(
       username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -157,8 +159,8 @@ class __$$AuthUserImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$AuthUserImpl extends _AuthUser {
-  const _$AuthUserImpl(
+class _$RegistrationResponseImpl extends _RegistrationResponse {
+  const _$RegistrationResponseImpl(
       {required this.username,
       required this.full_name,
       required this.international_phone_number,
@@ -166,8 +168,8 @@ class _$AuthUserImpl extends _AuthUser {
       required this.created_at})
       : super._();
 
-  factory _$AuthUserImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthUserImplFromJson(json);
+  factory _$RegistrationResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RegistrationResponseImplFromJson(json);
 
   @override
   final String username;
@@ -182,14 +184,14 @@ class _$AuthUserImpl extends _AuthUser {
 
   @override
   String toString() {
-    return 'AuthUser(username: $username, full_name: $full_name, international_phone_number: $international_phone_number, password_changed_at: $password_changed_at, created_at: $created_at)';
+    return 'RegistrationResponse(username: $username, full_name: $full_name, international_phone_number: $international_phone_number, password_changed_at: $password_changed_at, created_at: $created_at)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AuthUserImpl &&
+            other is _$RegistrationResponseImpl &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.full_name, full_name) ||
@@ -209,33 +211,35 @@ class _$AuthUserImpl extends _AuthUser {
   int get hashCode => Object.hash(runtimeType, username, full_name,
       international_phone_number, password_changed_at, created_at);
 
-  /// Create a copy of AuthUser
+  /// Create a copy of RegistrationResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$AuthUserImplCopyWith<_$AuthUserImpl> get copyWith =>
-      __$$AuthUserImplCopyWithImpl<_$AuthUserImpl>(this, _$identity);
+  _$$RegistrationResponseImplCopyWith<_$RegistrationResponseImpl>
+      get copyWith =>
+          __$$RegistrationResponseImplCopyWithImpl<_$RegistrationResponseImpl>(
+              this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AuthUserImplToJson(
+    return _$$RegistrationResponseImplToJson(
       this,
     );
   }
 }
 
-abstract class _AuthUser extends AuthUser {
-  const factory _AuthUser(
+abstract class _RegistrationResponse extends RegistrationResponse {
+  const factory _RegistrationResponse(
       {required final String username,
       required final String full_name,
       required final String international_phone_number,
       required final DateTime password_changed_at,
-      required final DateTime created_at}) = _$AuthUserImpl;
-  const _AuthUser._() : super._();
+      required final DateTime created_at}) = _$RegistrationResponseImpl;
+  const _RegistrationResponse._() : super._();
 
-  factory _AuthUser.fromJson(Map<String, dynamic> json) =
-      _$AuthUserImpl.fromJson;
+  factory _RegistrationResponse.fromJson(Map<String, dynamic> json) =
+      _$RegistrationResponseImpl.fromJson;
 
   @override
   String get username;
@@ -248,10 +252,10 @@ abstract class _AuthUser extends AuthUser {
   @override
   DateTime get created_at;
 
-  /// Create a copy of AuthUser
+  /// Create a copy of RegistrationResponse
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthUserImplCopyWith<_$AuthUserImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$RegistrationResponseImplCopyWith<_$RegistrationResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
