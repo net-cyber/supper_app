@@ -310,13 +310,13 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.account_balance_rounded,
         'label': 'Send To\nGoh Betoch',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.sendCash,  
+        'route': RouteName.bankSelection,
       },
       {
         'icon': Icons.swap_horiz_rounded,
         'label': 'Send To\nOther Bank',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.sendCash,
+        'route': RouteName.bankSelection,
       },
       {
         'icon': Icons.home_work_rounded,

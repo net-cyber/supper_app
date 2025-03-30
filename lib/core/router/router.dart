@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
@@ -9,9 +10,14 @@ import 'package:super_app/features/auth/presentation/pages/login/login_screen.da
 import 'package:super_app/features/auth/presentation/pages/signup/signup_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/splash/splash_screen.dart';
 import 'package:super_app/features/history/presentation/history_screen.dart';
+import 'package:super_app/features/history/presentation/transaction_detail_screen.dart';
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_selection_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_account_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_amount_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/confirm_transfer_screen.dart';
 
 
 final router = GoRouter(
@@ -73,10 +79,15 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-      name: RouteName.mortgageDashboard,
-      path: '/${RouteName.mortgageDashboard}',
-      builder: (context, state) => const MortgageDashboardScreen(),
-    ),
+              name: RouteName.mortgageDashboard,
+              path: '/${RouteName.mortgageDashboard}',
+              builder: (context, state) => const MortgageDashboardScreen(),
+            ),
+            GoRoute(
+              name: RouteName.history,
+              path: '/${RouteName.history}',
+              builder: (context, state) => const HistoryScreen(),
+            ),
           ],
         ),
         // Profile Branch
@@ -142,9 +153,53 @@ final router = GoRouter(
       path: '/${RouteName.availableProperties}',
       builder: (context, state) => const AvailablePropertiesScreen(),
     ),
-   
-
-     
-   
+    
+    // Bank Transfer Routes
+    GoRoute(
+      name: RouteName.bankSelection,
+      path: '/${RouteName.bankSelection}',
+      builder: (context, state) => const BankSelectionScreen(),
+    ),
+    GoRoute(
+      name: RouteName.bankAccount,
+      path: '/${RouteName.bankAccount}',
+      builder: (context, state) {
+        final bank = state.extra as Map<String, dynamic>;
+        return BankAccountScreen(bank: bank);
+      },
+    ),
+    GoRoute(
+      name: RouteName.bankAmount,
+      path: '/${RouteName.bankAmount}',
+      builder: (context, state) {
+        final transferData = state.extra as Map<String, dynamic>;
+        return BankAmountScreen(transferData: transferData);
+      },
+    ),
+    GoRoute(
+      name: RouteName.confirmTransfer,
+      path: '/${RouteName.confirmTransfer}',
+      builder: (context, state) {
+        final transferData = state.extra as Map<String, dynamic>;
+        return ConfirmTransferScreen(transferData: transferData);
+      },
+    ),
+    
+    // Transaction Detail Route
+    GoRoute(
+      name: RouteName.transactionDetail,
+      path: '/${RouteName.transactionDetail}',
+      builder: (context, state) {
+        final transactionData = state.extra as Map<String, dynamic>;
+        return TransactionDetailScreen(
+          transactionId: transactionData['transactionId'],
+          type: transactionData['type'],
+          amount: transactionData['amount'],
+          status: transactionData['status'],
+          recipient: transactionData['recipient'],
+          date: transactionData['date'],
+        );
+      },
+    ),
   ],
 );
