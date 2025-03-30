@@ -55,3 +55,51 @@ class FullName extends ValueObject<String> {
   @override
   final Either<ValueFailure<String>, String> value;
 }
+
+class UserName extends ValueObject<String> {
+  factory UserName(String input) {
+    return UserName._(
+      validateUserName(input),
+    );
+  }
+
+  const UserName._(this.value);
+  @override
+  final Either<ValueFailure<String>, String> value;
+}
+
+class PhoneNumber extends ValueObject<String> {
+  factory PhoneNumber(String input) {
+    return PhoneNumber._(
+      validatePhoneNumber(input),
+    );
+  }
+
+  const PhoneNumber._(this.value);
+  @override
+  final Either<ValueFailure<String>, String> value;
+}
+
+class ReferralCode extends ValueObject<String> {
+  factory ReferralCode(String input) {
+    return ReferralCode._(
+      validateReferralCode(input),
+    );
+  }
+
+  const ReferralCode._(this.value);
+  @override
+  final Either<ValueFailure<String>, String> value;
+}
+
+class TermsAcceptance extends ValueObject<bool> {
+  factory TermsAcceptance(bool input) {
+    return TermsAcceptance._(
+      validateTermsAcceptance(input),
+    );
+  }
+
+  const TermsAcceptance._(this.value);
+  @override
+  final Either<ValueFailure<bool>, bool> value;
+}

@@ -265,71 +265,28 @@ Either<ValueFailure<String>, String> validatePhoneNumber(String input) {
   
   // Check for empty or whitespace-only input
   if (trimmedInput.isEmpty) {
-    return left(const ValueFailure.invalidPhoneNumber(
+    return left(const ValueFailure.empty(
       failedValue: 'Please enter a phone number',),);
   }
-
-  // Remove any spaces and hyphens from the number
-  final cleanNumber = trimmedInput.replaceAll(RegExp(r'[\s-]'), '');
-
-  // Check for any non-digit characters (except leading '+')
-  if (RegExp(r'[^\d]').hasMatch(cleanNumber)) {
-    return left(const ValueFailure.invalidPhoneNumber(
-      failedValue: 'can only contain digits',),);
-  }
-
-  // Check exact length requirement (9 digits)
-  if (cleanNumber.length > 10) {
-    return left(const ValueFailure.invalidPhoneNumber(
-      failedValue: 'must be greater than 10 digits',),);
-  }
-
-  // Check if starts with valid prefix (7-9)
-  if (!RegExp('^[0-9]').hasMatch(cleanNumber)) {
-    return left(const ValueFailure.invalidPhoneNumber(
-      failedValue: 'must start with 0, 7, or 9',),);
-  }
-
-  // Specific prefix validations for Ethiopian numbers
-  final firstTwoDigits = cleanNumber.substring(0, 2);
   
-  // Valid prefix ranges:
-  // 71-73: Ethio Telecom
-  // 77-79: Ethio Telecom
-  // 91-93: Ethio Telecom
-  // 94-96: Safaricom
-  // 97-99: Ethio Telecom
-  final validPrefixes = {
-    '09', '07',
-  };
-
-  if (!validPrefixes.contains(firstTwoDigits)) {
+  // Simple validation for now - check for length and numeric characters
+  if (trimmedInput.length < 7) {
     return left(const ValueFailure.invalidPhoneNumber(
-      failedValue: 'Invalid network prefix. Please check your number',),);
+      failedValue: 'Phone number is too short',),);
   }
-
-  // Check for repeated digits (potential spam/fake numbers)
-  if (RegExp(r'(\d)\1{7,}').hasMatch(cleanNumber)) {
+  
+  if (trimmedInput.length > 15) {
     return left(const ValueFailure.invalidPhoneNumber(
-      failedValue: 'Invalid number pattern',),);
+      failedValue: 'Phone number is too long',),);
   }
-
-  // // Validate middle digits (should all be numbers, already checked above)
-  // final middleDigits = cleanNumber.substring(2, 7);
-  // if (middleDigits.isEmpty) {
-  //   return left(ValueFailure.invalidPhoneNumber(
-  //     failedValue: 'Invalid number format'));
-  // }
-
-  // Validate last digits (should all be numbers, already checked above)
-  final lastDigits = cleanNumber.substring(8);
-  if (lastDigits.length != 2) {
+  
+  // Check if it contains only digits, plus sign, and parentheses
+  if (!RegExp(r'^[0-9\+\(\)\-\s]+$').hasMatch(trimmedInput)) {
     return left(const ValueFailure.invalidPhoneNumber(
-      failedValue: 'Invalid number format',),);
+      failedValue: 'Phone number contains invalid characters',),);
   }
-
-  // Return the cleaned number (UI will handle adding +251)
-  return right(cleanNumber);
+  
+  return right(trimmedInput);
 }
 
 Either<ValueFailure<String>, String> validateAmount(String input) {
@@ -444,4 +401,61 @@ Either<ValueFailure<String>, String> validateAccountNumber(String input) {
   
   // If all validations pass, return the cleaned number
   return right(cleanNumber);
+}
+
+Either<ValueFailure<String>, String> validateUserName(String input) {
+  // Trim the input to handle whitespace
+  final trimmedInput = input.trim();
+  
+  // Check for empty or whitespace-only input
+  if (trimmedInput.isEmpty) {
+    return left(const ValueFailure.empty(
+      failedValue: 'Please enter a username',),);
+  }
+  
+  // Check minimum length
+  if (trimmedInput.length < 3) {
+    return left(const ValueFailure.invalidName(
+      failedValue: 'Username is too short (minimum 3 characters)',),);
+  }
+  
+  // Check maximum length
+  if (trimmedInput.length > 20) {
+    return left(const ValueFailure.invalidName(
+      failedValue: 'Username is too long (maximum 20 characters)',),);
+  }
+  
+  // Check for valid characters (alphanumeric and underscores only)
+  if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(trimmedInput)) {
+    return left(const ValueFailure.invalidName(
+      failedValue: 'Username can only contain letters, numbers, and underscores',),);
+  }
+  
+  return right(trimmedInput);
+}
+
+Either<ValueFailure<String>, String> validateReferralCode(String input) {
+  // Referral code is optional, so empty is valid
+  if (input.isEmpty) {
+    return right('');
+  }
+  
+  final trimmedInput = input.trim();
+  
+  // Check format - alphanumeric and typically 6-10 characters
+  if (!RegExp(r'^[a-zA-Z0-9]{6,10}$').hasMatch(trimmedInput)) {
+    return left(const ValueFailure.invalidEmail(
+      failedValue: 'Invalid referral code format',),);
+  }
+  
+  return right(trimmedInput);
+}
+
+Either<ValueFailure<bool>, bool> validateTermsAcceptance(bool input) {
+  if (!input) {
+    return left(const ValueFailure.empty(
+      failedValue: false,),);
+  }
+  
+  return right(input);
 }
