@@ -6,6 +6,4 @@ final GetIt getIt = GetIt.instance;
 
 void setUpDependencies() {
   getIt.registerLazySingleton<HttpService>(HttpService.new);
-
 }
-
