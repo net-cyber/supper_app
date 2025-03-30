@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/auth/presentation/pages/registration/registration_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
 import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/features/mortgages/presentation/screens/available_properties_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
@@ -149,6 +150,12 @@ final router = GoRouter(
       name: RouteName.registrationScreen,
       path: '/${RouteName.registrationScreen}',
       builder: (context, state) => const RegistrationScreen(),
+    ),
+
+     GoRoute(
+      name: RouteName.termsAndConditionsScreen,
+      path: '/${RouteName.termsAndConditionsScreen}',
+      builder: (context, state) => const TermsAndConditionsScreen(),
     ),
    
   ],

@@ -1,8 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/constants/app_constants.dart';
+import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/core/theme/app_colors.dart';
+import 'package:super_app/features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
 
 class RegistrationScreen extends StatelessWidget {
   const RegistrationScreen({super.key});
@@ -209,17 +213,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                         keyboardType: TextInputType.phone,
                       ),
                       
-                      SizedBox(height: 20.h),
-                      
-                      // Email Address field
-                      _buildTextField(
-                        controller: _emailController,
-                        label: 'Email Address',
-                        hint: 'Enter your email address',
-                        icon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      
+                     
                       SizedBox(height: 20.h),
                       
                       // Password field with strength indicator
@@ -297,13 +291,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                       
                       SizedBox(height: 20.h),
                       
-                      // Referral Code field (optional)
-                      _buildTextField(
-                        controller: _referralCodeController,
-                        label: 'Referral Code (Optional)',
-                        hint: 'Enter referral code (if any)',
-                        icon: Icons.card_giftcard_outlined,
-                      ),
+
                     ],
                   ),
                 ),
@@ -340,6 +328,12 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                 fontWeight: FontWeight.w500,
                                 decoration: TextDecoration.underline,
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  context.pushNamed(RouteName.termsAndConditionsScreen);
+
+                                  
+                                },
                             ),
                             TextSpan(
                               text: ' and ',
@@ -356,6 +350,15 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                 fontWeight: FontWeight.w500,
                                 decoration: TextDecoration.underline,
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const TermsAndConditionsScreen(),
+                                    ),
+                                  );
+                                },
                             ),
                           ],
                         ),

@@ -21,5 +21,6 @@ class RouteName {
   static const availableProperties = 'availableProperties';
   static const mortgageDashboard = 'mortgageDashboard';
   static const registrationScreen = 'registrationScreen';
+  static const termsAndConditionsScreen = 'termsAndConditionsScreen';
   
 }
