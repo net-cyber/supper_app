@@ -37,7 +37,6 @@ dependencies:
   timeline_tile: ^2.0.0
   pie_chart: ^5.4.0
 
-
 dev_dependencies:
   bloc_test: ^9.1.7
   flutter_test:
