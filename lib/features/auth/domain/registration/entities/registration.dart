@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:super_app/features/auth/domain/value_objects.dart';
+import 'package:super_app/core/value_object/value_objects.dart';
 
 part 'registration.freezed.dart';
 
