@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class SlideLeftRoute extends PageRouteBuilder {
-
   SlideLeftRoute({required this.page})
       : super(
           pageBuilder: (
@@ -28,7 +27,6 @@ class SlideLeftRoute extends PageRouteBuilder {
 }
 
 class FadeRoute extends PageRouteBuilder {
-
   FadeRoute({required this.page})
       : super(
           pageBuilder: (
@@ -56,11 +54,12 @@ class CustomTransitionBuilder extends PageTransitionsBuilder {
 
   @override
   Widget buildTransitions<T>(
-      PageRoute<T> route,
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child,) {
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     final tween = Tween<double>(begin: 0, end: 1).chain(
       CurveTween(curve: Curves.ease),
     );
