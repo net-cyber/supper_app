@@ -18,6 +18,9 @@ import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank
 import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_account_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_amount_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToExternal/pages/confirm_transfer_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_bank_account_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_bank_amount_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_confirm_transfer_screen.dart';
 
 
 final router = GoRouter(
@@ -166,6 +169,27 @@ final router = GoRouter(
       builder: (context, state) {
         final bank = state.extra as Map<String, dynamic>;
         return BankAccountScreen(bank: bank);
+      },
+    ),
+    GoRoute(
+      name: RouteName.internalBankAccount,
+      path: '/${RouteName.internalBankAccount}',
+      builder: (context, state) => const InternalBankAccountScreen(),
+    ),
+    GoRoute(
+      name: RouteName.internalBankAmount,
+      path: '/${RouteName.internalBankAmount}',
+      builder: (context, state) {
+        final transferData = state.extra as Map<String, dynamic>;
+        return InternalBankAmountScreen(transferData: transferData);
+      },
+    ),
+    GoRoute(
+      name: RouteName.internalConfirmTransfer,
+      path: '/${RouteName.internalConfirmTransfer}',
+      builder: (context, state) {
+        final transferData = state.extra as Map<String, dynamic>;
+        return InternalConfirmTransferScreen(transferData: transferData);
       },
     ),
     GoRoute(

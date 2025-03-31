@@ -5,19 +5,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
-class ConfirmTransferScreen extends StatefulWidget {
+class InternalConfirmTransferScreen extends StatefulWidget {
   final Map<String, dynamic> transferData;
 
-  const ConfirmTransferScreen({
+  const InternalConfirmTransferScreen({
     super.key,
     required this.transferData,
   });
 
   @override
-  State<ConfirmTransferScreen> createState() => _ConfirmTransferScreenState();
+  State<InternalConfirmTransferScreen> createState() => _InternalConfirmTransferScreenState();
 }
 
-class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
+class _InternalConfirmTransferScreenState extends State<InternalConfirmTransferScreen> {
   final TextEditingController _reasonController = TextEditingController();
   
   // Mock data for sender (in a real app, this would come from user profile/auth)
@@ -27,8 +27,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
     'bank': 'Goh Betoch Bank',
   };
   
-  // Service charge (would typically be calculated based on amount and bank)
-  final double _serviceCharge = 10.0;
+  // Internal transfers don't have service charges
   
   @override
   void dispose() {
@@ -38,9 +37,8 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate total amount with service charge
+    // Get the transfer amount
     final double amount = widget.transferData['amount'];
-    final double totalAmount = amount + _serviceCharge;
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,7 +50,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Confirm Transfer',
+          'Confirm Internal Transfer',
           style: GoogleFonts.outfit(
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
@@ -66,7 +64,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Review',
+              'Review Transfer',
               style: GoogleFonts.outfit(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
@@ -75,7 +73,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             ),
             SizedBox(height: 8.h),
             Text(
-              'Please verify all details before confirming the transfer',
+              'Please verify all details before confirming your internal transfer',
               style: GoogleFonts.outfit(
                 fontSize: 16.sp,
                 color: Colors.grey[600],
@@ -94,8 +92,8 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                       padding: EdgeInsets.all(20.w),
                       decoration: BoxDecoration(
                         color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.05),
@@ -107,17 +105,17 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Header with bank logos or transfer icon
+                          // Header with Goh Betoch Bank branding
                           Container(
                             width: 64.w,
                             height: 64.h,
                             decoration: BoxDecoration(
-                              color: Colors.purple.withOpacity(0.1),
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              Icons.swap_horiz_rounded,
-                              color: Colors.purple,
+                              Icons.account_balance_rounded,
+                              color: Theme.of(context).colorScheme.primary,
                               size: 32.sp,
                             ),
                           ),
@@ -138,6 +136,39 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                               color: Colors.grey[600],
                             ),
                           ),
+                          
+                          // Goh Betoch Bank badge
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 16.h),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20.r),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.verified_rounded,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 16.sp,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'Goh Betoch Bank Internal',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
                           SizedBox(height: 24.h),
                           
                           // From (Sender)
@@ -162,19 +193,44 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                           Divider(height: 1, color: Colors.grey[300]),
                           SizedBox(height: 24.h),
                           
-                          // Amount Details
+                          // Amount Details with zero fee highlighted
                           _buildSectionLabel('Amount'),
                           SizedBox(height: 8.h),
-                          _buildDetailRow('Transfer Amount', '${amount.toStringAsFixed(2)} ETB'),
-                          _buildDetailRow('Service Charge', '${_serviceCharge.toStringAsFixed(2)} ETB'),
-                          SizedBox(height: 16.h),
-                          _buildDetailRow(
-                            'Total Amount',
-                            '${totalAmount.toStringAsFixed(2)} ETB',
+                          _buildDetailRow('Transfer Amount', '${amount.toStringAsFixed(2)} ETB',
                             valueStyle: GoogleFonts.outfit(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.purple,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          
+                          // Add fee-free badge instead of showing service charge row
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 8.h),
+                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(color: Colors.green.withOpacity(0.3)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.check_circle_outline,
+                                  color: Colors.green,
+                                  size: 14.sp,
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  'Fee-Free Internal Transfer',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           
@@ -311,15 +367,15 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
     final completeTransferData = {
       ...widget.transferData,
       'reason': _reasonController.text,
-      'serviceCharge': _serviceCharge,
-      'totalAmount': widget.transferData['amount'] + _serviceCharge,
+      'totalAmount': widget.transferData['amount'],
       'sender': _sender,
       'timestamp': DateTime.now().toString(),
       'transactionId': DateTime.now().millisecondsSinceEpoch.toString(),
-      'transferType': 'External',
+      'transferType': 'Internal',
+      'isFeeExempt': true,
     };
     
-    // Show success dialog
+    // Show success dialog with internal transfer branding
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -345,32 +401,32 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             ),
             SizedBox(height: 24.h),
             
-            // External transfer badge
+            // Internal transfer badge
             Container(
               margin: EdgeInsets.only(bottom: 16.h),
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: Colors.purple.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: Colors.purple.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                 ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.swap_horiz_rounded,
-                    color: Colors.purple,
+                    Icons.bolt,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 14.sp,
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'External Bank Transfer',
+                    'Instant Internal Transfer',
                     style: GoogleFonts.outfit(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
-                      color: Colors.purple,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
@@ -435,7 +491,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                 onPressed: () {
                   // Close dialog and navigate back to home screen
                   Navigator.of(context).pop();
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  context.goNamed(RouteName.mainScreen);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,

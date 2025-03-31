@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/transf/presentation/sendToExternal/widget/bank_data.dart';
-import 'package:super_app/features/transf/presentation/sendToExternal/widget/bank_item.dart';
-import 'package:super_app/features/transf/presentation/sendToExternal/widget/bank_search_bar.dart';
+import 'package:super_app/features/transf/presentation/widget/bank_data.dart';
+import 'package:super_app/features/transf/presentation/widget/bank_item.dart';
+import 'package:super_app/features/transf/presentation/widget/bank_search_bar.dart';
 
 class BankSelectionScreen extends StatefulWidget {
   const BankSelectionScreen({super.key});

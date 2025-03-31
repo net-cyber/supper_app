@@ -25,6 +25,11 @@ class RouteName {
   static const String bankAmount = 'bankAmount';
   static const String confirmTransfer = 'confirmTransfer';
   
+  // Internal bank transfer
+  static const String internalBankAccount = 'internalBankAccount';
+  static const String internalBankAmount = 'internalBankAmount';
+  static const String internalConfirmTransfer = 'internalConfirmTransfer';
+  
   // Other actions
   static const String sendCash = 'sendCash';
 }

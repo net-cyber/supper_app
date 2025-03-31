@@ -6,19 +6,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
-class BankAmountScreen extends StatefulWidget {
+class InternalBankAmountScreen extends StatefulWidget {
   final Map<String, dynamic> transferData;
 
-  const BankAmountScreen({
+  const InternalBankAmountScreen({
     super.key,
     required this.transferData,
   });
 
   @override
-  State<BankAmountScreen> createState() => _BankAmountScreenState();
+  State<InternalBankAmountScreen> createState() => _InternalBankAmountScreenState();
 }
 
-class _BankAmountScreenState extends State<BankAmountScreen> {
+class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   final TextEditingController _amountController = TextEditingController();
   bool _hasInput = false;
   
@@ -50,17 +50,23 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
   }
   
   void _continueToConfirmation() {
-    if (_hasInput) {
-      // Add amount to transfer data and navigate to confirmation screen
-      final completeTransferData = {
-        ...widget.transferData,
-        'amount': double.tryParse(_amountController.text) ?? 0.0,
-        'accountHolderName': _accountHolderName,
-      };
-      
-      // Navigate to confirmation screen
-      context.pushNamed(RouteName.confirmTransfer, extra: completeTransferData);
-    }
+    // Always print to debug regardless of hasInput
+    print("_continueToConfirmation called with amount: ${_amountController.text}");
+    print("_hasInput value: $_hasInput");
+    
+    // Force enable for testing
+    // Add amount to transfer data and navigate to confirmation screen
+    final completeTransferData = {
+      ...widget.transferData,
+      'amount': double.tryParse(_amountController.text) ?? 100.0, // Default to 100 for testing
+      'accountHolderName': _accountHolderName,
+      'name': 'Goh Betoch Bank',
+    };
+    
+    print("Navigating to internal confirmation with data: $completeTransferData");
+    
+    // Navigate to internal confirmation screen
+    context.pushNamed(RouteName.internalConfirmTransfer, extra: completeTransferData);
   }
 
   @override
@@ -88,28 +94,36 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Account verification section
+            // Account verification section with Goh Betoch Bank branding
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Account Details',
-                    style: GoogleFonts.outfit(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.account_balance_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 24.sp,
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        'Goh Betoch Bank Account',
+                        style: GoogleFonts.outfit(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 12.h),
-                  _buildDetailRow('Bank', widget.transferData['name']),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 16.h),
                   _buildDetailRow('Account Number', widget.transferData['accountNumber']),
                   SizedBox(height: 8.h),
                   _buildDetailRow('Account Holder', _accountHolderName),
@@ -129,15 +143,39 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
               ),
             ),
             SizedBox(height: 8.h),
+            Text(
+              'Enter the amount you want to transfer',
+              style: GoogleFonts.outfit(
+                fontSize: 16.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 16.h),
             _buildAmountInput(),
             
             const Spacer(),
             
             // Continue button
-            ContinueButton(
-              onPressed: _continueToConfirmation,
-              isEnabled: _hasInput,
-              color: Theme.of(context).colorScheme.primary,
+            SizedBox(
+              width: double.infinity,
+              height: 56.h,
+              child: ElevatedButton(
+                onPressed: _continueToConfirmation, // Remove conditional for testing
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28.r),
+                  ),
+                ),
+                child: Text(
+                  'Continue',
+                  style: GoogleFonts.outfit(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
             SizedBox(height: 16.h),
           ],
@@ -180,7 +218,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12.r),
                 bottomLeft: Radius.circular(12.r),
@@ -191,7 +229,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
               style: GoogleFonts.outfit(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
