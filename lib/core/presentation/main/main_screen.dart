@@ -340,12 +340,6 @@ class _MainScreenState extends State<MainScreen> {
         'color': Theme.of(context).colorScheme.primary,
         'route': RouteName.mobileTopup,
       },
-      {
-        'icon': Icons.account_balance_wallet_rounded,
-        'label': 'Mobile \nTop-up',
-        'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.mobileTopup,
-      },
     ];
 
     return Padding(

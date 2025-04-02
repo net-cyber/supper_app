@@ -42,6 +42,13 @@ class PhoneInputField extends StatelessWidget {
                         flagAssetPath,
                         width: 24.w,
                         height: 24.h,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.flag,
+                            size: 24.sp,
+                            color: Colors.grey[600],
+                          );
+                        },
                       ),
                       SizedBox(width: 5.w),
                       Text(

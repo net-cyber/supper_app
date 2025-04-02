@@ -2,6 +2,11 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/mobile_topup/presentation/screens/amount_selection_screen.dart';
+import 'package:super_app/features/mobile_topup/presentation/screens/confirmation_screen.dart';
+import 'package:super_app/features/mobile_topup/presentation/screens/phone_number_screen.dart';
+import 'package:super_app/features/mobile_topup/presentation/screens/select_operator_screen.dart';
+import 'package:super_app/features/mobile_topup/presentation/screens/success_screen.dart';
 import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/features/mortgages/presentation/screens/available_properties_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
@@ -13,20 +18,16 @@ import 'package:super_app/features/history/presentation/history_screen.dart';
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
-import 'package:super_app/features/mobileTopup/presentation/providers/mobile_topup_provider.dart';
-import 'package:super_app/features/mobileTopup/presentation/screens/mobile_topup/select_operator_screen.dart';
-import 'package:super_app/features/mobileTopup/presentation/screens/mobile_topup/phone_number_screen.dart';
-import 'package:super_app/features/mobileTopup/presentation/screens/mobile_topup/amount_selection_screen.dart';
-import 'package:super_app/features/mobileTopup/presentation/screens/mobile_topup/confirmation_screen.dart';
-import 'package:super_app/features/mobileTopup/presentation/screens/mobile_topup/success_screen.dart';
+
+// Path constants
+const String homeScreenPath = '/home';
 
 // Mobile Topup Route Paths
-const String mobileTopupPhoneNumberPath =
-    '/${RouteName.mobileTopup}/phone-number';
-const String mobileTopupAmountPath = '/${RouteName.mobileTopup}/amount';
-const String mobileTopupConfirmationPath =
-    '/${RouteName.mobileTopup}/confirmation';
-const String mobileTopupSuccessPath = '/${RouteName.mobileTopup}/success';
+const String mobileTopupPath = '/mobileTopup';
+const String mobileTopupPhoneNumberPath = '/mobileTopupPhoneNumber';
+const String mobileTopupAmountPath = '/mobileTopupAmount';
+const String mobileTopupConfirmationPath = '/mobileTopupConfirmation';
+const String mobileTopupSuccessPath = '/mobileTopupSuccess';
 
 // Mobile Topup Navigation Methods
 void navigateToMobileTopupSelectOperator(BuildContext context) {
@@ -190,44 +191,103 @@ final router = GoRouter(
     // Mobile Topup Routes
     GoRoute(
       name: RouteName.mobileTopup,
-      path: '/${RouteName.mobileTopup}',
-      builder: (context, state) => const MobileTopupProvider(
-        child: SelectOperatorScreen(),
-      ),
+      path: mobileTopupPath,
+      builder: (context, state) => const SelectOperatorScreen(),
     ),
     GoRoute(
       name: RouteName.mobileTopupPhoneNumber,
       path: mobileTopupPhoneNumberPath,
       builder: (context, state) {
         final Map<String, dynamic> extra = state.extra as Map<String, dynamic>;
-        return MobileTopupProvider(
-          child: PhoneNumberScreen(
-            operatorName: extra['operatorName'] as String,
-            operatorLogo: extra['operatorLogo'] as String,
-          ),
+        return PhoneNumberScreen(
+          operatorName: extra['operatorName'] as String,
+          operatorLogo: extra['operatorLogo'] as String,
         );
       },
     ),
     GoRoute(
       name: RouteName.mobileTopupAmount,
       path: mobileTopupAmountPath,
-      builder: (context, state) => const MobileTopupProvider(
-        child: AmountSelectionScreen(),
-      ),
+      builder: (context, state) => const AmountSelectionScreen(),
     ),
     GoRoute(
       name: RouteName.mobileTopupConfirmation,
       path: mobileTopupConfirmationPath,
-      builder: (context, state) => const MobileTopupProvider(
-        child: ConfirmationScreen(),
-      ),
+      builder: (context, state) => const ConfirmationScreen(),
     ),
     GoRoute(
       name: RouteName.mobileTopupSuccess,
       path: mobileTopupSuccessPath,
-      builder: (context, state) => const MobileTopupProvider(
-        child: SuccessScreen(),
-      ),
+      builder: (context, state) => const SuccessScreen(),
     ),
   ],
 );
+
+// Extension methods for navigation
+extension RouterExtensions on BuildContext {
+  void navigateToMobileTopup() {
+    goNamed(RouteName.mobileTopup);
+  }
+
+  void navigateToMobileTopupPhoneNumber({
+    required String operatorName,
+    required String operatorLogo,
+  }) {
+    goNamed(
+      RouteName.mobileTopupPhoneNumber,
+      extra: {
+        'operatorName': operatorName,
+        'operatorLogo': operatorLogo,
+      },
+    );
+  }
+
+  void navigateToMobileTopupAmount({
+    required String phoneNumber,
+    required String operatorName,
+    required String operatorLogo,
+  }) {
+    goNamed(
+      RouteName.mobileTopupAmount,
+      extra: {
+        'phoneNumber': phoneNumber,
+        'operatorName': operatorName,
+        'operatorLogo': operatorLogo,
+      },
+    );
+  }
+
+  void navigateToMobileTopupConfirmation({
+    required String phoneNumber,
+    required String operatorName,
+    required String operatorLogo,
+    required double amount,
+  }) {
+    goNamed(
+      RouteName.mobileTopupConfirmation,
+      extra: {
+        'phoneNumber': phoneNumber,
+        'operatorName': operatorName,
+        'operatorLogo': operatorLogo,
+        'amount': amount,
+      },
+    );
+  }
+
+  void navigateToMobileTopupSuccess({
+    required String phoneNumber,
+    required String operatorName,
+    required String operatorLogo,
+    required double amount,
+  }) {
+    goNamed(
+      RouteName.mobileTopupSuccess,
+      extra: {
+        'phoneNumber': phoneNumber,
+        'operatorName': operatorName,
+        'operatorLogo': operatorLogo,
+        'amount': amount,
+      },
+    );
+  }
+}

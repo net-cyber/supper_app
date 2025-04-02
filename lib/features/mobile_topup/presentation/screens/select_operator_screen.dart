@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/core/router/router.dart';
 
 class SelectOperatorScreen extends StatelessWidget {
   const SelectOperatorScreen({Key? key}) : super(key: key);
@@ -49,8 +47,8 @@ class SelectOperatorScreen extends StatelessWidget {
               child: Text(
                 'Select Your Network Operator',
                 style: GoogleFonts.outfit(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
@@ -90,10 +88,13 @@ class SelectOperatorScreen extends StatelessWidget {
       BuildContext context, String name, String logoPath) {
     return GestureDetector(
       onTap: () {
-        navigateToMobileTopupPhoneNumber(
-          context,
-          operatorName: name,
-          operatorLogo: logoPath,
+        // Navigate to phone number screen with the operator details
+        context.goNamed(
+          RouteName.mobileTopupPhoneNumber,
+          extra: {
+            'operatorName': name,
+            'operatorLogo': logoPath,
+          },
         );
       },
       child: Container(
