@@ -238,8 +238,7 @@ final router = GoRouter(
       name: RouteName.walletPhone,
       path: '/${RouteName.walletPhone}',
       builder: (context, state) {
-        final walletData = state.extra as Map<String, dynamic>;
-        return WalletPhoneScreen(walletData: walletData);
+        return const WalletPhoneScreen();
       },
     ),
     GoRoute(
