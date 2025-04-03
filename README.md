@@ -166,6 +166,134 @@ flutter gen-l10n --arb-dir="lib/l10n/arb"
 
 Alternatively, run `flutter run` and code generation will take place automatically.
 
+# Dependency Injection Setup
+
+This project uses [injectable](https://pub.dev/packages/injectable) and [get_it](https://pub.dev/packages/get_it) for dependency injection. This README provides instructions on how to use the DI system.
+
+## Overview
+
+The dependency injection is set up with the following components:
+
+- `lib/core/di/injection.dart` - The main entry point for DI setup
+- `lib/core/di/injection.config.dart` - Auto-generated configuration file
+- `lib/core/di/dependancy_manager.dart` - Module definitions for third-party services
+
+## How to Register Dependencies
+
+### 1. For Classes You Own
+
+Add the `@injectable`, `@singleton` or `@lazySingleton` annotation:
+
+```dart
+import 'package:injectable/injectable.dart';
+
+@injectable // Creates a new instance each time
+class MyService {
+  // ...
+}
+
+@singleton // Single instance throughout the app
+class MySingletonService {
+  // ...
+}
+
+@lazySingleton // Created only when first needed, then reused
+class MyLazySingletonService {
+  // ...
+}
+```
+
+### 2. For Third-Party Classes
+
+Register them in the `AppModule` in `dependancy_manager.dart`:
+
+```dart
+@module
+abstract class AppModule {
+  // Example for registering third-party services
+  @singleton
+  SharedPreferences get sharedPreferences => throw UnimplementedError(); // Will be overridden at runtime
+}
+```
+
+### 3. For Classes with Dependencies
+
+Injectable will automatically resolve dependencies:
+
+```dart
+@injectable
+class UserRepository {
+  final ApiClient apiClient;
+  
+  UserRepository(this.apiClient); // ApiClient will be injected automatically
+}
+```
+
+## How to Inject Dependencies
+
+You can inject dependencies in two ways:
+
+### 1. Using getIt directly
+
+```dart
+final userRepository = getIt<UserRepository>();
+```
+
+### 2. Using the inject helper function
+
+```dart
+final userRepository = inject<UserRepository>();
+```
+
+## How to Regenerate Injection Code
+
+After adding or changing annotations, regenerate the injection code:
+
+```bash
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+## Factory vs Singleton vs LazySingleton
+
+- `@injectable` (factory): Creates a new instance each time you get it
+- `@singleton`: Creates a single instance at startup
+- `@lazySingleton`: Creates a single instance the first time it's requested
+
+## Environment-Specific Dependencies
+
+You can register dependencies for specific environments:
+
+```dart
+@Injectable(as: MyService, env: ['dev'])
+class DevMyService implements MyService {}
+
+@Injectable(as: MyService, env: ['prod'])
+class ProdMyService implements MyService {}
+```
+
+## Named Dependencies
+
+You can register and inject named dependencies:
+
+```dart
+@injectable
+@Named("auth")
+class AuthApiClient extends ApiClient {}
+
+// Inject with name
+@injectable
+class AuthService {
+  AuthService(@Named('auth') ApiClient client);
+}
+```
+
+## Further Reading
+
+For more advanced features and configurations, refer to the official documentation:
+
+- [injectable](https://pub.dev/packages/injectable)
+- [get_it](https://pub.dev/packages/get_it)
+
 [coverage_badge]: coverage_badge.svg
 [flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html
 [internationalization_link]: https://flutter.dev/docs/development/accessibility-and-localization/internationalization
