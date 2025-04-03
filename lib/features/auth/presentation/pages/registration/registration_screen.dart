@@ -110,31 +110,25 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
   Widget build(BuildContext context) {
     return BlocConsumer<RegistrationBloc, RegistrationState>(
       listenWhen: (previous, current) => 
-        previous.isRegistrationError != current.isRegistrationError || 
-        (previous.isLoading && !current.isLoading && !current.isRegistrationError),
+        previous.verificationSent != current.verificationSent ||
+        previous.isRegistrationError != current.isRegistrationError,
       listener: (context, state) {
-        if (state.isRegistrationError) {
+        if (state.verificationSent && state.verificationResponse != null) {
+          // Navigate to OTP verification screen
+          context.pushNamed(
+            RouteName.otpVerification,
+            extra: {
+              'phoneNumber': state.phoneNumber.value.getOrElse(() => ''),
+              'expiresAt': state.verificationResponse!.expires_at,
+            },
+          );
+        } else if (state.isRegistrationError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage),
               backgroundColor: Colors.red,
             ),
           );
-        } else if (!state.isLoading && !state.isRegistrationError && state.isFormValid) {
-          // Registration successful
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registration successful! You can now log in.'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          
-          // Small delay before navigation to ensure the user sees the success message
-          Future.delayed(const Duration(seconds: 2), () {
-            if (context.mounted) {
-              context.goNamed(RouteName.login);
-            }
-          });
         }
       },
       builder: (context, state) {

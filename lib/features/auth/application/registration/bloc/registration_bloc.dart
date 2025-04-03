@@ -158,17 +158,44 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     
     final result = await _authRepository.register(registration);
     
-    result.fold(
-      (failure) => emit(state.copyWith(
-        isLoading: false,
-        isRegistrationError: true,
-        errorMessage: NetworkExceptions.getErrorMessage(failure),
-      )),
-      (response) => emit(state.copyWith(
-        isLoading: false,
-        isRegistrationError: false,
-        registrationResponse: response,
-      )),
-    );
+    // Handle the first result
+    if (result.isLeft()) {
+      final failure = result.fold(
+        (l) => l,
+        (r) => null,
+      );
+      if (!emit.isDone) {
+        emit(state.copyWith(
+          isLoading: false,
+          isRegistrationError: true,
+          errorMessage: NetworkExceptions.getErrorMessage(failure!),
+        ));
+      }
+      return;
+    }
+    
+    // After successful registration, send verification code
+    final response = result.fold((l) => null, (r) => r);
+    final phoneNumber = registration.phoneNumber.value.getOrElse(() => '');
+    final verificationResult = await _authRepository.sendVerificationCode(phoneNumber);
+    
+    // Before final emit, check if the emitter is still active
+    if (!emit.isDone) {
+      verificationResult.fold(
+        (failure) => emit(state.copyWith(
+          isLoading: false,
+          isRegistrationError: true,
+          errorMessage: 'Registration successful, but unable to send verification code: ${NetworkExceptions.getErrorMessage(failure)}',
+          registrationResponse: response,
+        )),
+        (verificationResponse) => emit(state.copyWith(
+          isLoading: false,
+          isRegistrationError: false,
+          registrationResponse: response,
+          verificationSent: true,
+          verificationResponse: verificationResponse,
+        )),
+      );
+    }
   }
 } 

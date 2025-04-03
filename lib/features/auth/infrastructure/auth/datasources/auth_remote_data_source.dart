@@ -4,9 +4,11 @@ import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration_response.dart';
+import 'package:super_app/features/auth/domain/verification/entities/verification_code_response.dart';
 
 abstract class AuthRemoteDataSource {
   Future<RegistrationResponse> register(Registration registration);
+  Future<VerificationCodeResponse> sendVerificationCode(String phoneNumber);
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -28,6 +30,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       
       return RegistrationResponse.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw e;
+    }
+  }
+
+  @override
+  Future<VerificationCodeResponse> sendVerificationCode(String phoneNumber) async {
+    try {
+      final Map<String, dynamic> data = {
+        'phone_number': phoneNumber,
+      };
+      
+      final response = await getIt<HttpService>().client(requireAuth: false).post(
+        '/verify/send',
+        data: data,
+      );
+      
+      return VerificationCodeResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw e;
     }

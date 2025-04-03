@@ -22,5 +22,5 @@ class RouteName {
   static const mortgageDashboard = 'mortgageDashboard';
   static const registrationScreen = 'registrationScreen';
   static const termsAndConditionsScreen = 'termsAndConditionsScreen';
-  
+  static const otpVerification = 'otpVerification';
 }

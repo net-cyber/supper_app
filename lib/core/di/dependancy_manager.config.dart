@@ -13,6 +13,8 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../features/auth/application/registration/bloc/registration_bloc.dart'
     as _i859;
+import '../../features/auth/application/verification/bloc/otp_verification_bloc.dart'
+    as _i247;
 import '../../features/auth/domain/repositories/auth_repository.dart' as _i787;
 import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_source.dart'
     as _i1046;
@@ -40,6 +42,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i446.AuthRepositoryImpl(gh<_i1046.AuthRemoteDataSource>()));
     gh.factory<_i859.RegistrationBloc>(
         () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
+    gh.factory<_i247.OtpVerificationBloc>(
+        () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
     return this;
   }
 }

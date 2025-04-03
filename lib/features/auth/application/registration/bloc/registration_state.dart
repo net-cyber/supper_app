@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:super_app/core/value_object/value_objects.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration_response.dart';
+import 'package:super_app/features/auth/domain/verification/entities/verification_code_response.dart';
 
 part 'registration_state.freezed.dart';
 
@@ -22,7 +23,9 @@ class RegistrationState with _$RegistrationState {
     @Default(false) bool showConfirmPassword,
     @Default('') String errorMessage,
     @Default(0.0) double passwordStrength,
+    @Default(false) bool verificationSent,
     RegistrationResponse? registrationResponse,
+    VerificationCodeResponse? verificationResponse,
   }) = _RegistrationState;
 
   const RegistrationState._();

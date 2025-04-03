@@ -5,6 +5,7 @@ import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration_response.dart';
 import 'package:super_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:super_app/features/auth/domain/verification/entities/verification_code_response.dart';
 import 'package:super_app/features/auth/infrastructure/auth/datasources/auth_remote_data_source.dart';
 
 @Injectable(as: AuthRepository)
@@ -17,6 +18,18 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<NetworkExceptions, RegistrationResponse>> register(Registration registration) async {
     try {
       final response = await _remoteDataSource.register(registration);
+      return right(response);
+    } on DioException catch (e) {
+      return left(NetworkExceptions.getDioException(e));
+    } catch (e) {
+      return left(NetworkExceptions.defaultError(e.toString()));
+    }
+  }
+  
+  @override
+  Future<Either<NetworkExceptions, VerificationCodeResponse>> sendVerificationCode(String phoneNumber) async {
+    try {
+      final response = await _remoteDataSource.sendVerificationCode(phoneNumber);
       return right(response);
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
