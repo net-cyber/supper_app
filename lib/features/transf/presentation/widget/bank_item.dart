@@ -37,14 +37,14 @@ class BankItem extends StatelessWidget {
               width: 64.w,
               height: 64.h,
               decoration: BoxDecoration(
-                color: _getBankColor(bank['name']),
+                color: _getBankColor(bank['name'].toString()),
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(8.r),
               ),
               // Display a default icon since we don't have the actual logos yet
               child: Center(
                 child: Text(
-                  _getInitials(bank['name']),
+                  _getInitials(bank['name'].toString()),
                   style: GoogleFonts.outfit(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
@@ -55,7 +55,7 @@ class BankItem extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              bank['name'],
+              bank['name'].toString(),
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 14.sp,
@@ -70,12 +70,14 @@ class BankItem extends StatelessWidget {
       ),
     );
   }
-  
+
   // Generate a color based on the bank name
   Color _getBankColor(String name) {
     // Create a simple hash from the name to get a consistent color
-    final int hash = name.length + name.codeUnitAt(0) + (name.length > 1 ? name.codeUnitAt(1) : 0);
-    
+    final int hash = name.length +
+        name.codeUnitAt(0) +
+        (name.length > 1 ? name.codeUnitAt(1) : 0);
+
     // List of bank-like colors
     final bankColors = [
       const Color(0xFF4A6FE5), // Blue
@@ -88,11 +90,11 @@ class BankItem extends StatelessWidget {
       const Color(0xFF06D6A0), // Green
       const Color(0xFFFFBE0B), // Yellow
     ];
-    
+
     // Use the hash to select a color
     return bankColors[hash % bankColors.length];
   }
-  
+
   // Get the first 2 characters of the bank name
   String _getInitials(String name) {
     final nameParts = name.split(' ');
@@ -101,7 +103,9 @@ class BankItem extends StatelessWidget {
       return (nameParts[0][0] + nameParts[1][0]).toUpperCase();
     } else {
       // For single word banks, use first two letters
-      return name.length > 1 ? name.substring(0, 2).toUpperCase() : name[0].toUpperCase();
+      return name.length > 1
+          ? name.substring(0, 2).toUpperCase()
+          : name[0].toUpperCase();
     }
   }
-} 
+}

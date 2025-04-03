@@ -5,27 +5,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_bloc.dart';
-import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_event.dart';
-import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_state.dart';
+import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_bloc.dart';
+import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_event.dart';
+import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_state.dart';
 
-class InternalBankAmountScreen extends StatefulWidget {
-  final Map<String, dynamic> transferData;
-
-  const InternalBankAmountScreen({
-    super.key,
-    required this.transferData,
-  });
+class WalletAmountScreen extends StatefulWidget {
+  const WalletAmountScreen({super.key});
 
   @override
-  State<InternalBankAmountScreen> createState() =>
-      _InternalBankAmountScreenState();
+  State<WalletAmountScreen> createState() => _WalletAmountScreenState();
 }
 
-class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
+class _WalletAmountScreenState extends State<WalletAmountScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
-  bool _hasInput = false;
 
   @override
   void initState() {
@@ -37,62 +30,64 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   @override
   void dispose() {
     _amountController.removeListener(_onAmountChanged);
-    _amountController.dispose();
     _reasonController.removeListener(_onReasonChanged);
+    _amountController.dispose();
     _reasonController.dispose();
     super.dispose();
   }
 
   void _onAmountChanged() {
-    final text = _amountController.text;
-    final hasInput = text.isNotEmpty;
-
-    if (hasInput != _hasInput) {
-      setState(() {
-        _hasInput = hasInput;
-      });
-    }
-
-    // Update amount in BLoC
-    context.read<InternalTransferBloc>().add(
-          InternalTransferEvent.amountChanged(_amountController.text),
+    // Dispatch amount changed event to BLoC
+    context.read<WalletTransferBloc>().add(
+          WalletTransferEvent.amountChanged(_amountController.text),
         );
   }
 
   void _onReasonChanged() {
-    // Update reason in BLoC
-    context.read<InternalTransferBloc>().add(
-          InternalTransferEvent.reasonChanged(_reasonController.text),
+    // Dispatch reason changed event to BLoC
+    context.read<WalletTransferBloc>().add(
+          WalletTransferEvent.reasonChanged(_reasonController.text),
+        );
+  }
+
+  void _calculateFee() {
+    // Dispatch calculate fee event to BLoC
+    context.read<WalletTransferBloc>().add(
+          const WalletTransferEvent.calculateFee(),
         );
   }
 
   void _continueToConfirmation() {
-    // Add amount to transfer data and navigate to confirmation screen
-    final completeTransferData = {
-      ...widget.transferData,
-      'amount': double.tryParse(_amountController.text) ??
-          0.0, // Default to 0 if no valid number entered
-      'reason': _reasonController.text,
-      'name': 'Goh Betoch Bank',
-    };
-
-    // Navigate to internal confirmation screen
-    context.pushNamed(RouteName.internalConfirmTransfer,
-        extra: completeTransferData);
+    // Navigate to confirmation screen
+    context.pushNamed(RouteName.walletConfirmation);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<InternalTransferBloc, InternalTransferState>(
+    return BlocConsumer<WalletTransferBloc, WalletTransferState>(
       listener: (context, state) {
-        // Show error messages if any
+        // Handle error messages
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.errorMessage!)),
           );
         }
+
+        // Navigate to confirmation when fee is calculated
+        if (state.status == WalletTransferStatus.feeCalculated) {
+          _continueToConfirmation();
+        }
       },
       builder: (context, state) {
+        final walletProvider = state.selectedProvider?['name'] as String? ?? '';
+        final phoneNumber = state.phoneNumberInput;
+        final validatedWallet = state.validatedWallet;
+        final bool isCalculatingFee =
+            state.status == WalletTransferStatus.calculatingFee;
+        final bool canCalculateFee = state.amountInput.isNotEmpty &&
+            state.phoneNumber != null &&
+            state.validatedWallet != null;
+
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -100,10 +95,10 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              'Enter Transfer Amount',
+              'Enter Load Amount',
               style: GoogleFonts.outfit(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -116,17 +111,18 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Account verification section with Goh Betoch Bank branding
+                // Wallet information section with branded container
                 Container(
                   padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.3)),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.3),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,13 +130,13 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                       Row(
                         children: [
                           Icon(
-                            Icons.account_balance_rounded,
+                            Icons.account_balance_wallet_rounded,
                             color: Theme.of(context).colorScheme.primary,
                             size: 24.sp,
                           ),
                           SizedBox(width: 12.w),
                           Text(
-                            'Goh Betoch Bank Account',
+                            '$walletProvider Wallet',
                             style: GoogleFonts.outfit(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
@@ -150,11 +146,13 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                         ],
                       ),
                       SizedBox(height: 16.h),
-                      _buildDetailRow('Account Number',
-                          widget.transferData['accountNumber'].toString()),
-                      SizedBox(height: 8.h),
-                      _buildDetailRow('Account Holder',
-                          widget.transferData['accountHolderName'].toString()),
+                      if (phoneNumber.isNotEmpty)
+                        _buildDetailRow('Phone Number', phoneNumber),
+                      if (validatedWallet?.accountHolderName != null) ...[
+                        SizedBox(height: 8.h),
+                        _buildDetailRow('Account Holder',
+                            validatedWallet!.accountHolderName!),
+                      ],
                     ],
                   ),
                 ),
@@ -172,7 +170,7 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'Enter the amount you want to transfer',
+                  'Enter the amount you want to load to wallet',
                   style: GoogleFonts.outfit(
                     fontSize: 16.sp,
                     color: Colors.grey[600],
@@ -187,48 +185,56 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                 Text(
                   'Reason (Optional)',
                   style: GoogleFonts.outfit(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: TextField(
-                    controller: _reasonController,
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      color: Colors.black87,
+                _buildReasonInput(),
+
+                // Fee display if calculated
+                if (state.calculatedFee != null) ...[
+                  SizedBox(height: 16.h),
+                  Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(color: Colors.blue[200]!),
                     ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter reason for transfer',
-                      hintStyle: GoogleFonts.outfit(
-                        fontSize: 16.sp,
-                        color: Colors.grey[500],
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 16.h,
-                      ),
-                      border: InputBorder.none,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.blue[700],
+                          size: 20.sp,
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            'Service fee: ${state.calculatedFee!.toStringAsFixed(2)} ETB',
+                            style: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              color: Colors.blue[700],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    maxLines: 2,
-                    minLines: 1,
                   ),
-                ),
+                ],
 
                 const Spacer(),
 
-                // Continue button - display when inputs are valid
+                // Continue button
                 SizedBox(
                   width: double.infinity,
                   height: 56.h,
                   child: ElevatedButton(
-                    onPressed: _hasInput ? _continueToConfirmation : null,
+                    onPressed: isCalculatingFee || !canCalculateFee
+                        ? null
+                        : _calculateFee,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       disabledBackgroundColor: Colors.grey[300],
@@ -236,14 +242,37 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                         borderRadius: BorderRadius.circular(28.r),
                       ),
                     ),
-                    child: Text(
-                      'Continue',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: isCalculatingFee
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 20.w,
+                                height: 20.w,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.w,
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Text(
+                                'Calculating Fee...',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            'Continue',
+                            style: GoogleFonts.outfit(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
                 SizedBox(height: 16.h),
@@ -330,6 +359,39 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildReasonInput() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: TextField(
+        controller: _reasonController,
+        style: GoogleFonts.outfit(
+          fontSize: 16.sp,
+          color: Colors.black87,
+        ),
+        decoration: InputDecoration(
+          hintText: 'What is this for? (optional)',
+          hintStyle: GoogleFonts.outfit(
+            fontSize: 16.sp,
+            color: Colors.grey[500],
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 20.w,
+            vertical: 16.h,
+          ),
+          border: InputBorder.none,
+        ),
+        maxLength: 100,
+        maxLines: 1,
+        buildCounter: (context,
+                {required currentLength, required isFocused, maxLength}) =>
+            null,
       ),
     );
   }

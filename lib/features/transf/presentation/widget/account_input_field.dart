@@ -22,7 +22,7 @@ class AccountInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasError = errorMessage != null && errorMessage!.isNotEmpty;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -39,9 +39,7 @@ class AccountInputField extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(12.r),
-            border: hasError 
-                ? Border.all(color: Colors.red, width: 1.5) 
-                : null,
+            border: hasError ? Border.all(color: Colors.red, width: 1.5) : null,
           ),
           child: TextField(
             controller: controller,
@@ -50,9 +48,8 @@ class AccountInputField extends StatelessWidget {
               color: Colors.black87,
             ),
             keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-            inputFormatters: isNumeric 
-                ? [FilteringTextInputFormatter.digitsOnly]
-                : null,
+            inputFormatters:
+                isNumeric ? [FilteringTextInputFormatter.digitsOnly] : null,
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: GoogleFonts.outfit(
@@ -82,4 +79,4 @@ class AccountInputField extends StatelessWidget {
       ],
     );
   }
-} 
+}

@@ -4,26 +4,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_bloc.dart';
-import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_event.dart';
-import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_state.dart';
+import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_bloc.dart';
+import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_event.dart';
+import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_state.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
-class InternalConfirmTransferScreen extends StatefulWidget {
-  final Map<String, dynamic> transferData;
-
-  const InternalConfirmTransferScreen({
-    super.key,
-    required this.transferData,
-  });
+class WalletConfirmationScreen extends StatefulWidget {
+  const WalletConfirmationScreen({super.key});
 
   @override
-  State<InternalConfirmTransferScreen> createState() =>
-      _InternalConfirmTransferScreenState();
+  State<WalletConfirmationScreen> createState() =>
+      _WalletConfirmationScreenState();
 }
 
-class _InternalConfirmTransferScreenState
-    extends State<InternalConfirmTransferScreen> {
+class _WalletConfirmationScreenState extends State<WalletConfirmationScreen> {
   final TextEditingController _reasonController = TextEditingController();
 
   // Mock data for sender (in a real app, this would come from user profile/auth)
@@ -36,17 +30,10 @@ class _InternalConfirmTransferScreenState
   @override
   void initState() {
     super.initState();
-
-    // Initialize reason in BLoC if it exists in transfer data
-    if (widget.transferData.containsKey('reason') &&
-        widget.transferData['reason'] != null &&
-        widget.transferData['reason'].toString().isNotEmpty) {
-      _reasonController.text = widget.transferData['reason'].toString();
-
-      // Update reason in BLoC
-      context.read<InternalTransferBloc>().add(
-            InternalTransferEvent.reasonChanged(_reasonController.text),
-          );
+    // Initialize the reason controller with the current value from the BLoC
+    final reason = context.read<WalletTransferBloc>().state.reasonInput;
+    if (reason.isNotEmpty) {
+      _reasonController.text = reason;
     }
 
     // Add listener for reason changes
@@ -62,22 +49,22 @@ class _InternalConfirmTransferScreenState
 
   void _onReasonChanged() {
     // Update reason in BLoC
-    context.read<InternalTransferBloc>().add(
-          InternalTransferEvent.reasonChanged(_reasonController.text),
+    context.read<WalletTransferBloc>().add(
+          WalletTransferEvent.reasonChanged(_reasonController.text),
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<InternalTransferBloc, InternalTransferState>(
+    return BlocConsumer<WalletTransferBloc, WalletTransferState>(
       listener: (context, state) {
-        // Handle success state
-        if (state.status == InternalTransferStatus.success) {
+        // Show success dialog when transaction is successful
+        if (state.status == WalletTransferStatus.success && state.isSuccess) {
           _showSuccessDialog(context, state);
         }
 
-        // Handle error state
-        if (state.status == InternalTransferStatus.failure &&
+        // Show error message
+        if (state.status == WalletTransferStatus.failure &&
             state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.errorMessage!)),
@@ -85,8 +72,15 @@ class _InternalConfirmTransferScreenState
         }
       },
       builder: (context, state) {
-        // Get the transfer amount
-        final double amount = (widget.transferData['amount'] as num).toDouble();
+        final walletProvider = state.selectedProvider?['name'] as String? ?? '';
+        final phoneNumber = state.phoneNumberInput;
+        final wallet = state.validatedWallet;
+        final amount = state.amountInput;
+        final serviceFee = state.calculatedFee ?? 0.0;
+
+        // Calculate total amount with service charge
+        final double amountValue = double.tryParse(amount) ?? 0.0;
+        final double totalAmount = amountValue + serviceFee;
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -95,10 +89,10 @@ class _InternalConfirmTransferScreenState
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              'Confirm Internal Transfer',
+              'Confirm Wallet Load',
               style: GoogleFonts.outfit(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -112,7 +106,7 @@ class _InternalConfirmTransferScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Review Transfer',
+                  'Review Transaction',
                   style: GoogleFonts.outfit(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
@@ -121,7 +115,7 @@ class _InternalConfirmTransferScreenState
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'Please verify all details before confirming your internal transfer',
+                  'Please verify all details before confirming your wallet load',
                   style: GoogleFonts.outfit(
                     fontSize: 16.sp,
                     color: Colors.grey[600],
@@ -142,10 +136,11 @@ class _InternalConfirmTransferScreenState
                             color: Colors.grey[100],
                             borderRadius: BorderRadius.circular(16.r),
                             border: Border.all(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.3)),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.3),
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.05),
@@ -157,7 +152,7 @@ class _InternalConfirmTransferScreenState
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Header with Goh Betoch Bank branding
+                              // Header with wallet branding
                               Container(
                                 width: 64.w,
                                 height: 64.h,
@@ -169,14 +164,14 @@ class _InternalConfirmTransferScreenState
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  Icons.account_balance_rounded,
+                                  Icons.account_balance_wallet_rounded,
                                   color: Theme.of(context).colorScheme.primary,
                                   size: 32.sp,
                                 ),
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                'Transfer Details',
+                                'Wallet Load Details',
                                 style: GoogleFonts.outfit(
                                   fontSize: 18.sp,
                                   fontWeight: FontWeight.bold,
@@ -192,7 +187,7 @@ class _InternalConfirmTransferScreenState
                                 ),
                               ),
 
-                              // Goh Betoch Bank badge
+                              // Wallet badge
                               Container(
                                 margin: EdgeInsets.symmetric(vertical: 16.h),
                                 padding: EdgeInsets.symmetric(
@@ -214,14 +209,14 @@ class _InternalConfirmTransferScreenState
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-                                      Icons.verified_rounded,
+                                      Icons.wallet_rounded,
                                       color:
                                           Theme.of(context).colorScheme.primary,
                                       size: 16.sp,
                                     ),
                                     SizedBox(width: 8.w),
                                     Text(
-                                      'Goh Betoch Bank Internal',
+                                      'Load to $walletProvider Wallet',
                                       style: GoogleFonts.outfit(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w600,
@@ -251,63 +246,37 @@ class _InternalConfirmTransferScreenState
                               // To (Receiver)
                               _buildSectionLabel('To'),
                               SizedBox(height: 8.h),
+                              if (wallet?.accountHolderName != null)
+                                _buildDetailRow(
+                                    'Name', wallet!.accountHolderName!),
                               _buildDetailRow(
-                                  'Name',
-                                  widget.transferData['accountHolderName']
-                                      .toString()),
-                              _buildDetailRow(
-                                  'Account Number',
-                                  widget.transferData['accountNumber']
-                                      .toString()),
-                              _buildDetailRow('Bank',
-                                  widget.transferData['name'].toString()),
+                                  'Wallet Provider', walletProvider),
+                              if (phoneNumber.isNotEmpty)
+                                _buildDetailRow('Phone Number', phoneNumber),
 
                               SizedBox(height: 24.h),
                               Divider(height: 1, color: Colors.grey[300]),
                               SizedBox(height: 24.h),
 
-                              // Amount Details with zero fee highlighted
+                              // Amount Details with service charge
                               _buildSectionLabel('Amount'),
                               SizedBox(height: 8.h),
                               _buildDetailRow(
                                 'Transfer Amount',
-                                '${amount.toStringAsFixed(2)} ETB',
+                                'ETB ${amountValue.toStringAsFixed(2)}',
+                              ),
+                              _buildDetailRow(
+                                'Service Charge',
+                                'ETB ${serviceFee.toStringAsFixed(2)}',
+                              ),
+                              SizedBox(height: 16.h),
+                              _buildDetailRow(
+                                'Total Amount',
+                                'ETB ${totalAmount.toStringAsFixed(2)}',
                                 valueStyle: GoogleFonts.outfit(
                                   fontSize: 18.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-
-                              // Add fee-free badge instead of showing service charge row
-                              Container(
-                                margin: EdgeInsets.symmetric(vertical: 8.h),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w, vertical: 4.h),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  border: Border.all(
-                                      color: Colors.green.withOpacity(0.3)),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.check_circle_outline,
-                                      color: Colors.green,
-                                      size: 14.sp,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Text(
-                                      'Fee-Free Internal Transfer',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
 
@@ -326,9 +295,9 @@ class _InternalConfirmTransferScreenState
 
                         SizedBox(height: 24.h),
 
-                        // Reason for transfer
+                        // Reason for loading wallet
                         Text(
-                          'Reason for Transfer',
+                          'Reason for Loading Wallet',
                           style: GoogleFonts.outfit(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
@@ -351,7 +320,8 @@ class _InternalConfirmTransferScreenState
                               color: Colors.black87,
                             ),
                             decoration: InputDecoration(
-                              hintText: 'Enter reason for transfer (optional)',
+                              hintText:
+                                  'Enter reason for loading wallet (optional)',
                               hintStyle: GoogleFonts.outfit(
                                 fontSize: 14.sp,
                                 color: Colors.grey[500],
@@ -366,7 +336,7 @@ class _InternalConfirmTransferScreenState
 
                         SizedBox(height: 16.h),
                         Text(
-                          'By confirming this transfer, you agree to the terms and conditions.',
+                          'By confirming this transaction, you agree to the terms and conditions.',
                           style: GoogleFonts.outfit(
                             fontSize: 12.sp,
                             color: Colors.grey[600],
@@ -381,10 +351,10 @@ class _InternalConfirmTransferScreenState
                 // Confirm button
                 SizedBox(height: 16.h),
                 ContinueButton(
-                  onPressed: () => _processTransfer(context),
+                  onPressed: () => _processTransaction(context),
                   isEnabled: !state.isLoading,
                   color: Theme.of(context).colorScheme.primary,
-                  text: state.isLoading ? 'Processing...' : 'Confirm Transfer',
+                  text: state.isLoading ? 'Processing...' : 'Confirm Load',
                 ),
 
                 // Show loading indicator if processing
@@ -461,17 +431,18 @@ class _InternalConfirmTransferScreenState
     return '$date at $time';
   }
 
-  void _processTransfer(BuildContext context) {
-    // Dispatch submit transfer event to BLoC
-    context.read<InternalTransferBloc>().add(
-          const InternalTransferEvent.submitTransfer(),
+  void _processTransaction(BuildContext context) {
+    // Submit transfer to BLoC
+    context.read<WalletTransferBloc>().add(
+          const WalletTransferEvent.submitTransfer(),
         );
   }
 
-  void _showSuccessDialog(BuildContext context, InternalTransferState state) {
-    final amount = (widget.transferData['amount'] as num).toDouble();
+  void _showSuccessDialog(BuildContext context, WalletTransferState state) {
+    final walletProvider = state.selectedProvider?['name'] as String? ?? '';
+    final amountValue = double.tryParse(state.amountInput) ?? 0.0;
 
-    // Show success dialog with internal transfer branding
+    // Show success dialog with wallet load branding
     showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -498,7 +469,7 @@ class _InternalConfirmTransferScreenState
             ),
             SizedBox(height: 24.h),
 
-            // Internal transfer badge
+            // Wallet load badge
             Container(
               margin: EdgeInsets.only(bottom: 16.h),
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
@@ -519,7 +490,7 @@ class _InternalConfirmTransferScreenState
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'Instant Internal Transfer',
+                    'Instant Wallet Load',
                     style: GoogleFonts.outfit(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
@@ -531,7 +502,7 @@ class _InternalConfirmTransferScreenState
             ),
 
             Text(
-              'Transfer Successful!',
+              'Transaction Successful!',
               style: GoogleFonts.outfit(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
@@ -541,7 +512,7 @@ class _InternalConfirmTransferScreenState
             SizedBox(height: 12.h),
 
             Text(
-              'Your transfer of ${amount.toStringAsFixed(2)} ETB to ${widget.transferData['accountHolderName'].toString()} has been processed successfully.',
+              'Your wallet load of ETB ${amountValue.toStringAsFixed(2)} to $walletProvider has been processed successfully.',
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 14.sp,
@@ -587,8 +558,8 @@ class _InternalConfirmTransferScreenState
               child: ElevatedButton(
                 onPressed: () {
                   // Reset BLoC state
-                  context.read<InternalTransferBloc>().add(
-                        const InternalTransferEvent.reset(),
+                  context.read<WalletTransferBloc>().add(
+                        const WalletTransferEvent.reset(),
                       );
 
                   // Close dialog and navigate back to home screen
@@ -649,8 +620,8 @@ class _InternalConfirmTransferScreenState
             TextButton(
               onPressed: () {
                 // Reset BLoC state
-                context.read<InternalTransferBloc>().add(
-                      const InternalTransferEvent.reset(),
+                context.read<WalletTransferBloc>().add(
+                      const WalletTransferEvent.reset(),
                     );
 
                 // Close dialog and navigate to transaction history
