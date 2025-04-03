@@ -246,16 +246,14 @@ final router = GoRouter(
       name: RouteName.walletAmount,
       path: '/${RouteName.walletAmount}',
       builder: (context, state) {
-        final walletData = state.extra as Map<String, dynamic>;
-        return WalletAmountScreen(walletData: walletData);
+        return const WalletAmountScreen();
       },
     ),
     GoRoute(
       name: RouteName.walletConfirmation,
       path: '/${RouteName.walletConfirmation}',
       builder: (context, state) {
-        final transferData = state.extra as Map<String, dynamic>;
-        return WalletConfirmationScreen(transferData: transferData);
+        return const WalletConfirmationScreen();
       },
     ),
   ],
