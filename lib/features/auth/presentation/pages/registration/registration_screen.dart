@@ -295,33 +295,34 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                           ),
                           
                           // Password strength indicator
-                          if (state.password.getOrCrash().isNotEmpty) ...[
+                          if (state.password.isValid()) ...[
                             SizedBox(height: 8.h),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(4.r),
-                                    child: LinearProgressIndicator(
-                                      value: state.passwordStrength,
-                                      backgroundColor: colorScheme.outlineVariant,
-                                      color: _getStrengthColor(state.passwordStrength),
-                                      minHeight: 5.h,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                                Text(
-                                  _getStrengthText(state.passwordStrength),
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 12.sp,
-                                    color: _getStrengthColor(state.passwordStrength),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                            LinearProgressIndicator(
+                              value: state.passwordStrength,
+                              backgroundColor: Colors.grey[300],
+                              color: state.passwordStrength < 0.25
+                                  ? Colors.red
+                                  : state.passwordStrength < 0.5
+                                      ? Colors.orange
+                                      : state.passwordStrength < 0.75
+                                          ? Colors.yellow
+                                          : Colors.green,
                             ),
                             SizedBox(height: 10.h),
+                            Text(
+                              state.password.isValid()
+                                  ? 'Password strength: ${(state.passwordStrength * 100).toInt()}%'
+                                  : 'Enter a valid password',
+                              style: TextStyle(
+                                color: state.passwordStrength < 0.25
+                                    ? Colors.red
+                                    : state.passwordStrength < 0.5
+                                        ? Colors.orange
+                                        : state.passwordStrength < 0.75
+                                            ? Colors.yellow
+                                            : Colors.green,
+                              ),
+                            ),
                           ],
                           
                           // Confirm Password field
@@ -373,7 +374,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                     Row(
                       children: [
                         Switch(
-                          value: state.termsAcceptance.getOrCrash(),
+                          value: state.termsAcceptance.value.getOrElse(() => false),
                           onChanged: (value) {
                             context.read<RegistrationBloc>().add(
                               TermsAcceptedChanged(value),

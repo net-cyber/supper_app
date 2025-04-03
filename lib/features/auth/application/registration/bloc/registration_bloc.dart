@@ -82,7 +82,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     emit(state.copyWith(
       password: passwordObj,
       confirmPassword: ConfirmPassword(
-        state.confirmPassword.getOrCrash(), 
+        state.confirmPassword.value.getOrElse(() => ''), 
         password,
       ),
       passwordStrength: strength,
@@ -95,11 +95,12 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     emit(state.copyWith(
       confirmPassword: ConfirmPassword(
         event.confirmPassword.trim(), 
-        state.password.getOrCrash(),
+        state.password.value.getOrElse(() => ''),
       ),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+      ),
+    );
   }
 
   void _onReferralCodeChanged(ReferralCodeChanged event, Emitter<RegistrationState> emit) {

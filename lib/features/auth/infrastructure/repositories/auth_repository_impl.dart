@@ -15,9 +15,9 @@ class AuthRepositoryImpl implements AuthRepository {
       await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
       
       final response = RegistrationResponse(
-        username: registration.userName.getOrCrash(),
-        full_name: registration.fullName.getOrCrash(),
-        international_phone_number: registration.phoneNumber.getOrCrash(),
+        username: registration.userName.value.getOrElse(() => ''),
+        full_name: registration.fullName.value.getOrElse(() => ''),
+        international_phone_number: registration.phoneNumber.value.getOrElse(() => ''),
         password_changed_at: DateTime.now(),
         created_at: DateTime.now(),
       );
