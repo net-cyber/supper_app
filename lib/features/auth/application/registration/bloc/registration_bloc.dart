@@ -167,6 +167,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       (response) => emit(state.copyWith(
         isLoading: false,
         isRegistrationError: false,
+        registrationResponse: response,
       )),
     );
   }

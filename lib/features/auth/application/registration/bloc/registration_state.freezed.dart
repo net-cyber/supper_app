@@ -31,6 +31,8 @@ mixin _$RegistrationState {
   bool get showConfirmPassword => throw _privateConstructorUsedError;
   String get errorMessage => throw _privateConstructorUsedError;
   double get passwordStrength => throw _privateConstructorUsedError;
+  RegistrationResponse? get registrationResponse =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of RegistrationState
   /// with the given fields replaced by the non-null parameter values.
@@ -60,7 +62,10 @@ abstract class $RegistrationStateCopyWith<$Res> {
       bool showPassword,
       bool showConfirmPassword,
       String errorMessage,
-      double passwordStrength});
+      double passwordStrength,
+      RegistrationResponse? registrationResponse});
+
+  $RegistrationResponseCopyWith<$Res>? get registrationResponse;
 }
 
 /// @nodoc
@@ -93,6 +98,7 @@ class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
     Object? showConfirmPassword = null,
     Object? errorMessage = null,
     Object? passwordStrength = null,
+    Object? registrationResponse = freezed,
   }) {
     return _then(_value.copyWith(
       userName: null == userName
@@ -155,7 +161,26 @@ class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
           ? _value.passwordStrength
           : passwordStrength // ignore: cast_nullable_to_non_nullable
               as double,
+      registrationResponse: freezed == registrationResponse
+          ? _value.registrationResponse
+          : registrationResponse // ignore: cast_nullable_to_non_nullable
+              as RegistrationResponse?,
     ) as $Val);
+  }
+
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $RegistrationResponseCopyWith<$Res>? get registrationResponse {
+    if (_value.registrationResponse == null) {
+      return null;
+    }
+
+    return $RegistrationResponseCopyWith<$Res>(_value.registrationResponse!,
+        (value) {
+      return _then(_value.copyWith(registrationResponse: value) as $Val);
+    });
   }
 }
 
@@ -182,7 +207,11 @@ abstract class _$$RegistrationStateImplCopyWith<$Res>
       bool showPassword,
       bool showConfirmPassword,
       String errorMessage,
-      double passwordStrength});
+      double passwordStrength,
+      RegistrationResponse? registrationResponse});
+
+  @override
+  $RegistrationResponseCopyWith<$Res>? get registrationResponse;
 }
 
 /// @nodoc
@@ -213,6 +242,7 @@ class __$$RegistrationStateImplCopyWithImpl<$Res>
     Object? showConfirmPassword = null,
     Object? errorMessage = null,
     Object? passwordStrength = null,
+    Object? registrationResponse = freezed,
   }) {
     return _then(_$RegistrationStateImpl(
       userName: null == userName
@@ -275,6 +305,10 @@ class __$$RegistrationStateImplCopyWithImpl<$Res>
           ? _value.passwordStrength
           : passwordStrength // ignore: cast_nullable_to_non_nullable
               as double,
+      registrationResponse: freezed == registrationResponse
+          ? _value.registrationResponse
+          : registrationResponse // ignore: cast_nullable_to_non_nullable
+              as RegistrationResponse?,
     ));
   }
 }
@@ -297,7 +331,8 @@ class _$RegistrationStateImpl extends _RegistrationState {
       this.showPassword = false,
       this.showConfirmPassword = false,
       this.errorMessage = '',
-      this.passwordStrength = 0.0})
+      this.passwordStrength = 0.0,
+      this.registrationResponse})
       : super._();
 
   @override
@@ -337,10 +372,12 @@ class _$RegistrationStateImpl extends _RegistrationState {
   @override
   @JsonKey()
   final double passwordStrength;
+  @override
+  final RegistrationResponse? registrationResponse;
 
   @override
   String toString() {
-    return 'RegistrationState(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, emailAddress: $emailAddress, password: $password, confirmPassword: $confirmPassword, referralCode: $referralCode, termsAcceptance: $termsAcceptance, isLoading: $isLoading, isRegistrationError: $isRegistrationError, showErrorMessages: $showErrorMessages, showPassword: $showPassword, showConfirmPassword: $showConfirmPassword, errorMessage: $errorMessage, passwordStrength: $passwordStrength)';
+    return 'RegistrationState(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, emailAddress: $emailAddress, password: $password, confirmPassword: $confirmPassword, referralCode: $referralCode, termsAcceptance: $termsAcceptance, isLoading: $isLoading, isRegistrationError: $isRegistrationError, showErrorMessages: $showErrorMessages, showPassword: $showPassword, showConfirmPassword: $showConfirmPassword, errorMessage: $errorMessage, passwordStrength: $passwordStrength, registrationResponse: $registrationResponse)';
   }
 
   @override
@@ -377,7 +414,9 @@ class _$RegistrationStateImpl extends _RegistrationState {
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.passwordStrength, passwordStrength) ||
-                other.passwordStrength == passwordStrength));
+                other.passwordStrength == passwordStrength) &&
+            (identical(other.registrationResponse, registrationResponse) ||
+                other.registrationResponse == registrationResponse));
   }
 
   @override
@@ -397,7 +436,8 @@ class _$RegistrationStateImpl extends _RegistrationState {
       showPassword,
       showConfirmPassword,
       errorMessage,
-      passwordStrength);
+      passwordStrength,
+      registrationResponse);
 
   /// Create a copy of RegistrationState
   /// with the given fields replaced by the non-null parameter values.
@@ -411,21 +451,23 @@ class _$RegistrationStateImpl extends _RegistrationState {
 
 abstract class _RegistrationState extends RegistrationState {
   const factory _RegistrationState(
-      {required final UserName userName,
-      required final FullName fullName,
-      required final PhoneNumber phoneNumber,
-      required final EmailAddress emailAddress,
-      required final Password password,
-      required final ConfirmPassword confirmPassword,
-      required final ReferralCode referralCode,
-      required final TermsAcceptance termsAcceptance,
-      final bool isLoading,
-      final bool isRegistrationError,
-      final bool showErrorMessages,
-      final bool showPassword,
-      final bool showConfirmPassword,
-      final String errorMessage,
-      final double passwordStrength}) = _$RegistrationStateImpl;
+          {required final UserName userName,
+          required final FullName fullName,
+          required final PhoneNumber phoneNumber,
+          required final EmailAddress emailAddress,
+          required final Password password,
+          required final ConfirmPassword confirmPassword,
+          required final ReferralCode referralCode,
+          required final TermsAcceptance termsAcceptance,
+          final bool isLoading,
+          final bool isRegistrationError,
+          final bool showErrorMessages,
+          final bool showPassword,
+          final bool showConfirmPassword,
+          final String errorMessage,
+          final double passwordStrength,
+          final RegistrationResponse? registrationResponse}) =
+      _$RegistrationStateImpl;
   const _RegistrationState._() : super._();
 
   @override
@@ -458,6 +500,8 @@ abstract class _RegistrationState extends RegistrationState {
   String get errorMessage;
   @override
   double get passwordStrength;
+  @override
+  RegistrationResponse? get registrationResponse;
 
   /// Create a copy of RegistrationState
   /// with the given fields replaced by the non-null parameter values.

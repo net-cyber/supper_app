@@ -25,8 +25,8 @@ class RegistrationScreen extends StatelessWidget {
         create: (context) => getIt<RegistrationBloc>(),
         child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
-          body: SafeArea(
-            child: const RegistrationBody(),
+          body: const SafeArea(
+            child: RegistrationBody(),
           ),
         ),
       );
@@ -36,7 +36,7 @@ class RegistrationScreen extends StatelessWidget {
         body: Center(
           child: Text(
             'Dependency initialization error: $e',
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
           ),
         ),
       );
@@ -110,7 +110,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
   Widget build(BuildContext context) {
     return BlocConsumer<RegistrationBloc, RegistrationState>(
       listenWhen: (previous, current) => 
-        previous.isRegistrationError != current.isRegistrationError,
+        previous.isRegistrationError != current.isRegistrationError || 
+        (previous.isLoading && !current.isLoading && !current.isRegistrationError),
       listener: (context, state) {
         if (state.isRegistrationError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -123,12 +124,17 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
           // Registration successful
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Registration successful!'),
+              content: Text('Registration successful! You can now log in.'),
               backgroundColor: Colors.green,
             ),
           );
-          // Navigate to next screen
-          context.goNamed(RouteName.login);
+          
+          // Small delay before navigation to ensure the user sees the success message
+          Future.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              context.goNamed(RouteName.login);
+            }
+          });
         }
       },
       builder: (context, state) {
@@ -291,7 +297,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                 PasswordChanged(value),
                               );
                             },
-                            errorText: RegistrationFormValidator.validatePassword(state),
+                            errorText: RegistrationFormValidator.validatePassword(context.read<RegistrationBloc>().state),
                           ),
                           
                           // Password strength indicator
@@ -347,7 +353,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                 ConfirmPasswordChanged(value),
                               );
                             },
-                            errorText: RegistrationFormValidator.validateConfirmPassword(state),
+                            errorText: RegistrationFormValidator.validateConfirmPassword(context.read<RegistrationBloc>().state),
                           ),
                           
                           SizedBox(height: 20.h),
