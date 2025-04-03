@@ -21,7 +21,10 @@ import 'package:super_app/features/transf/presentation/sendToExternal/pages/conf
 import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_bank_account_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_bank_amount_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_confirm_transfer_screen.dart';
-
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_selection_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_phone_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_amount_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_confirmation_screen.dart';
 
 final router = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
@@ -33,7 +36,7 @@ final router = GoRouter(
       path: '/${RouteName.splash}',
       builder: (context, state) => const SplashPage(),
     ),
-    
+
     // Login
     GoRoute(
       name: RouteName.login,
@@ -43,7 +46,7 @@ final router = GoRouter(
     GoRoute(
       name: RouteName.signup,
       path: '/${RouteName.signup}',
-      builder: (context, state) =>  SignupScreen(),
+      builder: (context, state) => SignupScreen(),
     ),
     // Settings
     // GoRoute(
@@ -72,9 +75,7 @@ final router = GoRouter(
               name: RouteName.mainScreen,
               path: '/${RouteName.mainScreen}',
               builder: (context, state) => const MainScreen(),
-              routes: const [
-               
-              ],
+              routes: const [],
             ),
           ],
         ),
@@ -119,7 +120,7 @@ final router = GoRouter(
         //     GoRoute(
         //       name: RouteName.send,
         //       path: '/${RouteName.send}',
-        //       builder: (context, state) => SendMoneyPage(), 
+        //       builder: (context, state) => SendMoneyPage(),
         //     ),
         //   ],
         // ),
@@ -149,14 +150,15 @@ final router = GoRouter(
     GoRoute(
       name: RouteName.propertyDetail,
       path: '/${RouteName.propertyDetail}',
-      builder: (context, state) => PropertyDetailScreen(property: state.extra as Property),
+      builder: (context, state) =>
+          PropertyDetailScreen(property: state.extra as Property),
     ),
     GoRoute(
       name: RouteName.availableProperties,
       path: '/${RouteName.availableProperties}',
       builder: (context, state) => const AvailablePropertiesScreen(),
     ),
-    
+
     // Bank Transfer Routes
     GoRoute(
       name: RouteName.bankSelection,
@@ -208,7 +210,7 @@ final router = GoRouter(
         return ConfirmTransferScreen(transferData: transferData);
       },
     ),
-    
+
     // Transaction Detail Route
     GoRoute(
       name: RouteName.transactionDetail,
@@ -216,13 +218,44 @@ final router = GoRouter(
       builder: (context, state) {
         final transactionData = state.extra as Map<String, dynamic>;
         return TransactionDetailScreen(
-          transactionId: transactionData['transactionId'],
-          type: transactionData['type'],
-          amount: transactionData['amount'],
-          status: transactionData['status'],
-          recipient: transactionData['recipient'],
-          date: transactionData['date'],
+          transactionId: transactionData['transactionId'] as String,
+          type: transactionData['type'] as String,
+          amount: transactionData['amount'] as String,
+          status: transactionData['status'] as String,
+          recipient: transactionData['recipient'] as String,
+          date: transactionData['date'] as DateTime,
         );
+      },
+    ),
+
+    // Wallet Routes
+    GoRoute(
+      name: RouteName.walletSelection,
+      path: '/${RouteName.walletSelection}',
+      builder: (context, state) => const WalletSelectionScreen(),
+    ),
+    GoRoute(
+      name: RouteName.walletPhone,
+      path: '/${RouteName.walletPhone}',
+      builder: (context, state) {
+        final walletData = state.extra as Map<String, dynamic>;
+        return WalletPhoneScreen(walletData: walletData);
+      },
+    ),
+    GoRoute(
+      name: RouteName.walletAmount,
+      path: '/${RouteName.walletAmount}',
+      builder: (context, state) {
+        final walletData = state.extra as Map<String, dynamic>;
+        return WalletAmountScreen(walletData: walletData);
+      },
+    ),
+    GoRoute(
+      name: RouteName.walletConfirmation,
+      path: '/${RouteName.walletConfirmation}',
+      builder: (context, state) {
+        final transferData = state.extra as Map<String, dynamic>;
+        return WalletConfirmationScreen(transferData: transferData);
       },
     ),
   ],

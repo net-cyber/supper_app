@@ -66,13 +66,15 @@ class _MainScreenState extends State<MainScreen> {
       ),
       actions: [
         IconButton(
-          icon: Icon(Icons.refresh_rounded, color: Colors.grey[800], size: 22.sp),
+          icon:
+              Icon(Icons.refresh_rounded, color: Colors.grey[800], size: 22.sp),
           onPressed: () {},
         ),
         IconButton(
           icon: Badge(
             label: Text('2'),
-            child: Icon(Icons.notifications_none_rounded, color: Colors.grey[800], size: 22.sp),
+            child: Icon(Icons.notifications_none_rounded,
+                color: Colors.grey[800], size: 22.sp),
           ),
           onPressed: () {},
         ),
@@ -114,7 +116,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           ),
-          
+
           // Decorative elements
           Positioned(
             top: -20,
@@ -124,11 +126,12 @@ class _MainScreenState extends State<MainScreen> {
               height: 100.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.secondary.withOpacity(0.15),
+                color:
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.15),
               ),
             ),
           ),
-          
+
           Positioned(
             bottom: -30,
             left: -30,
@@ -141,7 +144,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           ),
-          
+
           // Card content
           Padding(
             padding: EdgeInsets.all(24.w),
@@ -162,7 +165,8 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         SizedBox(width: 12.w),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius: BorderRadius.circular(4.r),
@@ -179,17 +183,16 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ],
                     ),
-                   
-                
                   ],
                 ),
-                
-              const Spacer(),
-                
-               
+
+                const Spacer(),
+
                 // Card number
                 Text(
-                  _isBalanceVisible ? '1288 7068 2260 2640' : '•••• •••• •••• ••••',
+                  _isBalanceVisible
+                      ? '1288 7068 2260 2640'
+                      : '•••• •••• •••• ••••',
                   style: GoogleFonts.spaceGrotesk(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w500,
@@ -197,9 +200,9 @@ class _MainScreenState extends State<MainScreen> {
                     letterSpacing: 1.5,
                   ),
                 ),
-                
+
                 SizedBox(height: 16.h),
-                
+
                 // Cardholder name and expiry date
                 Row(
                   children: [
@@ -230,10 +233,11 @@ class _MainScreenState extends State<MainScreen> {
                         ],
                       ),
                     ),
-                 
+
                     // GOH logo (replacing VISA)
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(4.r),
@@ -253,7 +257,7 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
           ),
-          
+
           // Tap to show/hide button
           Positioned(
             top: 16.h,
@@ -328,7 +332,7 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.account_balance_wallet_rounded,
         'label': 'Send To\nWallet',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.sendCash,
+        'route': RouteName.walletSelection,
       },
     ];
 
@@ -412,55 +416,55 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.home_rounded,
         'label': 'Mortgage Loans',
         'color': Color(0xFF4A6FE5),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.account_balance_rounded,
         'label': 'Deposits',
         'color': Color(0xFF2EC4B6),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.person_rounded,
         'label': 'Personal Loans',
         'color': Color(0xFFFF9F1C),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.directions_car_rounded,
         'label': 'Vehicle Loans',
         'color': Color(0xFFE71D36),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.home_repair_service_rounded,
         'label': 'Home Equity',
         'color': Color(0xFF8338EC),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.chair_rounded,
         'label': 'Furniture Loans',
         'color': Color(0xFF3A86FF),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.apartment_rounded,
         'label': 'Construction',
         'color': Color(0xFFFF006E),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.business_rounded,
         'label': 'Commercial',
         'color': Color(0xFF06D6A0),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.public_rounded,
         'label': 'International',
         'color': Color(0xFFFFBE0B),
-        'route' : RouteName.availableProperties,
+        'route': RouteName.availableProperties,
       },
     ];
 
@@ -508,11 +512,10 @@ class _MainScreenState extends State<MainScreen> {
             itemCount: services.length,
             itemBuilder: (context, index) {
               return _buildServiceItem(
-                icon: services[index]['icon'] as IconData,
-                label: services[index]['label'] as String,
-                color: services[index]['color'] as Color,
-                route: services[index]['route'] as String
-              );
+                  icon: services[index]['icon'] as IconData,
+                  label: services[index]['label'] as String,
+                  color: services[index]['color'] as Color,
+                  route: services[index]['route'] as String);
             },
           ),
         ],
@@ -692,7 +695,7 @@ class ChipPatternPainter extends CustomPainter {
       Offset(size.width * 0.8, size.height),
       paint,
     );
-    
+
     canvas.drawLine(
       Offset(size.width * 0.8, 0),
       Offset(size.width * 0.2, size.height),
@@ -702,14 +705,16 @@ class ChipPatternPainter extends CustomPainter {
     // Draw small rectangles to simulate chip contacts
     paint.style = PaintingStyle.fill;
     paint.color = Colors.amber.shade900.withOpacity(0.3);
-    
+
     canvas.drawRect(
-      Rect.fromLTWH(size.width * 0.1, size.height * 0.2, size.width * 0.3, size.height * 0.2),
+      Rect.fromLTWH(size.width * 0.1, size.height * 0.2, size.width * 0.3,
+          size.height * 0.2),
       paint,
     );
-    
+
     canvas.drawRect(
-      Rect.fromLTWH(size.width * 0.6, size.height * 0.6, size.width * 0.3, size.height * 0.2),
+      Rect.fromLTWH(size.width * 0.6, size.height * 0.6, size.width * 0.3,
+          size.height * 0.2),
       paint,
     );
   }
@@ -734,7 +739,7 @@ class CardPatternPainter extends CustomPainter {
         Offset(size.width, i * size.height / 9),
         paint,
       );
-      
+
       // Vertical lines
       canvas.drawLine(
         Offset(i * size.width / 9, 0),
@@ -742,17 +747,17 @@ class CardPatternPainter extends CustomPainter {
         paint,
       );
     }
-    
+
     // Draw decorative circles
     paint.style = PaintingStyle.stroke;
     paint.strokeWidth = 0.8;
-    
+
     canvas.drawCircle(
       Offset(size.width * 0.8, size.height * 0.2),
       size.width * 0.15,
       paint,
     );
-    
+
     canvas.drawCircle(
       Offset(size.width * 0.2, size.height * 0.8),
       size.width * 0.1,

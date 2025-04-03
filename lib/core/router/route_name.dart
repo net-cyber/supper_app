@@ -24,12 +24,18 @@ class RouteName {
   static const String bankAccount = 'bankAccount';
   static const String bankAmount = 'bankAmount';
   static const String confirmTransfer = 'confirmTransfer';
-  
+
   // Internal bank transfer
   static const String internalBankAccount = 'internalBankAccount';
   static const String internalBankAmount = 'internalBankAmount';
   static const String internalConfirmTransfer = 'internalConfirmTransfer';
-  
+
   // Other actions
   static const String sendCash = 'sendCash';
+
+  // Wallet routes
+  static const String walletSelection = 'walletSelection';
+  static const String walletPhone = 'walletPhone';
+  static const String walletAmount = 'walletAmount';
+  static const String walletConfirmation = 'walletConfirmation';
 }
