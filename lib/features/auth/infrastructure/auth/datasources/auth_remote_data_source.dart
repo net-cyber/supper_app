@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration_response.dart';
@@ -10,9 +11,6 @@ abstract class AuthRemoteDataSource {
 
 @Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final HttpService _httpService;
-
-  AuthRemoteDataSourceImpl(this._httpService);
 
   @override
   Future<RegistrationResponse> register(Registration registration) async {
@@ -24,7 +22,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'password': registration.password.value.getOrElse(() => ''),
       };
       
-      final response = await _httpService.client().post(
+      final response = await getIt<HttpService>().client(requireAuth: false).post(
         '/users',
         data: data,
       );

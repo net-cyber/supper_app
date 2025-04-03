@@ -7,10 +7,7 @@ import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/features/mortgages/presentation/screens/available_properties_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/property_detail_screen.dart';
-import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
-import 'package:super_app/features/auth/presentation/pages/signup/signup_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/splash/splash_screen.dart';
-import 'package:super_app/features/history/presentation/history_screen.dart';
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
@@ -27,17 +24,7 @@ final router = GoRouter(
       builder: (context, state) => const SplashPage(),
     ),
     
-    // Login
-    GoRoute(
-      name: RouteName.login,
-      path: '/${RouteName.login}',
-      builder: (context, state) => const LoginScreen(),
-    ),
-    GoRoute(
-      name: RouteName.signup,
-      path: '/${RouteName.signup}',
-      builder: (context, state) =>  SignupScreen(),
-    ),
+    
     // Settings
     // GoRoute(
     //   name: RouteName.settings,

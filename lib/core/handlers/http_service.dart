@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:super_app/core/constants/app_constants.dart';
 import 'package:super_app/core/handlers/token_interceptor.dart';
 
+@Injectable(as: HttpService)
 class HttpService {
   Dio client({bool requireAuth = false}) {
     return Dio(BaseOptions(
