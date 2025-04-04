@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:super_app/core/di/dependency_injection.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_bloc.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_event.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_state.dart';
 
-class InternalBankAmountScreen extends StatefulWidget {
+class InternalBankAmountScreen extends StatelessWidget {
   final Map<String, dynamic> transferData;
 
   const InternalBankAmountScreen({
@@ -18,28 +19,67 @@ class InternalBankAmountScreen extends StatefulWidget {
   });
 
   @override
-  State<InternalBankAmountScreen> createState() =>
-      _InternalBankAmountScreenState();
+  Widget build(BuildContext context) {
+    // Ensure the InternalTransferBloc is available in this screen
+    return BlocProvider<InternalTransferBloc>(
+      create: (context) => getIt<InternalTransferBloc>(),
+      child: _InternalBankAmountScreenContent(transferData: transferData),
+    );
+  }
 }
 
-class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
+class _InternalBankAmountScreenContent extends StatefulWidget {
+  final Map<String, dynamic> transferData;
+
+  const _InternalBankAmountScreenContent({
+    required this.transferData,
+  });
+
+  @override
+  State<_InternalBankAmountScreenContent> createState() =>
+      _InternalBankAmountScreenContentState();
+}
+
+class _InternalBankAmountScreenContentState
+    extends State<_InternalBankAmountScreenContent> {
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _reasonController = TextEditingController();
   bool _hasInput = false;
+  bool _isProcessing = false; // Track if we're processing an action
+  bool _accountValidated = false; // Track if the account has been validated
 
   @override
   void initState() {
     super.initState();
     _amountController.addListener(_onAmountChanged);
-    _reasonController.addListener(_onReasonChanged);
+
+    // Set preloading flag
+    setState(() {
+      _isProcessing = true;
+    });
+
+    // Initialize the BLoC with account data from transferData
+    if (widget.transferData != null &&
+        widget.transferData.containsKey('accountNumber')) {
+      String accountNumber = widget.transferData['accountNumber'].toString();
+
+      // Use post frame callback to ensure the widget is fully built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Set account number in the BLoC
+        context.read<InternalTransferBloc>().add(
+              InternalTransferEvent.accountNumberChanged(accountNumber),
+            );
+        // Validate the account when screen loads
+        context.read<InternalTransferBloc>().add(
+              const InternalTransferEvent.validateAccount(),
+            );
+      });
+    }
   }
 
   @override
   void dispose() {
     _amountController.removeListener(_onAmountChanged);
     _amountController.dispose();
-    _reasonController.removeListener(_onReasonChanged);
-    _reasonController.dispose();
     super.dispose();
   }
 
@@ -59,36 +99,74 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
         );
   }
 
-  void _onReasonChanged() {
-    // Update reason in BLoC
-    context.read<InternalTransferBloc>().add(
-          InternalTransferEvent.reasonChanged(_reasonController.text),
-        );
-  }
-
   void _continueToConfirmation() {
+    // Prevent multiple submissions
+    if (_isProcessing) return;
+
+    // Check amount validity
+    final double? amount = double.tryParse(_amountController.text);
+    if (amount == null || amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a valid amount'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+    });
+
     // Add amount to transfer data and navigate to confirmation screen
     final completeTransferData = {
       ...widget.transferData,
-      'amount': double.tryParse(_amountController.text) ??
-          0.0, // Default to 0 if no valid number entered
-      'reason': _reasonController.text,
+      'amount': amount,
       'name': 'Goh Betoch Bank',
     };
 
-    // Navigate to internal confirmation screen
-    context.pushNamed(RouteName.internalConfirmTransfer,
-        extra: completeTransferData);
+    // Use a short delay to avoid UI jumping
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _isProcessing = false;
+      });
+
+      // Navigate to internal confirmation screen
+      context.pushNamed(RouteName.internalConfirmTransfer,
+          extra: completeTransferData);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<InternalTransferBloc, InternalTransferState>(
+      listenWhen: (previous, current) {
+        // Listen for validation status changes or errors
+        return previous.status != current.status ||
+            previous.errorMessage != current.errorMessage;
+      },
       listener: (context, state) {
+        // Update processing state when loading completes
+        if (state.status == InternalTransferStatus.accountValidated) {
+          setState(() {
+            _accountValidated = true;
+            _isProcessing = false;
+          });
+        }
+
         // Show error messages if any
         if (state.errorMessage != null) {
+          setState(() {
+            _isProcessing = false;
+          });
+
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
+            SnackBar(
+              content: Text(state.errorMessage!),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
         }
       },
@@ -181,46 +259,6 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                 SizedBox(height: 16.h),
                 _buildAmountInput(),
 
-                SizedBox(height: 24.h),
-
-                // Reason input section
-                Text(
-                  'Reason (Optional)',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: TextField(
-                    controller: _reasonController,
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      color: Colors.black87,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter reason for transfer',
-                      hintStyle: GoogleFonts.outfit(
-                        fontSize: 16.sp,
-                        color: Colors.grey[500],
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 16.h,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                    maxLines: 2,
-                    minLines: 1,
-                  ),
-                ),
-
                 const Spacer(),
 
                 // Continue button - display when inputs are valid
@@ -228,7 +266,10 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                   width: double.infinity,
                   height: 56.h,
                   child: ElevatedButton(
-                    onPressed: _hasInput ? _continueToConfirmation : null,
+                    onPressed:
+                        (_hasInput && !_isProcessing && _accountValidated)
+                            ? _continueToConfirmation
+                            : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       disabledBackgroundColor: Colors.grey[300],
@@ -236,14 +277,23 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                         borderRadius: BorderRadius.circular(28.r),
                       ),
                     ),
-                    child: Text(
-                      'Continue',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: _isProcessing
+                        ? SizedBox(
+                            height: 24.h,
+                            width: 24.h,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.w,
+                            ),
+                          )
+                        : Text(
+                            'Continue',
+                            style: GoogleFonts.outfit(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
                 SizedBox(height: 16.h),

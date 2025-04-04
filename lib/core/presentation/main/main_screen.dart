@@ -15,6 +15,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   bool _isBalanceVisible = false;
   int _currentPageIndex = 0;
+  bool _isGohBetochLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -358,9 +359,37 @@ class _MainScreenState extends State<MainScreen> {
     required Color color,
     required String route,
   }) {
+    final bool isGohBetoch = label.contains('Goh Betoch');
+    final bool isLoading = isGohBetoch && _isGohBetochLoading;
+
     return GestureDetector(
       onTap: () {
-        context.pushNamed(route);
+        // Prevent multiple taps during loading
+        if (_isGohBetochLoading) return;
+
+        // Special handling for Goh Betoch button
+        if (isGohBetoch) {
+          setState(() {
+            _isGohBetochLoading = true;
+          });
+
+          // Add a small delay to show loading state
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) {
+              context.pushNamed(route).then((_) {
+                // Reset loading state when navigation completes or user returns
+                if (mounted) {
+                  setState(() {
+                    _isGohBetochLoading = false;
+                  });
+                }
+              });
+            }
+          });
+        } else {
+          // Normal navigation for other buttons
+          context.pushNamed(route);
+        }
       },
       child: Column(
         children: [
@@ -387,16 +416,25 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             child: Center(
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 26.sp,
-              ),
+              child: isLoading
+                  ? SizedBox(
+                      width: 24.w,
+                      height: 24.h,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.w,
+                      ),
+                    )
+                  : Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 26.sp,
+                    ),
             ),
           ),
           SizedBox(height: 12.h),
           Text(
-            label,
+            isLoading ? 'Loading...' : label,
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
               fontSize: 12.sp,

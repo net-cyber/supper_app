@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:super_app/core/di/injection.dart';
+import 'package:super_app/core/di/dependency_injection.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_bloc.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_event.dart';
@@ -17,9 +17,9 @@ class InternalBankAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => inject<InternalTransferBloc>(),
-      child: const _InternalBankAccountScreenContent(),
+    return BlocProvider<InternalTransferBloc>(
+      create: (context) => getIt<InternalTransferBloc>(),
+      child: _InternalBankAccountScreenContent(),
     );
   }
 }
@@ -37,11 +37,19 @@ class _InternalBankAccountScreenContentState
   final TextEditingController _accountNumberController =
       TextEditingController();
   bool _hasInput = false;
+  bool _isValidating = false; // Track validation in progress
 
   @override
   void initState() {
     super.initState();
     _accountNumberController.addListener(_onInputChanged);
+
+    // Reset any previous state when screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<InternalTransferBloc>().add(
+            const InternalTransferEvent.reset(),
+          );
+    });
   }
 
   @override
@@ -69,6 +77,39 @@ class _InternalBankAccountScreenContentState
   }
 
   void _verifyAccount() {
+    // Prevent multiple validations at once
+    if (_isValidating) return;
+
+    // Clear any existing snackbars first before verification
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    // Get account number from controller
+    final accountNumber = _accountNumberController.text.trim();
+
+    // Check if account number is empty or invalid format before sending to bloc
+    if (accountNumber.isEmpty) {
+      // Manually show snackbar for empty account
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please enter a valid account number'),
+          duration: const Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
+    // Mark validation as in progress
+    setState(() {
+      _isValidating = true;
+    });
+
     // Dispatch event to validate account in the BLoC
     context.read<InternalTransferBloc>().add(
           const InternalTransferEvent.validateAccount(),
@@ -77,6 +118,9 @@ class _InternalBankAccountScreenContentState
 
   void _continueToNextScreen() {
     final state = context.read<InternalTransferBloc>().state;
+
+    // Prevent actions during loading
+    if (state.isLoading || _isValidating) return;
 
     if (state.status != InternalTransferStatus.accountValidated) {
       _verifyAccount();
@@ -119,15 +163,58 @@ class _InternalBankAccountScreenContentState
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<InternalTransferBloc, InternalTransferState>(
+      listenWhen: (previous, current) {
+        // Only trigger the listener when:
+        // 1. The status changes from loading to failed state
+        // 2. The error message changes and is not null
+        // 3. When there's an error message but the status might still be initial
+        return (previous.isLoading &&
+                !current.isLoading &&
+                (current.status ==
+                        InternalTransferStatus.accountValidationFailed ||
+                    current.errorMessage != null)) ||
+            (previous.errorMessage != current.errorMessage &&
+                current.errorMessage != null);
+      },
       listener: (context, state) {
+        // Get previous state
+        final previousState = context.read<InternalTransferBloc>().state;
+
+        // Reset validation flag when loading completes
+        if (previousState.isLoading && !state.isLoading) {
+          setState(() {
+            _isValidating = false;
+          });
+        }
+
         // Show error messages if any
         if (state.errorMessage != null) {
+          // Clear any existing snackbars first
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+          // Show snackbar with proper duration and action
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
+            SnackBar(
+              content: Text(state.errorMessage!),
+              duration:
+                  const Duration(seconds: 4), // Longer duration for readability
+              behavior: SnackBarBehavior.floating, // Makes it more visible
+              action: SnackBarAction(
+                label: 'Dismiss',
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                },
+              ),
+            ),
           );
         }
       },
       builder: (context, state) {
+        // Update validation flag based on state
+        if (_isValidating && !state.isLoading) {
+          _isValidating = false;
+        }
+
         final isAccountValidated =
             state.status == InternalTransferStatus.accountValidated;
 
