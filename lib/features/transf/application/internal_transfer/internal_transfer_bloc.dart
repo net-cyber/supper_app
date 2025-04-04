@@ -175,6 +175,8 @@ class InternalTransferBloc
       accountNotFound: (_) => 'Account not found',
       invalidPhoneNumber: (_) => 'Invalid phone number',
       phoneNumberNotFound: (_) => 'Phone number not found',
+      walletAccountNotFound: (_) => 'Wallet account not found',
+      invalidWalletAccount: (_) => 'Invalid wallet account',
       invalidAmount: (_) => 'Invalid amount',
       insufficientFunds: (failure) =>
           'Insufficient funds. Available: ${failure.available} ETB',
@@ -185,6 +187,7 @@ class InternalTransferBloc
       serverError: (failure) => 'Server error: ${failure.message}',
       networkError: (_) => 'Network error, please check your connection',
       unexpected: (_) => 'An unexpected error occurred',
+      transactionNotFound: (_) => 'Transaction not found',
       unauthenticated: (_) => 'Please log in to continue',
       unauthorized: (_) => 'You are not authorized for this action',
       invalidInput: (failure) => failure.message,

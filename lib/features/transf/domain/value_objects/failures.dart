@@ -22,6 +22,15 @@ abstract class TransferFailure<T> with _$TransferFailure<T> {
     required T failedValue,
   }) = PhoneNumberNotFound<T>;
 
+  // Wallet related failures
+  const factory TransferFailure.walletAccountNotFound({
+    required T failedValue,
+  }) = WalletAccountNotFound<T>;
+
+  const factory TransferFailure.invalidWalletAccount({
+    required T failedValue,
+  }) = InvalidWalletAccount<T>;
+
   // Money related failures
   const factory TransferFailure.invalidAmount({
     required T failedValue,
@@ -50,6 +59,9 @@ abstract class TransferFailure<T> with _$TransferFailure<T> {
   const factory TransferFailure.networkError() = NetworkError<T>;
 
   const factory TransferFailure.unexpected() = Unexpected<T>;
+
+  // Transaction related failures
+  const factory TransferFailure.transactionNotFound() = TransactionNotFound<T>;
 
   // Authentication related failures
   const factory TransferFailure.unauthenticated() = Unauthenticated<T>;

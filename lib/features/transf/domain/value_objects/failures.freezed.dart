@@ -22,6 +22,8 @@ mixin _$TransferFailure<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -30,6 +32,7 @@ mixin _$TransferFailure<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -41,6 +44,8 @@ mixin _$TransferFailure<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -48,6 +53,7 @@ mixin _$TransferFailure<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -59,6 +65,8 @@ mixin _$TransferFailure<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -66,6 +74,7 @@ mixin _$TransferFailure<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -79,6 +88,10 @@ mixin _$TransferFailure<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -87,6 +100,7 @@ mixin _$TransferFailure<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -98,6 +112,8 @@ mixin _$TransferFailure<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -105,6 +121,7 @@ mixin _$TransferFailure<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -116,6 +133,8 @@ mixin _$TransferFailure<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -123,6 +142,7 @@ mixin _$TransferFailure<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -229,6 +249,8 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -237,6 +259,7 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -251,6 +274,8 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -258,6 +283,7 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -272,6 +298,8 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -279,6 +307,7 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -298,6 +327,10 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -306,6 +339,7 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -320,6 +354,8 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -327,6 +363,7 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -341,6 +378,8 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -348,6 +387,7 @@ class _$InvalidAccountNumberImpl<T> implements InvalidAccountNumber<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -448,6 +488,8 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -456,6 +498,7 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -470,6 +513,8 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -477,6 +522,7 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -491,6 +537,8 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -498,6 +546,7 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -517,6 +566,10 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -525,6 +578,7 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -539,6 +593,8 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -546,6 +602,7 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -560,6 +617,8 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -567,6 +626,7 @@ class _$AccountNotFoundImpl<T> implements AccountNotFound<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -667,6 +727,8 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -675,6 +737,7 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -689,6 +752,8 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -696,6 +761,7 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -710,6 +776,8 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -717,6 +785,7 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -736,6 +805,10 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -744,6 +817,7 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -758,6 +832,8 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -765,6 +841,7 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -779,6 +856,8 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -786,6 +865,7 @@ class _$InvalidPhoneNumberImpl<T> implements InvalidPhoneNumber<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -886,6 +966,8 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -894,6 +976,7 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -908,6 +991,8 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -915,6 +1000,7 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -929,6 +1015,8 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -936,6 +1024,7 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -955,6 +1044,10 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -963,6 +1056,7 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -977,6 +1071,8 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -984,6 +1080,7 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -998,6 +1095,8 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1005,6 +1104,7 @@ class _$PhoneNumberNotFoundImpl<T> implements PhoneNumberNotFound<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -1027,6 +1127,489 @@ abstract class PhoneNumberNotFound<T> implements TransferFailure<T> {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PhoneNumberNotFoundImplCopyWith<T, _$PhoneNumberNotFoundImpl<T>>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$WalletAccountNotFoundImplCopyWith<T, $Res> {
+  factory _$$WalletAccountNotFoundImplCopyWith(
+          _$WalletAccountNotFoundImpl<T> value,
+          $Res Function(_$WalletAccountNotFoundImpl<T>) then) =
+      __$$WalletAccountNotFoundImplCopyWithImpl<T, $Res>;
+  @useResult
+  $Res call({T failedValue});
+}
+
+/// @nodoc
+class __$$WalletAccountNotFoundImplCopyWithImpl<T, $Res>
+    extends _$TransferFailureCopyWithImpl<T, $Res,
+        _$WalletAccountNotFoundImpl<T>>
+    implements _$$WalletAccountNotFoundImplCopyWith<T, $Res> {
+  __$$WalletAccountNotFoundImplCopyWithImpl(
+      _$WalletAccountNotFoundImpl<T> _value,
+      $Res Function(_$WalletAccountNotFoundImpl<T>) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? failedValue = freezed,
+  }) {
+    return _then(_$WalletAccountNotFoundImpl<T>(
+      failedValue: freezed == failedValue
+          ? _value.failedValue
+          : failedValue // ignore: cast_nullable_to_non_nullable
+              as T,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$WalletAccountNotFoundImpl<T> implements WalletAccountNotFound<T> {
+  const _$WalletAccountNotFoundImpl({required this.failedValue});
+
+  @override
+  final T failedValue;
+
+  @override
+  String toString() {
+    return 'TransferFailure<$T>.walletAccountNotFound(failedValue: $failedValue)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$WalletAccountNotFoundImpl<T> &&
+            const DeepCollectionEquality()
+                .equals(other.failedValue, failedValue));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(failedValue));
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$WalletAccountNotFoundImplCopyWith<T, _$WalletAccountNotFoundImpl<T>>
+      get copyWith => __$$WalletAccountNotFoundImplCopyWithImpl<T,
+          _$WalletAccountNotFoundImpl<T>>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(T failedValue) invalidAccountNumber,
+    required TResult Function(T failedValue) accountNotFound,
+    required TResult Function(T failedValue) invalidPhoneNumber,
+    required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
+    required TResult Function(T failedValue) invalidAmount,
+    required TResult Function(T failedValue, double available)
+        insufficientFunds,
+    required TResult Function(T failedValue, double limit) exceedsTransferLimit,
+    required TResult Function(T failedValue, double minimum) belowMinimumAmount,
+    required TResult Function(String message) serverError,
+    required TResult Function() networkError,
+    required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
+    required TResult Function() unauthenticated,
+    required TResult Function() unauthorized,
+    required TResult Function(T failedValue, String message) invalidInput,
+  }) {
+    return walletAccountNotFound(failedValue);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(T failedValue)? invalidAccountNumber,
+    TResult? Function(T failedValue)? accountNotFound,
+    TResult? Function(T failedValue)? invalidPhoneNumber,
+    TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
+    TResult? Function(T failedValue)? invalidAmount,
+    TResult? Function(T failedValue, double available)? insufficientFunds,
+    TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
+    TResult? Function(T failedValue, double minimum)? belowMinimumAmount,
+    TResult? Function(String message)? serverError,
+    TResult? Function()? networkError,
+    TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
+    TResult? Function()? unauthenticated,
+    TResult? Function()? unauthorized,
+    TResult? Function(T failedValue, String message)? invalidInput,
+  }) {
+    return walletAccountNotFound?.call(failedValue);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T failedValue)? invalidAccountNumber,
+    TResult Function(T failedValue)? accountNotFound,
+    TResult Function(T failedValue)? invalidPhoneNumber,
+    TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
+    TResult Function(T failedValue)? invalidAmount,
+    TResult Function(T failedValue, double available)? insufficientFunds,
+    TResult Function(T failedValue, double limit)? exceedsTransferLimit,
+    TResult Function(T failedValue, double minimum)? belowMinimumAmount,
+    TResult Function(String message)? serverError,
+    TResult Function()? networkError,
+    TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
+    TResult Function()? unauthenticated,
+    TResult Function()? unauthorized,
+    TResult Function(T failedValue, String message)? invalidInput,
+    required TResult orElse(),
+  }) {
+    if (walletAccountNotFound != null) {
+      return walletAccountNotFound(failedValue);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InvalidAccountNumber<T> value)
+        invalidAccountNumber,
+    required TResult Function(AccountNotFound<T> value) accountNotFound,
+    required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
+    required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
+    required TResult Function(InvalidAmount<T> value) invalidAmount,
+    required TResult Function(InsufficientFunds<T> value) insufficientFunds,
+    required TResult Function(ExceedsTransferLimit<T> value)
+        exceedsTransferLimit,
+    required TResult Function(BelowMinimumAmount<T> value) belowMinimumAmount,
+    required TResult Function(ServerError<T> value) serverError,
+    required TResult Function(NetworkError<T> value) networkError,
+    required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
+    required TResult Function(Unauthenticated<T> value) unauthenticated,
+    required TResult Function(Unauthorized<T> value) unauthorized,
+    required TResult Function(InvalidInput<T> value) invalidInput,
+  }) {
+    return walletAccountNotFound(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InvalidAccountNumber<T> value)? invalidAccountNumber,
+    TResult? Function(AccountNotFound<T> value)? accountNotFound,
+    TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
+    TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
+    TResult? Function(InvalidAmount<T> value)? invalidAmount,
+    TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
+    TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
+    TResult? Function(BelowMinimumAmount<T> value)? belowMinimumAmount,
+    TResult? Function(ServerError<T> value)? serverError,
+    TResult? Function(NetworkError<T> value)? networkError,
+    TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
+    TResult? Function(Unauthenticated<T> value)? unauthenticated,
+    TResult? Function(Unauthorized<T> value)? unauthorized,
+    TResult? Function(InvalidInput<T> value)? invalidInput,
+  }) {
+    return walletAccountNotFound?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InvalidAccountNumber<T> value)? invalidAccountNumber,
+    TResult Function(AccountNotFound<T> value)? accountNotFound,
+    TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
+    TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
+    TResult Function(InvalidAmount<T> value)? invalidAmount,
+    TResult Function(InsufficientFunds<T> value)? insufficientFunds,
+    TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
+    TResult Function(BelowMinimumAmount<T> value)? belowMinimumAmount,
+    TResult Function(ServerError<T> value)? serverError,
+    TResult Function(NetworkError<T> value)? networkError,
+    TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
+    TResult Function(Unauthenticated<T> value)? unauthenticated,
+    TResult Function(Unauthorized<T> value)? unauthorized,
+    TResult Function(InvalidInput<T> value)? invalidInput,
+    required TResult orElse(),
+  }) {
+    if (walletAccountNotFound != null) {
+      return walletAccountNotFound(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class WalletAccountNotFound<T> implements TransferFailure<T> {
+  const factory WalletAccountNotFound({required final T failedValue}) =
+      _$WalletAccountNotFoundImpl<T>;
+
+  T get failedValue;
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$WalletAccountNotFoundImplCopyWith<T, _$WalletAccountNotFoundImpl<T>>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$InvalidWalletAccountImplCopyWith<T, $Res> {
+  factory _$$InvalidWalletAccountImplCopyWith(
+          _$InvalidWalletAccountImpl<T> value,
+          $Res Function(_$InvalidWalletAccountImpl<T>) then) =
+      __$$InvalidWalletAccountImplCopyWithImpl<T, $Res>;
+  @useResult
+  $Res call({T failedValue});
+}
+
+/// @nodoc
+class __$$InvalidWalletAccountImplCopyWithImpl<T, $Res>
+    extends _$TransferFailureCopyWithImpl<T, $Res,
+        _$InvalidWalletAccountImpl<T>>
+    implements _$$InvalidWalletAccountImplCopyWith<T, $Res> {
+  __$$InvalidWalletAccountImplCopyWithImpl(_$InvalidWalletAccountImpl<T> _value,
+      $Res Function(_$InvalidWalletAccountImpl<T>) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? failedValue = freezed,
+  }) {
+    return _then(_$InvalidWalletAccountImpl<T>(
+      failedValue: freezed == failedValue
+          ? _value.failedValue
+          : failedValue // ignore: cast_nullable_to_non_nullable
+              as T,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$InvalidWalletAccountImpl<T> implements InvalidWalletAccount<T> {
+  const _$InvalidWalletAccountImpl({required this.failedValue});
+
+  @override
+  final T failedValue;
+
+  @override
+  String toString() {
+    return 'TransferFailure<$T>.invalidWalletAccount(failedValue: $failedValue)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$InvalidWalletAccountImpl<T> &&
+            const DeepCollectionEquality()
+                .equals(other.failedValue, failedValue));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(failedValue));
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$InvalidWalletAccountImplCopyWith<T, _$InvalidWalletAccountImpl<T>>
+      get copyWith => __$$InvalidWalletAccountImplCopyWithImpl<T,
+          _$InvalidWalletAccountImpl<T>>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(T failedValue) invalidAccountNumber,
+    required TResult Function(T failedValue) accountNotFound,
+    required TResult Function(T failedValue) invalidPhoneNumber,
+    required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
+    required TResult Function(T failedValue) invalidAmount,
+    required TResult Function(T failedValue, double available)
+        insufficientFunds,
+    required TResult Function(T failedValue, double limit) exceedsTransferLimit,
+    required TResult Function(T failedValue, double minimum) belowMinimumAmount,
+    required TResult Function(String message) serverError,
+    required TResult Function() networkError,
+    required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
+    required TResult Function() unauthenticated,
+    required TResult Function() unauthorized,
+    required TResult Function(T failedValue, String message) invalidInput,
+  }) {
+    return invalidWalletAccount(failedValue);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(T failedValue)? invalidAccountNumber,
+    TResult? Function(T failedValue)? accountNotFound,
+    TResult? Function(T failedValue)? invalidPhoneNumber,
+    TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
+    TResult? Function(T failedValue)? invalidAmount,
+    TResult? Function(T failedValue, double available)? insufficientFunds,
+    TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
+    TResult? Function(T failedValue, double minimum)? belowMinimumAmount,
+    TResult? Function(String message)? serverError,
+    TResult? Function()? networkError,
+    TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
+    TResult? Function()? unauthenticated,
+    TResult? Function()? unauthorized,
+    TResult? Function(T failedValue, String message)? invalidInput,
+  }) {
+    return invalidWalletAccount?.call(failedValue);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T failedValue)? invalidAccountNumber,
+    TResult Function(T failedValue)? accountNotFound,
+    TResult Function(T failedValue)? invalidPhoneNumber,
+    TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
+    TResult Function(T failedValue)? invalidAmount,
+    TResult Function(T failedValue, double available)? insufficientFunds,
+    TResult Function(T failedValue, double limit)? exceedsTransferLimit,
+    TResult Function(T failedValue, double minimum)? belowMinimumAmount,
+    TResult Function(String message)? serverError,
+    TResult Function()? networkError,
+    TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
+    TResult Function()? unauthenticated,
+    TResult Function()? unauthorized,
+    TResult Function(T failedValue, String message)? invalidInput,
+    required TResult orElse(),
+  }) {
+    if (invalidWalletAccount != null) {
+      return invalidWalletAccount(failedValue);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InvalidAccountNumber<T> value)
+        invalidAccountNumber,
+    required TResult Function(AccountNotFound<T> value) accountNotFound,
+    required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
+    required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
+    required TResult Function(InvalidAmount<T> value) invalidAmount,
+    required TResult Function(InsufficientFunds<T> value) insufficientFunds,
+    required TResult Function(ExceedsTransferLimit<T> value)
+        exceedsTransferLimit,
+    required TResult Function(BelowMinimumAmount<T> value) belowMinimumAmount,
+    required TResult Function(ServerError<T> value) serverError,
+    required TResult Function(NetworkError<T> value) networkError,
+    required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
+    required TResult Function(Unauthenticated<T> value) unauthenticated,
+    required TResult Function(Unauthorized<T> value) unauthorized,
+    required TResult Function(InvalidInput<T> value) invalidInput,
+  }) {
+    return invalidWalletAccount(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InvalidAccountNumber<T> value)? invalidAccountNumber,
+    TResult? Function(AccountNotFound<T> value)? accountNotFound,
+    TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
+    TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
+    TResult? Function(InvalidAmount<T> value)? invalidAmount,
+    TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
+    TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
+    TResult? Function(BelowMinimumAmount<T> value)? belowMinimumAmount,
+    TResult? Function(ServerError<T> value)? serverError,
+    TResult? Function(NetworkError<T> value)? networkError,
+    TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
+    TResult? Function(Unauthenticated<T> value)? unauthenticated,
+    TResult? Function(Unauthorized<T> value)? unauthorized,
+    TResult? Function(InvalidInput<T> value)? invalidInput,
+  }) {
+    return invalidWalletAccount?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InvalidAccountNumber<T> value)? invalidAccountNumber,
+    TResult Function(AccountNotFound<T> value)? accountNotFound,
+    TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
+    TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
+    TResult Function(InvalidAmount<T> value)? invalidAmount,
+    TResult Function(InsufficientFunds<T> value)? insufficientFunds,
+    TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
+    TResult Function(BelowMinimumAmount<T> value)? belowMinimumAmount,
+    TResult Function(ServerError<T> value)? serverError,
+    TResult Function(NetworkError<T> value)? networkError,
+    TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
+    TResult Function(Unauthenticated<T> value)? unauthenticated,
+    TResult Function(Unauthorized<T> value)? unauthorized,
+    TResult Function(InvalidInput<T> value)? invalidInput,
+    required TResult orElse(),
+  }) {
+    if (invalidWalletAccount != null) {
+      return invalidWalletAccount(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class InvalidWalletAccount<T> implements TransferFailure<T> {
+  const factory InvalidWalletAccount({required final T failedValue}) =
+      _$InvalidWalletAccountImpl<T>;
+
+  T get failedValue;
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$InvalidWalletAccountImplCopyWith<T, _$InvalidWalletAccountImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1105,6 +1688,8 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -1113,6 +1698,7 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -1127,6 +1713,8 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1134,6 +1722,7 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -1148,6 +1737,8 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1155,6 +1746,7 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -1174,6 +1766,10 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -1182,6 +1778,7 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -1196,6 +1793,8 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1203,6 +1802,7 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -1217,6 +1817,8 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1224,6 +1826,7 @@ class _$InvalidAmountImpl<T> implements InvalidAmount<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -1335,6 +1938,8 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -1343,6 +1948,7 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -1357,6 +1963,8 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1364,6 +1972,7 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -1378,6 +1987,8 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1385,6 +1996,7 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -1404,6 +2016,10 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -1412,6 +2028,7 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -1426,6 +2043,8 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1433,6 +2052,7 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -1447,6 +2067,8 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1454,6 +2076,7 @@ class _$InsufficientFundsImpl<T> implements InsufficientFunds<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -1567,6 +2190,8 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -1575,6 +2200,7 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -1589,6 +2215,8 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1596,6 +2224,7 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -1610,6 +2239,8 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1617,6 +2248,7 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -1636,6 +2268,10 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -1644,6 +2280,7 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -1658,6 +2295,8 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1665,6 +2304,7 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -1679,6 +2319,8 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1686,6 +2328,7 @@ class _$ExceedsTransferLimitImpl<T> implements ExceedsTransferLimit<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -1797,6 +2440,8 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -1805,6 +2450,7 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -1819,6 +2465,8 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1826,6 +2474,7 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -1840,6 +2489,8 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -1847,6 +2498,7 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -1866,6 +2518,10 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -1874,6 +2530,7 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -1888,6 +2545,8 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1895,6 +2554,7 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -1909,6 +2569,8 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -1916,6 +2578,7 @@ class _$BelowMinimumAmountImpl<T> implements BelowMinimumAmount<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -2016,6 +2679,8 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -2024,6 +2689,7 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -2038,6 +2704,8 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2045,6 +2713,7 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -2059,6 +2728,8 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2066,6 +2737,7 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -2085,6 +2757,10 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -2093,6 +2769,7 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -2107,6 +2784,8 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2114,6 +2793,7 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -2128,6 +2808,8 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2135,6 +2817,7 @@ class _$ServerErrorImpl<T> implements ServerError<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -2205,6 +2888,8 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -2213,6 +2898,7 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -2227,6 +2913,8 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2234,6 +2922,7 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -2248,6 +2937,8 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2255,6 +2946,7 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -2274,6 +2966,10 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -2282,6 +2978,7 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -2296,6 +2993,8 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2303,6 +3002,7 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -2317,6 +3017,8 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2324,6 +3026,7 @@ class _$NetworkErrorImpl<T> implements NetworkError<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -2385,6 +3088,8 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -2393,6 +3098,7 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -2407,6 +3113,8 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2414,6 +3122,7 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -2428,6 +3137,8 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2435,6 +3146,7 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -2454,6 +3166,10 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -2462,6 +3178,7 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -2476,6 +3193,8 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2483,6 +3202,7 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -2497,6 +3217,8 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2504,6 +3226,7 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -2518,6 +3241,207 @@ class _$UnexpectedImpl<T> implements Unexpected<T> {
 
 abstract class Unexpected<T> implements TransferFailure<T> {
   const factory Unexpected() = _$UnexpectedImpl<T>;
+}
+
+/// @nodoc
+abstract class _$$TransactionNotFoundImplCopyWith<T, $Res> {
+  factory _$$TransactionNotFoundImplCopyWith(_$TransactionNotFoundImpl<T> value,
+          $Res Function(_$TransactionNotFoundImpl<T>) then) =
+      __$$TransactionNotFoundImplCopyWithImpl<T, $Res>;
+}
+
+/// @nodoc
+class __$$TransactionNotFoundImplCopyWithImpl<T, $Res>
+    extends _$TransferFailureCopyWithImpl<T, $Res, _$TransactionNotFoundImpl<T>>
+    implements _$$TransactionNotFoundImplCopyWith<T, $Res> {
+  __$$TransactionNotFoundImplCopyWithImpl(_$TransactionNotFoundImpl<T> _value,
+      $Res Function(_$TransactionNotFoundImpl<T>) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransferFailure
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionNotFoundImpl<T> implements TransactionNotFound<T> {
+  const _$TransactionNotFoundImpl();
+
+  @override
+  String toString() {
+    return 'TransferFailure<$T>.transactionNotFound()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionNotFoundImpl<T>);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(T failedValue) invalidAccountNumber,
+    required TResult Function(T failedValue) accountNotFound,
+    required TResult Function(T failedValue) invalidPhoneNumber,
+    required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
+    required TResult Function(T failedValue) invalidAmount,
+    required TResult Function(T failedValue, double available)
+        insufficientFunds,
+    required TResult Function(T failedValue, double limit) exceedsTransferLimit,
+    required TResult Function(T failedValue, double minimum) belowMinimumAmount,
+    required TResult Function(String message) serverError,
+    required TResult Function() networkError,
+    required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
+    required TResult Function() unauthenticated,
+    required TResult Function() unauthorized,
+    required TResult Function(T failedValue, String message) invalidInput,
+  }) {
+    return transactionNotFound();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(T failedValue)? invalidAccountNumber,
+    TResult? Function(T failedValue)? accountNotFound,
+    TResult? Function(T failedValue)? invalidPhoneNumber,
+    TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
+    TResult? Function(T failedValue)? invalidAmount,
+    TResult? Function(T failedValue, double available)? insufficientFunds,
+    TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
+    TResult? Function(T failedValue, double minimum)? belowMinimumAmount,
+    TResult? Function(String message)? serverError,
+    TResult? Function()? networkError,
+    TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
+    TResult? Function()? unauthenticated,
+    TResult? Function()? unauthorized,
+    TResult? Function(T failedValue, String message)? invalidInput,
+  }) {
+    return transactionNotFound?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T failedValue)? invalidAccountNumber,
+    TResult Function(T failedValue)? accountNotFound,
+    TResult Function(T failedValue)? invalidPhoneNumber,
+    TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
+    TResult Function(T failedValue)? invalidAmount,
+    TResult Function(T failedValue, double available)? insufficientFunds,
+    TResult Function(T failedValue, double limit)? exceedsTransferLimit,
+    TResult Function(T failedValue, double minimum)? belowMinimumAmount,
+    TResult Function(String message)? serverError,
+    TResult Function()? networkError,
+    TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
+    TResult Function()? unauthenticated,
+    TResult Function()? unauthorized,
+    TResult Function(T failedValue, String message)? invalidInput,
+    required TResult orElse(),
+  }) {
+    if (transactionNotFound != null) {
+      return transactionNotFound();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InvalidAccountNumber<T> value)
+        invalidAccountNumber,
+    required TResult Function(AccountNotFound<T> value) accountNotFound,
+    required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
+    required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
+    required TResult Function(InvalidAmount<T> value) invalidAmount,
+    required TResult Function(InsufficientFunds<T> value) insufficientFunds,
+    required TResult Function(ExceedsTransferLimit<T> value)
+        exceedsTransferLimit,
+    required TResult Function(BelowMinimumAmount<T> value) belowMinimumAmount,
+    required TResult Function(ServerError<T> value) serverError,
+    required TResult Function(NetworkError<T> value) networkError,
+    required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
+    required TResult Function(Unauthenticated<T> value) unauthenticated,
+    required TResult Function(Unauthorized<T> value) unauthorized,
+    required TResult Function(InvalidInput<T> value) invalidInput,
+  }) {
+    return transactionNotFound(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InvalidAccountNumber<T> value)? invalidAccountNumber,
+    TResult? Function(AccountNotFound<T> value)? accountNotFound,
+    TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
+    TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
+    TResult? Function(InvalidAmount<T> value)? invalidAmount,
+    TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
+    TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
+    TResult? Function(BelowMinimumAmount<T> value)? belowMinimumAmount,
+    TResult? Function(ServerError<T> value)? serverError,
+    TResult? Function(NetworkError<T> value)? networkError,
+    TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
+    TResult? Function(Unauthenticated<T> value)? unauthenticated,
+    TResult? Function(Unauthorized<T> value)? unauthorized,
+    TResult? Function(InvalidInput<T> value)? invalidInput,
+  }) {
+    return transactionNotFound?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InvalidAccountNumber<T> value)? invalidAccountNumber,
+    TResult Function(AccountNotFound<T> value)? accountNotFound,
+    TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
+    TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
+    TResult Function(InvalidAmount<T> value)? invalidAmount,
+    TResult Function(InsufficientFunds<T> value)? insufficientFunds,
+    TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
+    TResult Function(BelowMinimumAmount<T> value)? belowMinimumAmount,
+    TResult Function(ServerError<T> value)? serverError,
+    TResult Function(NetworkError<T> value)? networkError,
+    TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
+    TResult Function(Unauthenticated<T> value)? unauthenticated,
+    TResult Function(Unauthorized<T> value)? unauthorized,
+    TResult Function(InvalidInput<T> value)? invalidInput,
+    required TResult orElse(),
+  }) {
+    if (transactionNotFound != null) {
+      return transactionNotFound(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionNotFound<T> implements TransferFailure<T> {
+  const factory TransactionNotFound() = _$TransactionNotFoundImpl<T>;
 }
 
 /// @nodoc
@@ -2565,6 +3489,8 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -2573,6 +3499,7 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -2587,6 +3514,8 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2594,6 +3523,7 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -2608,6 +3538,8 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2615,6 +3547,7 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -2634,6 +3567,10 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -2642,6 +3579,7 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -2656,6 +3594,8 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2663,6 +3603,7 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -2677,6 +3618,8 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2684,6 +3627,7 @@ class _$UnauthenticatedImpl<T> implements Unauthenticated<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -2745,6 +3689,8 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -2753,6 +3699,7 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -2767,6 +3714,8 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2774,6 +3723,7 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -2788,6 +3738,8 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2795,6 +3747,7 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -2814,6 +3767,10 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -2822,6 +3779,7 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -2836,6 +3794,8 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2843,6 +3803,7 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -2857,6 +3818,8 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -2864,6 +3827,7 @@ class _$UnauthorizedImpl<T> implements Unauthorized<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
@@ -2963,6 +3927,8 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     required TResult Function(T failedValue) accountNotFound,
     required TResult Function(T failedValue) invalidPhoneNumber,
     required TResult Function(T failedValue) phoneNumberNotFound,
+    required TResult Function(T failedValue) walletAccountNotFound,
+    required TResult Function(T failedValue) invalidWalletAccount,
     required TResult Function(T failedValue) invalidAmount,
     required TResult Function(T failedValue, double available)
         insufficientFunds,
@@ -2971,6 +3937,7 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     required TResult Function(String message) serverError,
     required TResult Function() networkError,
     required TResult Function() unexpected,
+    required TResult Function() transactionNotFound,
     required TResult Function() unauthenticated,
     required TResult Function() unauthorized,
     required TResult Function(T failedValue, String message) invalidInput,
@@ -2985,6 +3952,8 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult? Function(T failedValue)? accountNotFound,
     TResult? Function(T failedValue)? invalidPhoneNumber,
     TResult? Function(T failedValue)? phoneNumberNotFound,
+    TResult? Function(T failedValue)? walletAccountNotFound,
+    TResult? Function(T failedValue)? invalidWalletAccount,
     TResult? Function(T failedValue)? invalidAmount,
     TResult? Function(T failedValue, double available)? insufficientFunds,
     TResult? Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -2992,6 +3961,7 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult? Function(String message)? serverError,
     TResult? Function()? networkError,
     TResult? Function()? unexpected,
+    TResult? Function()? transactionNotFound,
     TResult? Function()? unauthenticated,
     TResult? Function()? unauthorized,
     TResult? Function(T failedValue, String message)? invalidInput,
@@ -3006,6 +3976,8 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult Function(T failedValue)? accountNotFound,
     TResult Function(T failedValue)? invalidPhoneNumber,
     TResult Function(T failedValue)? phoneNumberNotFound,
+    TResult Function(T failedValue)? walletAccountNotFound,
+    TResult Function(T failedValue)? invalidWalletAccount,
     TResult Function(T failedValue)? invalidAmount,
     TResult Function(T failedValue, double available)? insufficientFunds,
     TResult Function(T failedValue, double limit)? exceedsTransferLimit,
@@ -3013,6 +3985,7 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult Function(String message)? serverError,
     TResult Function()? networkError,
     TResult Function()? unexpected,
+    TResult Function()? transactionNotFound,
     TResult Function()? unauthenticated,
     TResult Function()? unauthorized,
     TResult Function(T failedValue, String message)? invalidInput,
@@ -3032,6 +4005,10 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     required TResult Function(AccountNotFound<T> value) accountNotFound,
     required TResult Function(InvalidPhoneNumber<T> value) invalidPhoneNumber,
     required TResult Function(PhoneNumberNotFound<T> value) phoneNumberNotFound,
+    required TResult Function(WalletAccountNotFound<T> value)
+        walletAccountNotFound,
+    required TResult Function(InvalidWalletAccount<T> value)
+        invalidWalletAccount,
     required TResult Function(InvalidAmount<T> value) invalidAmount,
     required TResult Function(InsufficientFunds<T> value) insufficientFunds,
     required TResult Function(ExceedsTransferLimit<T> value)
@@ -3040,6 +4017,7 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     required TResult Function(ServerError<T> value) serverError,
     required TResult Function(NetworkError<T> value) networkError,
     required TResult Function(Unexpected<T> value) unexpected,
+    required TResult Function(TransactionNotFound<T> value) transactionNotFound,
     required TResult Function(Unauthenticated<T> value) unauthenticated,
     required TResult Function(Unauthorized<T> value) unauthorized,
     required TResult Function(InvalidInput<T> value) invalidInput,
@@ -3054,6 +4032,8 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult? Function(AccountNotFound<T> value)? accountNotFound,
     TResult? Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult? Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult? Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult? Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult? Function(InvalidAmount<T> value)? invalidAmount,
     TResult? Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult? Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -3061,6 +4041,7 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult? Function(ServerError<T> value)? serverError,
     TResult? Function(NetworkError<T> value)? networkError,
     TResult? Function(Unexpected<T> value)? unexpected,
+    TResult? Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult? Function(Unauthenticated<T> value)? unauthenticated,
     TResult? Function(Unauthorized<T> value)? unauthorized,
     TResult? Function(InvalidInput<T> value)? invalidInput,
@@ -3075,6 +4056,8 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult Function(AccountNotFound<T> value)? accountNotFound,
     TResult Function(InvalidPhoneNumber<T> value)? invalidPhoneNumber,
     TResult Function(PhoneNumberNotFound<T> value)? phoneNumberNotFound,
+    TResult Function(WalletAccountNotFound<T> value)? walletAccountNotFound,
+    TResult Function(InvalidWalletAccount<T> value)? invalidWalletAccount,
     TResult Function(InvalidAmount<T> value)? invalidAmount,
     TResult Function(InsufficientFunds<T> value)? insufficientFunds,
     TResult Function(ExceedsTransferLimit<T> value)? exceedsTransferLimit,
@@ -3082,6 +4065,7 @@ class _$InvalidInputImpl<T> implements InvalidInput<T> {
     TResult Function(ServerError<T> value)? serverError,
     TResult Function(NetworkError<T> value)? networkError,
     TResult Function(Unexpected<T> value)? unexpected,
+    TResult Function(TransactionNotFound<T> value)? transactionNotFound,
     TResult Function(Unauthenticated<T> value)? unauthenticated,
     TResult Function(Unauthorized<T> value)? unauthorized,
     TResult Function(InvalidInput<T> value)? invalidInput,
