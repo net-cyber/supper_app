@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:super_app/core/constants/app_constants.dart';
 import 'package:super_app/core/handlers/token_interceptor.dart';
 
-@Injectable(as: HttpService)
+@lazySingleton
 class HttpService {
   Dio client({bool requireAuth = false}) {
     return Dio(BaseOptions(

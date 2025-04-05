@@ -21,7 +21,6 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
 import '../handlers/http_service.dart' as _i350;
-import 'injectable.dart' as _i1027;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -34,18 +33,15 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
-    final coreInjectableModule = _$CoreInjectableModule();
-    gh.lazySingleton<_i350.HttpService>(() => coreInjectableModule.httpService);
+    gh.lazySingleton<_i350.HttpService>(() => _i350.HttpService());
     gh.factory<_i1046.AuthRemoteDataSource>(
         () => _i1046.AuthRemoteDataSourceImpl());
     gh.factory<_i787.AuthRepository>(
         () => _i446.AuthRepositoryImpl(gh<_i1046.AuthRemoteDataSource>()));
-    gh.factory<_i859.RegistrationBloc>(
-        () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i247.OtpVerificationBloc>(
         () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
+    gh.factory<_i859.RegistrationBloc>(
+        () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
     return this;
   }
 }
-
-class _$CoreInjectableModule extends _i1027.CoreInjectableModule {}

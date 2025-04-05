@@ -37,8 +37,6 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
   }
 
   Future<void> _onVerifyOtpSubmitted(VerifyOtpSubmitted event, Emitter<OtpVerificationState> emit) async {
-    // TODO: Implement actual OTP verification
-    // For now, we'll consider it a success if it's 6 digits
     if (state.otpCode.length != 6) {
       emit(state.copyWith(
         verificationError: true,
@@ -49,51 +47,70 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
 
     emit(state.copyWith(isVerifying: true));
 
-    // Simulate API call for now
-    await Future.delayed(const Duration(seconds: 1));
+    // Check internet connection
+    if (!await AppConnectivity.connectivity()) {
+      emit(state.copyWith(
+        isVerifying: false,
+        verificationError: true,
+        errorMessage: 'No internet connection. Please check your network.',
+      ));
+      return;
+    }
 
-    // TODO: Replace with actual verification API call
-    emit(state.copyWith(
-      isVerifying: false,
-      isVerified: true,
-    ));
+    final result = await _authRepository.verifyOtp(state.phoneNumber, state.otpCode);
+    
+    result.fold(
+      (failure) {
+        emit(state.copyWith(
+          isVerifying: false,
+          verificationError: true,
+          errorMessage: NetworkExceptions.getErrorMessage(failure),
+        ));
+      },
+      (response) {
+        
+        emit(state.copyWith(
+          isVerifying: false,
+          isVerified: response.phone_verified,
+        ));
+      },
+    );
   }
 
   Future<void> _onResendOtpRequested(ResendOtpRequested event, Emitter<OtpVerificationState> emit) async {
-    final connected = await AppConnectivity.connectivity();
-    
-    if (!connected) {
+    emit(state.copyWith(
+      isResending: true,
+      resendError: false,
+      resendSuccess: false,
+    ));
+
+    // Check internet connection
+    if (!await AppConnectivity.connectivity()) {
       emit(state.copyWith(
+        isResending: false,
         resendError: true,
         errorMessage: 'No internet connection. Please check your network.',
       ));
       return;
     }
+
+    final result = await _authRepository.sendVerificationCode(state.phoneNumber);
     
-    emit(state.copyWith(isResending: true));
-    
-    try {
-      final result = await _authRepository.sendVerificationCode(state.phoneNumber);
-      
-      result.fold(
-        (failure) => emit(state.copyWith(
+    result.fold(
+      (failure) {
+        emit(state.copyWith(
           isResending: false,
           resendError: true,
           errorMessage: NetworkExceptions.getErrorMessage(failure),
-        )),
-        (response) => emit(state.copyWith(
+        ));
+      },
+      (response) {
+        emit(state.copyWith(
           isResending: false,
-          resendError: false,
-          expiresAt: response.expires_at,
           resendSuccess: true,
-        )),
-      );
-    } catch (e) {
-      emit(state.copyWith(
-        isResending: false,
-        resendError: true,
-        errorMessage: e.toString(),
-      ));
-    }
+          expiresAt: response.expires_at,
+        ));
+      },
+    );
   }
 } 
