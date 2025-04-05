@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/theme/app_colors.dart';
+import 'package:go_router/go_router.dart';
+import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
+import 'package:super_app/features/auth/domain/user/user_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -272,7 +276,55 @@ class ProfileScreen extends StatelessWidget {
     final theme = Theme.of(context);
     return Center(
       child: TextButton.icon(
-        onPressed: () {},
+        onPressed: () async {
+          // Show confirmation dialog
+          final shouldLogout = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(
+                'Logout',
+                style: GoogleFonts.outfit(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              content: Text(
+                'Are you sure you want to logout?',
+                style: GoogleFonts.outfit(),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(
+                    'Cancel',
+                    style: GoogleFonts.outfit(
+                      color: theme.textTheme.bodyMedium?.color,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(
+                    'Logout',
+                    style: GoogleFonts.outfit(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ) ?? false;
+
+          if (shouldLogout) {
+            // Get UserService from dependency injection and logout
+            final userService = getIt<UserService>();
+            await userService.logout();
+            
+            // Navigate to login screen
+            if (context.mounted) {
+              context.goNamed(RouteName.login);
+            }
+          }
+        },
         icon: Icon(
           Icons.logout_rounded,
           size: 18.sp,
