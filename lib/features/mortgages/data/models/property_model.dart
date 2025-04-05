@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import '../../domain/entities/property.dart';
+import 'package:super_app/features/mortgages/domain/entities/property.dart';
 
 class PropertyModel extends Property {
   const PropertyModel({
@@ -39,7 +39,7 @@ class PropertyModel extends Property {
       'specifications': (specifications as PropertySpecificationsModel).toJson(),
       'images': images,
       'tags': tags,
-      'date_added': DateFormat("yyyy-MM-ddTHH:mm:ssZ").format(dateAdded),
+      'date_added': DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(dateAdded),
       'mortgage_eligible': mortgageEligible,
       'monthly_payment_estimate': monthlyPaymentEstimate,
     };

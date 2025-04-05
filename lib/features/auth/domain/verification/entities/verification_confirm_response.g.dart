@@ -7,7 +7,7 @@ part of 'verification_confirm_response.dart';
 // **************************************************************************
 
 _$VerificationConfirmResponseImpl _$$VerificationConfirmResponseImplFromJson(
-        Map<String, dynamic> json) =>
+        Map<String, dynamic> json,) =>
     _$VerificationConfirmResponseImpl(
       success: json['success'] as bool,
       message: json['message'] as String,
@@ -16,7 +16,7 @@ _$VerificationConfirmResponseImpl _$$VerificationConfirmResponseImplFromJson(
     );
 
 Map<String, dynamic> _$$VerificationConfirmResponseImplToJson(
-        _$VerificationConfirmResponseImpl instance) =>
+        _$VerificationConfirmResponseImpl instance,) =>
     <String, dynamic>{
       'success': instance.success,
       'message': instance.message,

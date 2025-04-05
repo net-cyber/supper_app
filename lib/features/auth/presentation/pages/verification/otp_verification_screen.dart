@@ -11,14 +11,14 @@ import 'package:super_app/core/theme/app_colors.dart';
 import 'package:super_app/features/auth/application/verification/bloc/otp_verification_bloc.dart';
 
 class OTPVerificationScreen extends StatelessWidget {
-  final String phoneNumber;
-  final DateTime? expiresAt;
 
   const OTPVerificationScreen({
     super.key, 
     required this.phoneNumber,
     this.expiresAt,
   });
+  final String phoneNumber;
+  final DateTime? expiresAt;
 
   @override
   Widget build(BuildContext context) {
@@ -230,15 +230,13 @@ class _OTPVerificationBodyState extends State<OTPVerificationBody> {
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  _timerActive
-                      ? Text(
+                  if (_timerActive) Text(
                           "Resend in $_secondsRemaining sec",
                           style: GoogleFonts.outfit(
                             fontSize: 16.sp,
                             color: colorScheme.primary.withOpacity(0.7),
                           ),
-                        )
-                      : GestureDetector(
+                        ) else GestureDetector(
                           onTap: state.isResending
                               ? null
                               : () => context.read<OtpVerificationBloc>().add(

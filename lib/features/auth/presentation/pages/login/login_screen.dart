@@ -12,7 +12,7 @@ import 'package:super_app/features/auth/application/login/bloc/login_event.dart'
 import 'package:super_app/features/auth/application/login/bloc/login_state.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -89,7 +89,7 @@ class _LoginViewState extends State<LoginView> {
                     hintText: 'Username',
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => context.read<LoginBloc>().add(
-                      LoginEvent.emailChanged(value.toString()),
+                      LoginEvent.emailChanged(value),
                     ),
                     errorText: state.showErrorMessages && !state.email.isValid()
                         ? 'Please enter a valid username'
@@ -101,7 +101,7 @@ class _LoginViewState extends State<LoginView> {
                     hintText: 'Password',
                     obscureText: !state.showPassword,
                     onChanged: (value) => context.read<LoginBloc>().add(
-                      LoginEvent.passwordChanged(value.toString()),
+                      LoginEvent.passwordChanged(value),
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -149,7 +149,7 @@ class _LoginViewState extends State<LoginView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Don\'t have an account?',
+                        "Don't have an account?",
                         style: theme.textTheme.bodyMedium,
                       ),
                       TextButton(

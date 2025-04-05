@@ -11,7 +11,6 @@ import 'package:super_app/features/auth/domain/repositories/auth_repository.dart
 
 @injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepository _authRepository;
 
   LoginBloc(this._authRepository) : super(
     LoginState(
@@ -25,6 +24,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_onLoginSubmitted);
     on<LoginWithUsername>(_onLoginWithUsername);
   }
+  final AuthRepository _authRepository;
 
   void _onEmailChanged(EmailChanged event, Emitter<LoginState> emit) {
     emit(state.copyWith(
@@ -68,17 +68,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         (failure) => emit(state.copyWith(
           isLoading: false,
           isLoginError: true,
-        )),
+        ),),
         (success) => emit(state.copyWith(
           isLoading: false,
           isLoginError: false,
-        )),
+        ),),
       );
     } else {
       emit(state.copyWith(
         isLoading: false,
         isLoginError: true,
-      ));
+      ),);
     }
   }
   
@@ -94,7 +94,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         (failure) => emit(state.copyWith(
           isLoading: false,
           isLoginError: true,
-        )),
+        ),),
         (success) async {
                 // Store tokens
       await LocalStorage.instance.setAccessToken(success.access_token);
@@ -105,14 +105,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(state.copyWith(
           isLoading: false,
           isLoginError: false,
-        ));
+        ),);
         },
       );
     } else {
       emit(state.copyWith(
         isLoading: false,
         isLoginError: true,
-      ));
+      ),);
     }
   }
 } 

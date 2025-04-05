@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PropertySkeleton extends StatelessWidget {
-  const PropertySkeleton({Key? key}) : super(key: key);
+  const PropertySkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {

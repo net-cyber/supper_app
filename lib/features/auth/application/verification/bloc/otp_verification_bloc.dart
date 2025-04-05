@@ -12,7 +12,6 @@ part 'otp_verification_bloc.freezed.dart';
 
 @injectable
 class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationState> {
-  final AuthRepository _authRepository;
   
   OtpVerificationBloc(this._authRepository) 
       : super(OtpVerificationState.initial()) {
@@ -21,19 +20,20 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
     on<ResendOtpRequested>(_onResendOtpRequested);
     on<PhoneNumberSet>(_onPhoneNumberSet);
   }
+  final AuthRepository _authRepository;
 
   void _onOtpCodeChanged(OtpCodeChanged event, Emitter<OtpVerificationState> emit) {
     emit(state.copyWith(
       otpCode: event.otpCode,
       verificationError: false,
       errorMessage: '',
-    ));
+    ),);
   }
 
   void _onPhoneNumberSet(PhoneNumberSet event, Emitter<OtpVerificationState> emit) {
     emit(state.copyWith(
       phoneNumber: event.phoneNumber,
-    ));
+    ),);
   }
 
   Future<void> _onVerifyOtpSubmitted(VerifyOtpSubmitted event, Emitter<OtpVerificationState> emit) async {
@@ -41,7 +41,7 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
       emit(state.copyWith(
         verificationError: true,
         errorMessage: 'Please enter a valid 6-digit code',
-      ));
+      ),);
       return;
     }
 
@@ -53,7 +53,7 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
         isVerifying: false,
         verificationError: true,
         errorMessage: 'No internet connection. Please check your network.',
-      ));
+      ),);
       return;
     }
 
@@ -65,14 +65,14 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
           isVerifying: false,
           verificationError: true,
           errorMessage: NetworkExceptions.getErrorMessage(failure),
-        ));
+        ),);
       },
       (response) {
         
         emit(state.copyWith(
           isVerifying: false,
           isVerified: response.phone_verified,
-        ));
+        ),);
       },
     );
   }
@@ -82,7 +82,7 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
       isResending: true,
       resendError: false,
       resendSuccess: false,
-    ));
+    ),);
 
     // Check internet connection
     if (!await AppConnectivity.connectivity()) {
@@ -90,7 +90,7 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
         isResending: false,
         resendError: true,
         errorMessage: 'No internet connection. Please check your network.',
-      ));
+      ),);
       return;
     }
 
@@ -102,14 +102,14 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
           isResending: false,
           resendError: true,
           errorMessage: NetworkExceptions.getErrorMessage(failure),
-        ));
+        ),);
       },
       (response) {
         emit(state.copyWith(
           isResending: false,
           resendSuccess: true,
           expiresAt: response.expires_at,
-        ));
+        ),);
       },
     );
   }

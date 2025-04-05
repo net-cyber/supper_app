@@ -9,9 +9,9 @@ class MortgageTrackingScreen extends StatefulWidget {
   final String applicationId;
 
   const MortgageTrackingScreen({
-    Key? key,
+    super.key,
     required this.applicationId,
-  }) : super(key: key);
+  });
 
   @override
   State<MortgageTrackingScreen> createState() => _MortgageTrackingScreenState();
@@ -156,9 +156,7 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      _showUploadDocumentDialog();
-                    },
+                    onPressed: _showUploadDocumentDialog,
                     icon: Icon(
                       Icons.upload_file_outlined,
                       color: AppColors.primaryColor,
@@ -174,7 +172,7 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
                     ),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
-                      side: BorderSide(color: AppColors.primaryColor),
+                      side: const BorderSide(color: AppColors.primaryColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.r),
                       ),
@@ -184,10 +182,7 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // Contact mortgage advisor
-                      _showContactAdvisorDialog();
-                    },
+                    onPressed: _showContactAdvisorDialog,
                     icon: Icon(
                       Icons.support_agent_outlined,
                       color: Colors.white,
@@ -219,26 +214,22 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
   }
   
   Widget _buildApplicationStatusCard() {
-    String statusText = '';
+    var statusText = '';
     Color statusColor = Colors.grey;
     
     switch (_applicationData['status']) {
       case 'submitted':
         statusText = 'Submitted';
         statusColor = Colors.blue;
-        break;
       case 'in_review':
         statusText = 'In Review';
         statusColor = Colors.orange;
-        break;
       case 'approved':
         statusText = 'Approved';
         statusColor = Colors.green;
-        break;
       case 'rejected':
         statusText = 'Rejected';
         statusColor = Colors.red;
-        break;
       default:
         statusText = 'Pending';
         statusColor = Colors.grey;
@@ -390,8 +381,8 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
         itemCount: steps.length,
         itemBuilder: (context, index) {
           final step = steps[index] as Map<String, dynamic>;
-          bool isFirst = index == 0;
-          bool isLast = index == steps.length - 1;
+          var isFirst = index == 0;
+          var isLast = index == steps.length - 1;
           
           Color indicatorColor;
           Widget indicatorChild;
@@ -404,7 +395,6 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
                 color: Colors.white,
                 size: 16.sp,
               );
-              break;
             case 'in_progress':
               indicatorColor = Colors.orange;
               indicatorChild = Container(
@@ -415,7 +405,6 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
                   shape: BoxShape.circle,
                 ),
               );
-              break;
             default:
               indicatorColor = Colors.grey[300]!;
               indicatorChild = Container();
@@ -424,7 +413,6 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
           return TimelineTile(
             isFirst: isFirst,
             isLast: isLast,
-            alignment: TimelineAlign.start,
             indicatorStyle: IndicatorStyle(
               width: 24.w,
               height: 24.w,
@@ -521,17 +509,14 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
               statusIcon = Icons.check_circle;
               statusColor = Colors.green;
               statusText = 'Verified';
-              break;
             case 'pending':
               statusIcon = Icons.access_time;
               statusColor = Colors.orange;
               statusText = 'Pending';
-              break;
             case 'rejected':
               statusIcon = Icons.cancel;
               statusColor = Colors.red;
               statusText = 'Rejected';
-              break;
             default:
               statusIcon = Icons.upload_file;
               statusColor = Colors.grey[600]!;
@@ -704,7 +689,6 @@ class _MortgageTrackingScreenState extends State<MortgageTrackingScreen> {
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
                   color: Colors.grey[300]!,
-                  style: BorderStyle.solid,
                 ),
               ),
               child: Center(

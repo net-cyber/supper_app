@@ -14,7 +14,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool _isBalanceVisible = false;
-  int _currentPageIndex = 0;
+  final int _currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         IconButton(
           icon: Badge(
-            label: Text('2'),
+            label: const Text('2'),
             child: Icon(Icons.notifications_none_rounded, color: Colors.grey[800], size: 22.sp),
           ),
           onPressed: () {},
@@ -172,7 +172,7 @@ class _MainScreenState extends State<MainScreen> {
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
-                              letterSpacing: 1.0,
+                              letterSpacing: 1,
                             ),
                           ),
                         ),
@@ -337,10 +337,10 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: actions.map((action) {
           return _buildActionItem(
-            icon: action['icon'] as IconData,
-            label: action['label'] as String,
-            color: action['color'] as Color,
-            route: action['route'] as String,
+            icon: action['icon']! as IconData,
+            label: action['label']! as String,
+            color: action['color']! as Color,
+            route: action['route']! as String,
           );
         }).toList(),
       ),
@@ -410,55 +410,55 @@ class _MainScreenState extends State<MainScreen> {
       {
         'icon': Icons.home_rounded,
         'label': 'Mortgage Loans',
-        'color': Color(0xFF4A6FE5),
+        'color': const Color(0xFF4A6FE5),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.account_balance_rounded,
         'label': 'Deposits',
-        'color': Color(0xFF2EC4B6),
+        'color': const Color(0xFF2EC4B6),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.person_rounded,
         'label': 'Personal Loans',
-        'color': Color(0xFFFF9F1C),
+        'color': const Color(0xFFFF9F1C),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.directions_car_rounded,
         'label': 'Vehicle Loans',
-        'color': Color(0xFFE71D36),
+        'color': const Color(0xFFE71D36),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.home_repair_service_rounded,
         'label': 'Home Equity',
-        'color': Color(0xFF8338EC),
+        'color': const Color(0xFF8338EC),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.chair_rounded,
         'label': 'Furniture Loans',
-        'color': Color(0xFF3A86FF),
+        'color': const Color(0xFF3A86FF),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.apartment_rounded,
         'label': 'Construction',
-        'color': Color(0xFFFF006E),
+        'color': const Color(0xFFFF006E),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.business_rounded,
         'label': 'Commercial',
-        'color': Color(0xFF06D6A0),
+        'color': const Color(0xFF06D6A0),
         'route': RouteName.availableProperties,
       },
       {
         'icon': Icons.public_rounded,
         'label': 'International',
-        'color': Color(0xFFFFBE0B),
+        'color': const Color(0xFFFFBE0B),
         'route': RouteName.availableProperties,
       },
     ];
@@ -519,10 +519,10 @@ class _MainScreenState extends State<MainScreen> {
             itemCount: services.length,
             itemBuilder: (context, index) {
               return _buildServiceItem(
-                icon: services[index]['icon'] as IconData,
-                label: services[index]['label'] as String,
-                color: services[index]['color'] as Color,
-                route: services[index]['route'] as String
+                icon: services[index]['icon']! as IconData,
+                label: services[index]['label']! as String,
+                color: services[index]['color']! as Color,
+                route: services[index]['route']! as String,
               );
             },
           ),
@@ -554,7 +554,6 @@ class _MainScreenState extends State<MainScreen> {
                 color: Colors.black.withOpacity(0.04),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
-                spreadRadius: 0,
               ),
             ],
           ),
@@ -578,7 +577,6 @@ class _MainScreenState extends State<MainScreen> {
                       color: color.withOpacity(0.25),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
-                      spreadRadius: 0,
                     ),
                   ],
                 ),
@@ -620,7 +618,7 @@ class ChipPatternPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     // Draw horizontal lines
-    for (int i = 0; i < 6; i++) {
+    for (var i = 0; i < 6; i++) {
       final y = i * size.height / 5;
       canvas.drawLine(
         Offset(0, y),
@@ -630,7 +628,7 @@ class ChipPatternPainter extends CustomPainter {
     }
 
     // Draw vertical lines
-    for (int i = 0; i < 8; i++) {
+    for (var i = 0; i < 8; i++) {
       final x = i * size.width / 7;
       canvas.drawLine(
         Offset(x, 0),
@@ -681,7 +679,7 @@ class CardPatternPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     // Draw subtle grid lines
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       // Horizontal lines
       canvas.drawLine(
         Offset(0, i * size.height / 9),

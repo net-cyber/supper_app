@@ -2,13 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String hintText;
-  final bool obscureText;
-  final Widget? suffixIcon;
-  final TextInputType? keyboardType;
-  final Function(String)? onChanged;
-  final String? errorText;
 
   const AppTextField({
     Key? key,
@@ -20,6 +13,13 @@ class AppTextField extends StatelessWidget {
     this.onChanged,
     this.errorText,
   }) : super(key: key);
+  final TextEditingController controller;
+  final String hintText;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final TextInputType? keyboardType;
+  final Function(String)? onChanged;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {

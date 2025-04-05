@@ -7,7 +7,7 @@ import 'package:super_app/features/mortgages/presentation/screens/mortgage_appro
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_tracking_screen.dart';
 
 class MortgageDashboardScreen extends StatefulWidget {
-  const MortgageDashboardScreen({Key? key}) : super(key: key);
+  const MortgageDashboardScreen({super.key});
 
   @override
   State<MortgageDashboardScreen> createState() => _MortgageDashboardScreenState();
@@ -112,14 +112,10 @@ class _MortgageDashboardScreenState extends State<MortgageDashboardScreen> with 
         controller: _tabController,
         children: [
           // Applications Tab
-          _applications.isEmpty
-              ? _buildEmptyState('No mortgage applications yet', 'Start by browsing properties and applying for a mortgage.')
-              : _buildApplicationsList(),
+          if (_applications.isEmpty) _buildEmptyState('No mortgage applications yet', 'Start by browsing properties and applying for a mortgage.') else _buildApplicationsList(),
           
           // Pre-Approved Tab
-          _preApprovedOffers.isEmpty
-              ? _buildEmptyState('No pre-approved offers', 'Complete your profile to receive pre-approved mortgage offers.')
-              : _buildPreApprovedList(),
+          if (_preApprovedOffers.isEmpty) _buildEmptyState('No pre-approved offers', 'Complete your profile to receive pre-approved mortgage offers.') else _buildPreApprovedList(),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -246,22 +242,18 @@ class _MortgageDashboardScreenState extends State<MortgageDashboardScreen> with 
         statusColor = Colors.blue;
         statusIcon = Icons.check_circle_outline;
         statusText = 'Submitted';
-        break;
       case 'in_review':
         statusColor = Colors.orange;
         statusIcon = Icons.hourglass_top;
         statusText = 'In Review';
-        break;
       case 'approved':
         statusColor = Colors.green;
         statusIcon = Icons.check_circle;
         statusText = 'Approved';
-        break;
       case 'rejected':
         statusColor = Colors.red;
         statusIcon = Icons.cancel;
         statusText = 'Rejected';
-        break;
       default:
         statusColor = Colors.grey;
         statusIcon = Icons.help_outline;
@@ -285,7 +277,7 @@ class _MortgageDashboardScreenState extends State<MortgageDashboardScreen> with 
                   applicationId: 'GBB-${application['id']}',
                   interestRate: 7.5,
                   loanTerm: 20,
-                  approvedAmount: 5000000.0,
+                  approvedAmount: 5000000,
                 ),
               ),
             );

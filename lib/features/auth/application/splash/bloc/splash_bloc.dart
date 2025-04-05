@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/auth/application/splash/bloc/splash_event.dart';
@@ -26,19 +24,19 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       log('isLoggedIn: $isLoggedIn');
       log('isFirstTime: $isFirstTime');
       // If first time opening app, navigate to onboarding screen
-    // if (isFirstTime) {
-    //   emit(state.copyWith(isLoading: false, routeName: RouteName.onboardingScreen));
-    //   return;
-    // }
-    // If logged in, navigate to main screen
-    if (isLoggedIn) {
-      emit(state.copyWith(isLoading: false, isError: false, routeName: RouteName.mainScreen));
-      return;
-    }
-    // If not logged in, navigate to login screen
-    if (!isLoggedIn) {
-      emit(state.copyWith(isLoading: false, isError: false, routeName: RouteName.login));
-    }
+      if (!isFirstTime) {
+        emit(state.copyWith(isLoading: false, routeName: RouteName.onboarding));
+        return;
+      }
+      // If logged in, navigate to main screen
+      if (isLoggedIn) {
+        emit(state.copyWith(isLoading: false, isError: false, routeName: RouteName.mainScreen));
+        return;
+      }
+      // If not logged in, navigate to login screen
+      if (!isLoggedIn) {
+        emit(state.copyWith(isLoading: false, isError: false, routeName: RouteName.login));
+      }
     } catch (e) {
       emit(state.copyWith(isLoading: false, isError: true));
     }

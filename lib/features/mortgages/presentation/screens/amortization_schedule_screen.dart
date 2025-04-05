@@ -6,11 +6,6 @@ import 'package:super_app/core/theme/app_colors.dart';
 import 'dart:math';
 
 class AmortizationScheduleScreen extends StatefulWidget {
-  final double loanAmount;
-  final double interestRate;
-  final int loanTerm;
-  final DateTime startDate;
-  final double monthlyPayment;
 
   const AmortizationScheduleScreen({
     Key? key,
@@ -20,6 +15,11 @@ class AmortizationScheduleScreen extends StatefulWidget {
     required this.startDate,
     required this.monthlyPayment,
   }) : super(key: key);
+  final double loanAmount;
+  final double interestRate;
+  final int loanTerm;
+  final DateTime startDate;
+  final double monthlyPayment;
 
   @override
   State<AmortizationScheduleScreen> createState() => _AmortizationScheduleScreenState();
@@ -44,13 +44,13 @@ class _AmortizationScheduleScreenState extends State<AmortizationScheduleScreen>
   void _generateAmortizationSchedule() {
     _amortizationSchedule = [];
     
-    double balance = widget.loanAmount;
-    double monthlyRate = widget.interestRate / 100 / 12;
-    int totalPayments = widget.loanTerm * 12;
+    var balance = widget.loanAmount;
+    final monthlyRate = widget.interestRate / 100 / 12;
+    final totalPayments = widget.loanTerm * 12;
     
-    for (int i = 1; i <= totalPayments; i++) {
-      double interestPayment = balance * monthlyRate;
-      double principalPayment = widget.monthlyPayment - interestPayment;
+    for (var i = 1; i <= totalPayments; i++) {
+      var interestPayment = balance * monthlyRate;
+      var principalPayment = widget.monthlyPayment - interestPayment;
       
       // Handle final payment rounding issues
       if (i == totalPayments) {
@@ -61,7 +61,7 @@ class _AmortizationScheduleScreenState extends State<AmortizationScheduleScreen>
       balance -= principalPayment;
       if (balance < 0) balance = 0;
       
-      DateTime paymentDate = DateTime(
+      final paymentDate = DateTime(
         widget.startDate.year,
         widget.startDate.month + i - 1,
         widget.startDate.day,
@@ -150,7 +150,7 @@ class _AmortizationScheduleScreenState extends State<AmortizationScheduleScreen>
                   child: _buildYearSummaryItem(
                     'Principal',
                     paymentsForCurrentYear.fold<double>(
-                      0, (sum, payment) => sum + (payment['principal'] as double)),
+                      0, (sum, payment) => sum + (payment['principal'] as double),),
                     AppColors.primaryColor,
                   ),
                 ),
@@ -158,7 +158,7 @@ class _AmortizationScheduleScreenState extends State<AmortizationScheduleScreen>
                   child: _buildYearSummaryItem(
                     'Interest',
                     paymentsForCurrentYear.fold<double>(
-                      0, (sum, payment) => sum + (payment['interest'] as double)),
+                      0, (sum, payment) => sum + (payment['interest'] as double),),
                     Colors.orange,
                   ),
                 ),
@@ -166,7 +166,7 @@ class _AmortizationScheduleScreenState extends State<AmortizationScheduleScreen>
                   child: _buildYearSummaryItem(
                     'Total Paid',
                     paymentsForCurrentYear.fold<double>(
-                      0, (sum, payment) => sum + (payment['payment'] as double)),
+                      0, (sum, payment) => sum + (payment['payment'] as double),),
                     Colors.blue,
                   ),
                 ),
@@ -314,7 +314,6 @@ class _AmortizationScheduleScreenState extends State<AmortizationScheduleScreen>
   
   Widget _buildYearSummaryItem(String label, double amount, Color color) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           label,

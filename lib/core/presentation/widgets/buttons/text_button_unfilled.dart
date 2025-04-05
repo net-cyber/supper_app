@@ -5,9 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class TextButtonUnfilled extends StatelessWidget {
   const TextButtonUnfilled({
-    super.key,
-    required this.text,
-    required this.onPressed,
+    required this.text, required this.onPressed, super.key,
   });
   final String text;
   final VoidCallback onPressed;

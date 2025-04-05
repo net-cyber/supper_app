@@ -12,8 +12,7 @@ class Registration with _$Registration {
     required EmailAddress emailAddress,
     required Password password,
     required ConfirmPassword confirmPassword,
-    ReferralCode? referralCode,
-    required TermsAcceptance termsAcceptance,
+    required TermsAcceptance termsAcceptance, ReferralCode? referralCode,
   }) = _Registration;
 
   const Registration._();

@@ -1,4 +1,4 @@
-import 'dependancy_manager.config.dart';
+import 'package:super_app/core/di/dependancy_manager.config.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';

@@ -13,9 +13,9 @@ import 'package:super_app/features/auth/infrastructure/auth/datasources/auth_rem
 
 @Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource _remoteDataSource;
 
   AuthRepositoryImpl(this._remoteDataSource);
+  final AuthRemoteDataSource _remoteDataSource;
 
   @override
   Future<Either<NetworkExceptions, RegistrationResponse>> register(Registration registration) async {
@@ -63,7 +63,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
     } catch (e) {
-      return left(NetworkExceptions.unexpectedError());
+      return left(const NetworkExceptions.unexpectedError());
     }
   }
 } 

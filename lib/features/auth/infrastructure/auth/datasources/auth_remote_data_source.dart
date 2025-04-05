@@ -21,77 +21,77 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<RegistrationResponse> register(Registration registration) async {
     try {
-      final Map<String, dynamic> data = {
+      final data = <String, dynamic>{
         'username': registration.userName.value.getOrElse(() => ''),
         'full_name': registration.fullName.value.getOrElse(() => ''),
         'international_phone_number': registration.phoneNumber.value.getOrElse(() => ''),
         'password': registration.password.value.getOrElse(() => ''),
       };
       
-      final response = await getIt<HttpService>().client(requireAuth: false).post(
+      final response = await getIt<HttpService>().client().post(
         '/users',
         data: data,
       );
       
       return RegistrationResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   @override
   Future<VerificationCodeResponse> sendVerificationCode(String phoneNumber) async {
     try {
-      final Map<String, dynamic> data = {
+      final data = <String, dynamic>{
         'phone_number': phoneNumber,
       };
       
-      final response = await getIt<HttpService>().client(requireAuth: false).post(
+      final response = await getIt<HttpService>().client().post(
         '/verify/send',
         data: data,
       );
       
       return VerificationCodeResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   @override
   Future<VerificationConfirmResponse> verifyOtp(String phoneNumber, String otp) async {
     try {
-      final Map<String, dynamic> data = {
+      final data = <String, dynamic>{
         'phone_number': phoneNumber,
         'otp': otp,
       };
       
-      final response = await getIt<HttpService>().client(requireAuth: false).post(
+      final response = await getIt<HttpService>().client().post(
         '/verify/confirm',
         data: data,
       );
       
       return VerificationConfirmResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   @override
   Future<LoginResponse> login(String username, String password) async {
     try {
-      final Map<String, dynamic> data = {
+      final data = <String, dynamic>{
         'username': username,
         'password': password,
       };
       
-      final response = await getIt<HttpService>().client(requireAuth: false).post(
+      final response = await getIt<HttpService>().client().post(
         '/users/login',
         data: data,
       );
       
       return LoginResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw e;
+      rethrow;
     }
   }
 } 

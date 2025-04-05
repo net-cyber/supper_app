@@ -13,6 +13,7 @@ import 'package:super_app/features/auth/presentation/pages/splash/splash_screen.
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
+import 'package:super_app/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 
 
 final router = GoRouter(
@@ -26,6 +27,12 @@ final router = GoRouter(
       builder: (context, state) => const SplashPage(),
     ),
     
+    // Add this route:
+    GoRoute(
+      name: RouteName.onboarding,
+      path: '/${RouteName.onboarding}',
+      builder: (context, state) => const OnboardingPage(),
+    ),
     
     // Settings
     // GoRoute(
@@ -54,9 +61,6 @@ final router = GoRouter(
               name: RouteName.mainScreen,
               path: '/${RouteName.mainScreen}',
               builder: (context, state) => const MainScreen(),
-              routes: const [
-               
-              ],
             ),
           ],
         ),
@@ -126,7 +130,7 @@ final router = GoRouter(
     GoRoute(
       name: RouteName.propertyDetail,
       path: '/${RouteName.propertyDetail}',
-      builder: (context, state) => PropertyDetailScreen(property: state.extra as Property),
+      builder: (context, state) => PropertyDetailScreen(property: state.extra! as Property),
     ),
     GoRoute(
       name: RouteName.availableProperties,
@@ -137,7 +141,7 @@ final router = GoRouter(
   path: '/${RouteName.otpVerification}',
   name: RouteName.otpVerification,
   builder: (context, state) {
-    final Map<String, dynamic> extra = state.extra as Map<String, dynamic>;
+    final extra = state.extra! as Map<String, dynamic>;
     return OTPVerificationScreen(
       phoneNumber: extra['phoneNumber'] as String,
       expiresAt: extra['expiresAt'] as DateTime?,

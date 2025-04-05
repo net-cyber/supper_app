@@ -10,7 +10,6 @@ import 'package:super_app/features/auth/domain/repositories/auth_repository.dart
 
 @injectable
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
-  final AuthRepository _authRepository;
 
   RegistrationBloc(this._authRepository) 
     : super(RegistrationState(
@@ -35,13 +34,14 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     on<ToggleShowConfirmPassword>(_onToggleShowConfirmPassword);
     on<RegistrationSubmitted>(_onRegistrationSubmitted);
   }
+  final AuthRepository _authRepository;
 
   void _onUserNameChanged(UserNameChanged event, Emitter<RegistrationState> emit) {
     emit(state.copyWith(
       userName: UserName(event.userName.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onFullNameChanged(FullNameChanged event, Emitter<RegistrationState> emit) {
@@ -49,7 +49,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       fullName: FullName(event.fullName.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onPhoneNumberChanged(PhoneNumberChanged event, Emitter<RegistrationState> emit) {
@@ -57,7 +57,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       phoneNumber: PhoneNumber(event.phoneNumber.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onEmailChanged(EmailChanged event, Emitter<RegistrationState> emit) {
@@ -65,18 +65,18 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       emailAddress: EmailAddress(event.email.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onPasswordChanged(PasswordChanged event, Emitter<RegistrationState> emit) {
-    final String password = event.password.trim();
+    final password = event.password.trim();
     final passwordObj = Password(password);
     
     // Calculate password strength
-    double strength = 0.0;
+    var strength = 0.0;
     if (password.length >= 8) strength += 0.25;
-    if (password.contains(RegExp(r'[A-Z]'))) strength += 0.25;
-    if (password.contains(RegExp(r'[0-9]'))) strength += 0.25;
+    if (password.contains(RegExp('[A-Z]'))) strength += 0.25;
+    if (password.contains(RegExp('[0-9]'))) strength += 0.25;
     if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) strength += 0.25;
     
     emit(state.copyWith(
@@ -88,7 +88,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       passwordStrength: strength,
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onConfirmPasswordChanged(ConfirmPasswordChanged event, Emitter<RegistrationState> emit) {
@@ -108,7 +108,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       referralCode: ReferralCode(event.referralCode.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onTermsAcceptedChanged(TermsAcceptedChanged event, Emitter<RegistrationState> emit) {
@@ -116,7 +116,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       termsAcceptance: TermsAcceptance(event.accepted),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onToggleShowPassword(ToggleShowPassword event, Emitter<RegistrationState> emit) {
@@ -134,7 +134,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       emit(state.copyWith(
         isRegistrationError: true,
         errorMessage: 'No internet connection. Please check your network.',
-      ));
+      ),);
       return;
     }
     
@@ -169,7 +169,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           isLoading: false,
           isRegistrationError: true,
           errorMessage: NetworkExceptions.getErrorMessage(failure!),
-        ));
+        ),);
       }
       return;
     }
@@ -187,14 +187,14 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           isRegistrationError: true,
           errorMessage: 'Registration successful, but unable to send verification code: ${NetworkExceptions.getErrorMessage(failure)}',
           registrationResponse: response,
-        )),
+        ),),
         (verificationResponse) => emit(state.copyWith(
           isLoading: false,
           isRegistrationError: false,
           registrationResponse: response,
           verificationSent: true,
           verificationResponse: verificationResponse,
-        )),
+        ),),
       );
     }
   }

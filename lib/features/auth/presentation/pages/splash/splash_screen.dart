@@ -11,7 +11,7 @@ import 'package:super_app/features/auth/application/splash/bloc/splash_state.dar
 import 'package:super_app/core/constants/app_constants.dart';
 import 'package:super_app/core/presentation/widgets/loading.dart';
 
-import '../../../../../core/router/route_name.dart';
+import 'package:super_app/core/router/route_name.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});

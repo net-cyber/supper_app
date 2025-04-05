@@ -166,7 +166,7 @@ Either<ValueFailure<String>, String> validatePassword(String input) {
   // Check for special characters
   if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(input)) {
     return left(const ValueFailure.shortPassword(
-      failedValue: 'Password must contain at least one special character (!@#\$%^&*(),.?":\\{\\}|<>)',
+      failedValue: r'Password must contain at least one special character (!@#$%^&*(),.?":\{\}|<>)',
     ),);
   }
   

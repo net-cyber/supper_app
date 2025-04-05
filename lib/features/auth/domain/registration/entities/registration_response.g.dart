@@ -7,7 +7,7 @@ part of 'registration_response.dart';
 // **************************************************************************
 
 _$RegistrationResponseImpl _$$RegistrationResponseImplFromJson(
-        Map<String, dynamic> json) =>
+        Map<String, dynamic> json,) =>
     _$RegistrationResponseImpl(
       username: json['username'] as String,
       full_name: json['full_name'] as String,
@@ -18,7 +18,7 @@ _$RegistrationResponseImpl _$$RegistrationResponseImplFromJson(
     );
 
 Map<String, dynamic> _$$RegistrationResponseImplToJson(
-        _$RegistrationResponseImpl instance) =>
+        _$RegistrationResponseImpl instance,) =>
     <String, dynamic>{
       'username': instance.username,
       'full_name': instance.full_name,

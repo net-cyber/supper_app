@@ -66,7 +66,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
       duration: const Duration(milliseconds: 800),
     );
     
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
@@ -145,13 +145,12 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
               child: Form(
                 key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 30.h),
                     
                     // Logo with animation
                     TweenAnimationBuilder<double>(
-                      tween: Tween<double>(begin: 0.8, end: 1.0),
+                      tween: Tween<double>(begin: 0.8, end: 1),
                       duration: const Duration(milliseconds: 1000),
                       curve: Curves.elasticOut,
                       builder: (context, value, child) {
@@ -573,7 +572,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
             ),
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: isDarkMode ? colorScheme.surfaceContainerHighest : colorScheme.surfaceVariant,
+            fillColor: isDarkMode ? colorScheme.surfaceContainerHighest : colorScheme.surfaceContainerHighest,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide.none,

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_application_screen.dart';
-import '../../domain/entities/property.dart';
+import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/core/theme/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
@@ -17,12 +17,12 @@ final currencyFormat = NumberFormat.currency(
 );
 
 class PropertyDetailScreen extends StatefulWidget {
-  final Property property;
 
   const PropertyDetailScreen({
     Key? key,
     required this.property,
   }) : super(key: key);
+  final Property property;
 
   @override
   State<PropertyDetailScreen> createState() => _PropertyDetailScreenState();
@@ -85,9 +85,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 ),
                 actions: [
                   GestureDetector(
-                    onTap: () {
-                      _toggleFavorite();
-                    },
+                    onTap: _toggleFavorite,
                     child: Container(
                       margin: EdgeInsets.only(right: 16.w, top: 16.h),
                       padding: EdgeInsets.all(8.w),
@@ -110,10 +108,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      // Share property
-                      _shareProperty();
-                    },
+                    onTap: _shareProperty,
                     child: Container(
                       margin: EdgeInsets.only(right: 16.w, top: 16.h),
                       padding: EdgeInsets.all(8.w),
@@ -477,7 +472,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                       color: AppColors.primaryColor,
                                     ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Text(
                                     currencyFormat.format(widget.property.price * 0.2),
                                     style: GoogleFonts.outfit(
@@ -568,13 +563,10 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton(
-                                  onPressed: () {
-                                    // Show detailed mortgage calculator
-                                    _showMortgageCalculatorDialog();
-                                  },
+                                  onPressed: _showMortgageCalculatorDialog,
                                   style: OutlinedButton.styleFrom(
                                     padding: EdgeInsets.symmetric(vertical: 12.h),
-                                    side: BorderSide(color: AppColors.primaryColor),
+                                    side: const BorderSide(color: AppColors.primaryColor),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
@@ -672,9 +664,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                               children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      _showTourScheduleDialog();
-                                    },
+                                    onPressed: _showTourScheduleDialog,
                                     icon: Icon(
                                       Icons.date_range_outlined,
                                       color: Colors.white,
@@ -700,9 +690,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                 SizedBox(width: 12.w),
                                 Expanded(
                                   child: OutlinedButton.icon(
-                                    onPressed: () {
-                                      _showVirtualTourDialog();
-                                    },
+                                    onPressed: _showVirtualTourDialog,
                                     icon: Icon(
                                       Icons.videocam_outlined,
                                       color: AppColors.primaryColor,
@@ -718,7 +706,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                     ),
                                     style: OutlinedButton.styleFrom(
                                       padding: EdgeInsets.symmetric(vertical: 12.h),
-                                      side: BorderSide(color: AppColors.primaryColor),
+                                      side: const BorderSide(color: AppColors.primaryColor),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8.r),
                                       ),
@@ -765,7 +753,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                           widget.property.location.latitude!,
                                           widget.property.location.longitude!,
                                         ),
-                                        zoom: 15.0,
+                                        zoom: 15,
                                       ),
                                       children: [
                                         TileLayer(
@@ -869,9 +857,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                   // Contact Agent Button
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        _showContactDialog();
-                      },
+                      onPressed: _showContactDialog,
                       icon: Icon(
                         Icons.phone_outlined,
                         color: AppColors.primaryColor,
@@ -887,7 +873,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       ),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 16.h),
-                        side: BorderSide(color: AppColors.primaryColor),
+                        side: const BorderSide(color: AppColors.primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
@@ -1110,7 +1096,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
 
   void _shareProperty() {
-    final String shareText = 'Check out this property: ${widget.property.title} - '
+    final shareText = 'Check out this property: ${widget.property.title} - '
         'Price: ETB ${NumberFormat.currency(locale: 'en_ET', symbol: '', decimalDigits: 0).format(widget.property.price)} '
         'Location: ${widget.property.location.neighborhood}, ${widget.property.location.city}';
     
@@ -1124,8 +1110,8 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
 
   void _showTourScheduleDialog() {
-    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
-    String selectedTime = '10:00 AM';
+    var selectedDate = DateTime.now().add(const Duration(days: 1));
+    var selectedTime = '10:00 AM';
     
     showDialog(
       context: context,
@@ -1186,7 +1172,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           color: AppColors.primaryColor,
                         ),
                         onPressed: () async {
-                          final DateTime? picked = await showDatePicker(
+                          final picked = await showDatePicker(
                             context: context,
                             initialDate: selectedDate,
                             firstDate: DateTime.now(),
@@ -1388,7 +1374,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
 
   Widget _buildSimilarPropertyCard(int index) {
     // Dummy data for similar properties
-    final List<Map<String, dynamic>> similarProperties = [
+    final similarProperties = <Map<String, dynamic>>[
       {
         'title': 'Modern Apartment in Bole',
         'price': 4500000.0,
@@ -1551,17 +1537,17 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       if (_isFavorite) {
         favorites.add(widget.property.id);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Added to favorites'),
-            duration: const Duration(seconds: 2),
+            duration: Duration(seconds: 2),
           ),
         );
       } else {
         favorites.remove(widget.property.id);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Removed from favorites'),
-            duration: const Duration(seconds: 2),
+            duration: Duration(seconds: 2),
           ),
         );
       }
@@ -1628,18 +1614,18 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
 
   void _showMortgageCalculatorDialog() {
-    double downPaymentPercentage = 20.0;
-    int loanTermYears = 20;
-    double interestRate = 7.5;
+    var downPaymentPercentage = 20;
+    var loanTermYears = 20;
+    var interestRate = 7.5;
     
     double calculateMonthlyPayment(double price, double downPaymentPercent, int termYears, double rate) {
-      double loanAmount = price * (1 - downPaymentPercent / 100);
-      double monthlyRate = rate / 100 / 12;
-      int totalPayments = termYears * 12;
+      var loanAmount = price * (1 - downPaymentPercent / 100);
+      var monthlyRate = rate / 100 / 12;
+      var totalPayments = termYears * 12;
       
       // Monthly payment formula: P = L[c(1 + c)^n]/[(1 + c)^n - 1]
       // where L = loan amount, c = monthly interest rate, n = number of payments
-      double monthlyPayment = loanAmount * (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 
+      var monthlyPayment = loanAmount * (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 
                              (pow(1 + monthlyRate, totalPayments) - 1);
       
       return monthlyPayment;
@@ -1649,11 +1635,11 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
-          double monthlyPayment = calculateMonthlyPayment(
+          var monthlyPayment = calculateMonthlyPayment(
             widget.property.price, 
-            downPaymentPercentage, 
+            downPaymentPercentage.toDouble(), 
             loanTermYears, 
-            interestRate
+            interestRate,
           );
           
           return AlertDialog(
@@ -1693,7 +1679,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 ),
                 SizedBox(height: 8.h),
                 Slider(
-                  value: downPaymentPercentage,
+                  value: downPaymentPercentage.toDouble(),
                   min: 10,
                   max: 50,
                   divisions: 8,
@@ -1702,7 +1688,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                   label: '${downPaymentPercentage.toStringAsFixed(0)}%',
                   onChanged: (value) {
                     setState(() {
-                      downPaymentPercentage = value;
+                      downPaymentPercentage = value.toInt();
                     });
                   },
                 ),
@@ -1877,7 +1863,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 widget.property.location.latitude!,
                 widget.property.location.longitude!,
               ),
-              zoom: 16.0,
+              zoom: 16,
             ),
             children: [
               TileLayer(

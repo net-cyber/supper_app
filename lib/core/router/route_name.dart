@@ -23,4 +23,5 @@ class RouteName {
   static const registrationScreen = 'registrationScreen';
   static const termsAndConditionsScreen = 'termsAndConditionsScreen';
   static const otpVerification = 'otpVerification';
+  static const onboarding = 'onboarding';
 }
