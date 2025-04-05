@@ -10,6 +10,7 @@ import 'package:super_app/features/auth/domain/user/user_service.dart';
 import 'package:super_app/core/application/app/bloc/app_bloc.dart';
 import 'package:super_app/core/application/app/bloc/app_event.dart';
 import 'package:super_app/core/application/app/bloc/app_state.dart';
+import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -94,6 +95,14 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildProfileHeader(BuildContext context) {
     final theme = Theme.of(context);
+    final userService = getIt<UserService>();
+    final LoginUser? user = userService.getCurrentUser();
+    
+    // Default values in case user data is not available
+    final String displayName = user?.full_name ?? 'Guest User';
+    final String username = user?.username ?? 'username';
+    final String initials = _getInitials(displayName);
+    
     return Column(
       children: [
         Center(
@@ -106,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                'NS',
+                initials,
                 style: GoogleFonts.outfit(
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w600,
@@ -119,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
         SizedBox(height: 16.h),
         Center(
           child: Text(
-            'Natnael Seyoum',
+            displayName,
             style: GoogleFonts.outfit(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
@@ -130,7 +139,7 @@ class ProfileScreen extends StatelessWidget {
         SizedBox(height: 4.h),
         Center(
           child: Text(
-            'natnael@gmail.com',
+            username,
             style: GoogleFonts.outfit(
               fontSize: 14.sp,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
@@ -163,6 +172,20 @@ class ProfileScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// Get initials from full name (e.g. "John Doe" -> "JD")
+  String _getInitials(String fullName) {
+    if (fullName.isEmpty) return '';
+    
+    final nameParts = fullName.trim().split(' ');
+    if (nameParts.isEmpty) return '';
+    
+    if (nameParts.length == 1) {
+      return nameParts[0].isNotEmpty ? nameParts[0][0].toUpperCase() : '';
+    }
+    
+    return '${nameParts[0][0]}${nameParts.last[0]}'.toUpperCase();
   }
 
   Widget _buildMenuSection(BuildContext context) {
