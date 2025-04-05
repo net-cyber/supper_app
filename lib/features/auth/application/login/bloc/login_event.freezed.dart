@@ -22,6 +22,8 @@ mixin _$LoginEvent {
     required TResult Function(String password) passwordChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() loginSubmitted,
+    required TResult Function(String username, String password)
+        loginWithUsername,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,6 +32,7 @@ mixin _$LoginEvent {
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? loginSubmitted,
+    TResult? Function(String username, String password)? loginWithUsername,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,6 +41,7 @@ mixin _$LoginEvent {
     TResult Function(String password)? passwordChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? loginSubmitted,
+    TResult Function(String username, String password)? loginWithUsername,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -47,6 +51,7 @@ mixin _$LoginEvent {
     required TResult Function(PasswordChanged value) passwordChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(LoginSubmitted value) loginSubmitted,
+    required TResult Function(LoginWithUsername value) loginWithUsername,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -55,6 +60,7 @@ mixin _$LoginEvent {
     TResult? Function(PasswordChanged value)? passwordChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(LoginSubmitted value)? loginSubmitted,
+    TResult? Function(LoginWithUsername value)? loginWithUsername,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -63,6 +69,7 @@ mixin _$LoginEvent {
     TResult Function(PasswordChanged value)? passwordChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(LoginSubmitted value)? loginSubmitted,
+    TResult Function(LoginWithUsername value)? loginWithUsername,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -161,6 +168,8 @@ class _$EmailChangedImpl implements EmailChanged {
     required TResult Function(String password) passwordChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() loginSubmitted,
+    required TResult Function(String username, String password)
+        loginWithUsername,
   }) {
     return emailChanged(email);
   }
@@ -172,6 +181,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? loginSubmitted,
+    TResult? Function(String username, String password)? loginWithUsername,
   }) {
     return emailChanged?.call(email);
   }
@@ -183,6 +193,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult Function(String password)? passwordChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? loginSubmitted,
+    TResult Function(String username, String password)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (emailChanged != null) {
@@ -198,6 +209,7 @@ class _$EmailChangedImpl implements EmailChanged {
     required TResult Function(PasswordChanged value) passwordChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(LoginSubmitted value) loginSubmitted,
+    required TResult Function(LoginWithUsername value) loginWithUsername,
   }) {
     return emailChanged(this);
   }
@@ -209,6 +221,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult? Function(PasswordChanged value)? passwordChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(LoginSubmitted value)? loginSubmitted,
+    TResult? Function(LoginWithUsername value)? loginWithUsername,
   }) {
     return emailChanged?.call(this);
   }
@@ -220,6 +233,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult Function(PasswordChanged value)? passwordChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(LoginSubmitted value)? loginSubmitted,
+    TResult Function(LoginWithUsername value)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (emailChanged != null) {
@@ -315,6 +329,8 @@ class _$PasswordChangedImpl implements PasswordChanged {
     required TResult Function(String password) passwordChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() loginSubmitted,
+    required TResult Function(String username, String password)
+        loginWithUsername,
   }) {
     return passwordChanged(password);
   }
@@ -326,6 +342,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? loginSubmitted,
+    TResult? Function(String username, String password)? loginWithUsername,
   }) {
     return passwordChanged?.call(password);
   }
@@ -337,6 +354,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult Function(String password)? passwordChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? loginSubmitted,
+    TResult Function(String username, String password)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (passwordChanged != null) {
@@ -352,6 +370,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     required TResult Function(PasswordChanged value) passwordChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(LoginSubmitted value) loginSubmitted,
+    required TResult Function(LoginWithUsername value) loginWithUsername,
   }) {
     return passwordChanged(this);
   }
@@ -363,6 +382,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult? Function(PasswordChanged value)? passwordChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(LoginSubmitted value)? loginSubmitted,
+    TResult? Function(LoginWithUsername value)? loginWithUsername,
   }) {
     return passwordChanged?.call(this);
   }
@@ -374,6 +394,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult Function(PasswordChanged value)? passwordChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(LoginSubmitted value)? loginSubmitted,
+    TResult Function(LoginWithUsername value)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (passwordChanged != null) {
@@ -440,6 +461,8 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     required TResult Function(String password) passwordChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() loginSubmitted,
+    required TResult Function(String username, String password)
+        loginWithUsername,
   }) {
     return toggleShowPassword();
   }
@@ -451,6 +474,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? loginSubmitted,
+    TResult? Function(String username, String password)? loginWithUsername,
   }) {
     return toggleShowPassword?.call();
   }
@@ -462,6 +486,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult Function(String password)? passwordChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? loginSubmitted,
+    TResult Function(String username, String password)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (toggleShowPassword != null) {
@@ -477,6 +502,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     required TResult Function(PasswordChanged value) passwordChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(LoginSubmitted value) loginSubmitted,
+    required TResult Function(LoginWithUsername value) loginWithUsername,
   }) {
     return toggleShowPassword(this);
   }
@@ -488,6 +514,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult? Function(PasswordChanged value)? passwordChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(LoginSubmitted value)? loginSubmitted,
+    TResult? Function(LoginWithUsername value)? loginWithUsername,
   }) {
     return toggleShowPassword?.call(this);
   }
@@ -499,6 +526,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult Function(PasswordChanged value)? passwordChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(LoginSubmitted value)? loginSubmitted,
+    TResult Function(LoginWithUsername value)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (toggleShowPassword != null) {
@@ -557,6 +585,8 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
     required TResult Function(String password) passwordChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() loginSubmitted,
+    required TResult Function(String username, String password)
+        loginWithUsername,
   }) {
     return loginSubmitted();
   }
@@ -568,6 +598,7 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? loginSubmitted,
+    TResult? Function(String username, String password)? loginWithUsername,
   }) {
     return loginSubmitted?.call();
   }
@@ -579,6 +610,7 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
     TResult Function(String password)? passwordChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? loginSubmitted,
+    TResult Function(String username, String password)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (loginSubmitted != null) {
@@ -594,6 +626,7 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
     required TResult Function(PasswordChanged value) passwordChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(LoginSubmitted value) loginSubmitted,
+    required TResult Function(LoginWithUsername value) loginWithUsername,
   }) {
     return loginSubmitted(this);
   }
@@ -605,6 +638,7 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
     TResult? Function(PasswordChanged value)? passwordChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(LoginSubmitted value)? loginSubmitted,
+    TResult? Function(LoginWithUsername value)? loginWithUsername,
   }) {
     return loginSubmitted?.call(this);
   }
@@ -616,6 +650,7 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
     TResult Function(PasswordChanged value)? passwordChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(LoginSubmitted value)? loginSubmitted,
+    TResult Function(LoginWithUsername value)? loginWithUsername,
     required TResult orElse(),
   }) {
     if (loginSubmitted != null) {
@@ -627,4 +662,176 @@ class _$LoginSubmittedImpl implements LoginSubmitted {
 
 abstract class LoginSubmitted implements LoginEvent {
   const factory LoginSubmitted() = _$LoginSubmittedImpl;
+}
+
+/// @nodoc
+abstract class _$$LoginWithUsernameImplCopyWith<$Res> {
+  factory _$$LoginWithUsernameImplCopyWith(_$LoginWithUsernameImpl value,
+          $Res Function(_$LoginWithUsernameImpl) then) =
+      __$$LoginWithUsernameImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String username, String password});
+}
+
+/// @nodoc
+class __$$LoginWithUsernameImplCopyWithImpl<$Res>
+    extends _$LoginEventCopyWithImpl<$Res, _$LoginWithUsernameImpl>
+    implements _$$LoginWithUsernameImplCopyWith<$Res> {
+  __$$LoginWithUsernameImplCopyWithImpl(_$LoginWithUsernameImpl _value,
+      $Res Function(_$LoginWithUsernameImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? username = null,
+    Object? password = null,
+  }) {
+    return _then(_$LoginWithUsernameImpl(
+      null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LoginWithUsernameImpl implements LoginWithUsername {
+  const _$LoginWithUsernameImpl(this.username, this.password);
+
+  @override
+  final String username;
+  @override
+  final String password;
+
+  @override
+  String toString() {
+    return 'LoginEvent.loginWithUsername(username: $username, password: $password)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LoginWithUsernameImpl &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.password, password) ||
+                other.password == password));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, username, password);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoginWithUsernameImplCopyWith<_$LoginWithUsernameImpl> get copyWith =>
+      __$$LoginWithUsernameImplCopyWithImpl<_$LoginWithUsernameImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email) emailChanged,
+    required TResult Function(String password) passwordChanged,
+    required TResult Function() toggleShowPassword,
+    required TResult Function() loginSubmitted,
+    required TResult Function(String username, String password)
+        loginWithUsername,
+  }) {
+    return loginWithUsername(username, password);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email)? emailChanged,
+    TResult? Function(String password)? passwordChanged,
+    TResult? Function()? toggleShowPassword,
+    TResult? Function()? loginSubmitted,
+    TResult? Function(String username, String password)? loginWithUsername,
+  }) {
+    return loginWithUsername?.call(username, password);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email)? emailChanged,
+    TResult Function(String password)? passwordChanged,
+    TResult Function()? toggleShowPassword,
+    TResult Function()? loginSubmitted,
+    TResult Function(String username, String password)? loginWithUsername,
+    required TResult orElse(),
+  }) {
+    if (loginWithUsername != null) {
+      return loginWithUsername(username, password);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(EmailChanged value) emailChanged,
+    required TResult Function(PasswordChanged value) passwordChanged,
+    required TResult Function(ToggleShowPassword value) toggleShowPassword,
+    required TResult Function(LoginSubmitted value) loginSubmitted,
+    required TResult Function(LoginWithUsername value) loginWithUsername,
+  }) {
+    return loginWithUsername(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(EmailChanged value)? emailChanged,
+    TResult? Function(PasswordChanged value)? passwordChanged,
+    TResult? Function(ToggleShowPassword value)? toggleShowPassword,
+    TResult? Function(LoginSubmitted value)? loginSubmitted,
+    TResult? Function(LoginWithUsername value)? loginWithUsername,
+  }) {
+    return loginWithUsername?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(EmailChanged value)? emailChanged,
+    TResult Function(PasswordChanged value)? passwordChanged,
+    TResult Function(ToggleShowPassword value)? toggleShowPassword,
+    TResult Function(LoginSubmitted value)? loginSubmitted,
+    TResult Function(LoginWithUsername value)? loginWithUsername,
+    required TResult orElse(),
+  }) {
+    if (loginWithUsername != null) {
+      return loginWithUsername(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class LoginWithUsername implements LoginEvent {
+  const factory LoginWithUsername(
+      final String username, final String password) = _$LoginWithUsernameImpl;
+
+  String get username;
+  String get password;
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LoginWithUsernameImplCopyWith<_$LoginWithUsernameImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

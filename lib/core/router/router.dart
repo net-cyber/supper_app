@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/registration/registration_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/verification/otp_verification_screen.dart';
@@ -142,6 +143,12 @@ final router = GoRouter(
       expiresAt: extra['expiresAt'] as DateTime?,
     );
   },
+),
+
+GoRoute(
+  name: RouteName.login,
+  path: '/${RouteName.login}',
+  builder: (context, state) => const LoginScreen(),
 ),
 
      GoRoute(

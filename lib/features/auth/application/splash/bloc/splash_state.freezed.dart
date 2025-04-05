@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SplashState {
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isError => throw _privateConstructorUsedError;
+  String? get routeName => throw _privateConstructorUsedError;
 
   /// Create a copy of SplashState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,7 +33,7 @@ abstract class $SplashStateCopyWith<$Res> {
           SplashState value, $Res Function(SplashState) then) =
       _$SplashStateCopyWithImpl<$Res, SplashState>;
   @useResult
-  $Res call({bool isLoading, bool isError});
+  $Res call({bool isLoading, bool isError, String? routeName});
 }
 
 /// @nodoc
@@ -52,6 +53,7 @@ class _$SplashStateCopyWithImpl<$Res, $Val extends SplashState>
   $Res call({
     Object? isLoading = null,
     Object? isError = null,
+    Object? routeName = freezed,
   }) {
     return _then(_value.copyWith(
       isLoading: null == isLoading
@@ -62,6 +64,10 @@ class _$SplashStateCopyWithImpl<$Res, $Val extends SplashState>
           ? _value.isError
           : isError // ignore: cast_nullable_to_non_nullable
               as bool,
+      routeName: freezed == routeName
+          ? _value.routeName
+          : routeName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -74,7 +80,7 @@ abstract class _$$SplashStateImplCopyWith<$Res>
       __$$SplashStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isLoading, bool isError});
+  $Res call({bool isLoading, bool isError, String? routeName});
 }
 
 /// @nodoc
@@ -92,6 +98,7 @@ class __$$SplashStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = null,
     Object? isError = null,
+    Object? routeName = freezed,
   }) {
     return _then(_$SplashStateImpl(
       isLoading: null == isLoading
@@ -102,6 +109,10 @@ class __$$SplashStateImplCopyWithImpl<$Res>
           ? _value.isError
           : isError // ignore: cast_nullable_to_non_nullable
               as bool,
+      routeName: freezed == routeName
+          ? _value.routeName
+          : routeName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -109,7 +120,8 @@ class __$$SplashStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SplashStateImpl extends _SplashState {
-  const _$SplashStateImpl({this.isLoading = false, this.isError = false})
+  const _$SplashStateImpl(
+      {this.isLoading = false, this.isError = false, this.routeName})
       : super._();
 
   @override
@@ -118,10 +130,12 @@ class _$SplashStateImpl extends _SplashState {
   @override
   @JsonKey()
   final bool isError;
+  @override
+  final String? routeName;
 
   @override
   String toString() {
-    return 'SplashState(isLoading: $isLoading, isError: $isError)';
+    return 'SplashState(isLoading: $isLoading, isError: $isError, routeName: $routeName)';
   }
 
   @override
@@ -131,11 +145,13 @@ class _$SplashStateImpl extends _SplashState {
             other is _$SplashStateImpl &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
-            (identical(other.isError, isError) || other.isError == isError));
+            (identical(other.isError, isError) || other.isError == isError) &&
+            (identical(other.routeName, routeName) ||
+                other.routeName == routeName));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, isError);
+  int get hashCode => Object.hash(runtimeType, isLoading, isError, routeName);
 
   /// Create a copy of SplashState
   /// with the given fields replaced by the non-null parameter values.
@@ -147,14 +163,18 @@ class _$SplashStateImpl extends _SplashState {
 }
 
 abstract class _SplashState extends SplashState {
-  const factory _SplashState({final bool isLoading, final bool isError}) =
-      _$SplashStateImpl;
+  const factory _SplashState(
+      {final bool isLoading,
+      final bool isError,
+      final String? routeName}) = _$SplashStateImpl;
   const _SplashState._() : super._();
 
   @override
   bool get isLoading;
   @override
   bool get isError;
+  @override
+  String? get routeName;
 
   /// Create a copy of SplashState
   /// with the given fields replaced by the non-null parameter values.

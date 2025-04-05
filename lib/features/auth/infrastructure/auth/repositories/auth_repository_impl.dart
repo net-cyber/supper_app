@@ -2,6 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
+import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration_response.dart';
 import 'package:super_app/features/auth/domain/repositories/auth_repository.dart';
@@ -48,6 +50,20 @@ class AuthRepositoryImpl implements AuthRepository {
       return left(NetworkExceptions.getDioException(e));
     } catch (e) {
       return left(NetworkExceptions.defaultError(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<NetworkExceptions, LoginResponse>> login(String username, String password) async {
+    try {
+      final response = await _remoteDataSource.login(username, password);
+    
+      
+      return right(response);
+    } on DioException catch (e) {
+      return left(NetworkExceptions.getDioException(e));
+    } catch (e) {
+      return left(NetworkExceptions.unexpectedError());
     }
   }
 } 

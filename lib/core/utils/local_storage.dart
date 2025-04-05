@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:super_app/core/utils/local_storage_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LocalStorage {
   LocalStorage._();
@@ -14,10 +16,12 @@ class LocalStorage {
     }
     return _localStorage!;
   }
+
   /// init shared preferences
   Future<void> _init() async {
     _preferences = await SharedPreferences.getInstance();
   }
+
   /// get is onboarding
   bool getIsDoneOnboarding() {
     final isDoneOnboarding = _preferences?.getBool(LocalStorageKey.isDoneOnboarding);
@@ -122,4 +126,42 @@ class LocalStorage {
     _preferences?.remove(LocalStorageKey.themeMode);
   }
 
+  /// set user data
+  Future<void> setUserData(Map<String, dynamic> userData) async {
+    if (_preferences == null) {
+      return;
+    }
+    final userDataString = jsonEncode(userData);
+    await _preferences?.setString(LocalStorageKey.userData, userDataString);
+  }
+
+  /// get user data
+  Map<String, dynamic>? getUserData() {
+    if (_preferences == null) {
+      return null;
+    }
+    final userDataString = _preferences?.getString(LocalStorageKey.userData);
+    if (userDataString == null) {
+      return null;
+    }
+    return jsonDecode(userDataString) as Map<String, dynamic>;
+  }
+
+  /// delete user data
+  Future<void> deleteUserData() async {
+    if (_preferences == null) {
+      return;
+    }
+    await _preferences?.remove(LocalStorageKey.userData);
+  }
+
+  /// clear user session (tokens and data)
+  Future<void> clearUserSession() async {
+    if (_preferences == null) {
+      return;
+    }
+    await deleteAccessToken();
+    await deleteRefreshToken();
+    await deleteUserData();
+  }
 }

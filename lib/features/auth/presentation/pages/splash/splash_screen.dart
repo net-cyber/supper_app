@@ -30,12 +30,13 @@ class SplashPage extends StatelessWidget {
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if (!state.isLoading && !state.isError) {
-            context.goNamed(RouteName.registrationScreen);
+            context.goNamed(state.routeName!);
           }
           
           if (state.isError) {
             // Handle error state
             // Show error message or retry option
+            
           }
         },
         child: Scaffold(
