@@ -24,7 +24,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       log('isLoggedIn: $isLoggedIn');
       log('isFirstTime: $isFirstTime');
       // If first time opening app, navigate to onboarding screen
-      if (!isFirstTime) {
+      if (isFirstTime) {
         emit(state.copyWith(isLoading: false, routeName: RouteName.onboarding));
         return;
       }

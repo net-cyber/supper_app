@@ -7,6 +7,8 @@ abstract class UserService {
   LoginUser? getCurrentUser();
   // show onboarding screen if user is first time opening the app
   bool isFirstTimeOpeningApp();
+  // set the user as first time opening the app
+  void setFirstTimeOpeningApp();
   
   /// Check if the user is logged in
   bool isLoggedIn();
@@ -37,8 +39,13 @@ class UserServiceImpl implements UserService {
 
   @override 
   bool isFirstTimeOpeningApp() {
-    final isFirstTime = LocalStorage.instance.getIsDoneOnboarding();
-    return isFirstTime;
+    final isDoneOnboarding = LocalStorage.instance.getIsDoneOnboarding();
+    return !isDoneOnboarding;
+  }
+
+  @override
+  void setFirstTimeOpeningApp() {
+    LocalStorage.instance.setIsDoneOnboarding(true);
   }
   
   @override

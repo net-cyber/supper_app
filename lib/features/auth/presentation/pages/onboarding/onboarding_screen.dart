@@ -3,7 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/constants/app_constants.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/features/auth/domain/user/user_service.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -208,7 +211,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  void _onFinish(BuildContext context) {
+  Future<void> _onFinish(BuildContext context) async {
+    await LocalStorage.ensureInitialized();
+    await LocalStorage.instance.setIsDoneOnboarding(true);
     // Navigate to login after onboarding
     context.goNamed(RouteName.login);
   }

@@ -9,13 +9,19 @@ class LocalStorage {
   LocalStorage._();
   static SharedPreferences? _preferences;
   static LocalStorage? _localStorage;
-  static LocalStorage instance = LocalStorage._();
-  static Future<LocalStorage> getInstance() async {
-    if (_localStorage == null){
-      _localStorage = LocalStorage._();
-      await _localStorage!._init();
+  static final LocalStorage instance = LocalStorage._();
+  
+  static Future<void> ensureInitialized() async {
+    try {
+      if (_preferences == null) {
+        _preferences = await SharedPreferences.getInstance();
+        log('SharedPreferences initialized successfully');
+      }
+    } catch (e) {
+      log('Error initializing SharedPreferences: $e');
+      // Initialize with an empty instance to prevent further crashes
+      _preferences = null;
     }
-    return _localStorage!;
   }
 
   /// init shared preferences
@@ -25,18 +31,34 @@ class LocalStorage {
 
   /// get is onboarding
   bool getIsDoneOnboarding() {
-    final isDoneOnboarding = _preferences?.getBool(LocalStorageKey.isDoneOnboarding);
-    if (isDoneOnboarding == null) {
+    try {
+      if (_preferences == null) {
+        log('getIsDoneOnboarding: _preferences is null');
+        return false;
+      }
+      final isDoneOnboarding = _preferences!.getBool(LocalStorageKey.isDoneOnboarding);
+      log('getIsDoneOnboarding: $isDoneOnboarding');
+      
+      return isDoneOnboarding ?? false;
+    } catch (e) {
+      log('Error in getIsDoneOnboarding: $e');
       return false;
     }
-    return isDoneOnboarding;
   }
   /// set is onboarding
   Future<void> setIsDoneOnboarding(bool value) async {
-    if (_preferences == null) {
-      return;
+    log('setIsDoneOnboarding: $value');
+    try {
+      await ensureInitialized();
+      if (_preferences == null) {
+        log('setIsDoneOnboarding: _preferences is still null after initialization');
+        return;
+      }
+      await _preferences!.setBool(LocalStorageKey.isDoneOnboarding, value);
+      log('isDoneOnboarding set to: $value');
+    } catch (e) {
+      log('Error in setIsDoneOnboarding: $e');
     }
-    await _preferences?.setBool(LocalStorageKey.isDoneOnboarding, value);
   }
   /// delete is onboarding
   Future<void> deleteIsDoneOnboarding() async {
