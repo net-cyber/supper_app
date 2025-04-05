@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/theme/app_colors.dart';
@@ -6,6 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/features/auth/domain/user/user_service.dart';
+import 'package:super_app/core/application/app/bloc/app_bloc.dart';
+import 'package:super_app/core/application/app/bloc/app_event.dart';
+import 'package:super_app/core/application/app/bloc/app_state.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -13,57 +17,62 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        title: Text(
-          'Profile',
-          style: GoogleFonts.outfit(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w500,
-            color: theme.textTheme.titleLarge?.color,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings_outlined, 
-              color: theme.iconTheme.color?.withOpacity(0.6), 
-              size: 24.sp
+    return BlocBuilder<AppBloc, AppState>(
+      buildWhen: (previous, current) => previous.isDarkMode != current.isDarkMode,
+      builder: (context, appState) {
+        return Scaffold(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          appBar: AppBar(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            elevation: 0,
+            title: Text(
+              'Profile',
+              style: GoogleFonts.outfit(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                color: theme.textTheme.titleLarge?.color,
+              ),
             ),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.h),
-              _buildProfileHeader(context),
-              SizedBox(height: 40.h),
-              _buildSectionTitle(context, 'Account'),
-              SizedBox(height: 16.h),
-              _buildMenuSection(context),
-              SizedBox(height: 32.h),
-              _buildSectionTitle(context, 'Preferences'),
-              SizedBox(height: 16.h),
-              _buildPreferencesSection(context),
-              SizedBox(height: 32.h),
-              _buildSectionTitle(context, 'About'),
-              SizedBox(height: 16.h),
-              _buildAboutSection(context),
-              SizedBox(height: 40.h),
-              _buildLogoutButton(context),
-              SizedBox(height: 24.h),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.settings_outlined, 
+                  color: theme.iconTheme.color?.withOpacity(0.6), 
+                  size: 24.sp
+                ),
+                onPressed: () {},
+              ),
             ],
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20.h),
+                  _buildProfileHeader(context),
+                  SizedBox(height: 40.h),
+                  _buildSectionTitle(context, 'Account'),
+                  SizedBox(height: 16.h),
+                  _buildMenuSection(context),
+                  SizedBox(height: 32.h),
+                  _buildSectionTitle(context, 'Preferences'),
+                  SizedBox(height: 16.h),
+                  _buildPreferencesSection(context),
+                  SizedBox(height: 32.h),
+                  _buildSectionTitle(context, 'About'),
+                  SizedBox(height: 16.h),
+                  _buildAboutSection(context),
+                  SizedBox(height: 40.h),
+                  _buildLogoutButton(context),
+                  SizedBox(height: 24.h),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -196,13 +205,100 @@ class ProfileScreen extends StatelessWidget {
           'Language',
           onTap: () {},
         ),
-        _buildSimpleMenuItem(
-          context,
-          Icons.dark_mode_outlined,
-          'Theme',
-          onTap: () {},
-        ),
+        _buildThemeToggleItem(context),
       ],
+    );
+  }
+  
+  Widget _buildThemeToggleItem(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<AppBloc, AppState>(
+      buildWhen: (previous, current) => previous.isDarkMode != current.isDarkMode,
+      builder: (context, state) {
+        return InkWell(
+          onTap: () {
+            // Toggle theme directly when tapping the row
+            final newThemeMode = !state.isDarkMode;
+            context.read<AppBloc>().add(
+              AppEvent.changeTheme(isDarkMode: newThemeMode),
+            );
+            
+            // Show a feedback message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  newThemeMode ? 'Dark theme enabled' : 'Light theme enabled',
+                  style: GoogleFonts.outfit(),
+                ),
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: theme.colorScheme.primary,
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+            child: Row(
+              children: [
+                Icon(
+                  state.isDarkMode 
+                    ? Icons.dark_mode
+                    : Icons.light_mode_outlined,
+                  size: 22.sp,
+                  color: theme.iconTheme.color?.withOpacity(0.7),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Dark Mode',
+                        style: GoogleFonts.outfit(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                          color: theme.textTheme.titleMedium?.color,
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        state.isDarkMode ? 'On' : 'Off',
+                        style: GoogleFonts.outfit(
+                          fontSize: 12.sp,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: state.isDarkMode,
+                  activeColor: theme.colorScheme.primary,
+                  onChanged: (value) {
+                    context.read<AppBloc>().add(
+                      AppEvent.changeTheme(isDarkMode: value),
+                    );
+                    
+                    // Show a feedback message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          value ? 'Dark theme enabled' : 'Light theme enabled',
+                          style: GoogleFonts.outfit(),
+                        ),
+                        duration: const Duration(seconds: 1),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
   
