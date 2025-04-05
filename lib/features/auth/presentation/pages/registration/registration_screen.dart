@@ -453,40 +453,16 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                     SizedBox(
                       width: double.infinity,
                       height: 56.h,
-                      child: ElevatedButton(
-                        onPressed: state.isLoading 
-                          ? null 
-                          : () {
-                              context.read<RegistrationBloc>().add(
-                                const RegistrationSubmitted(),
-                              );
-                            },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                          foregroundColor: colorScheme.onPrimary,
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 16.h),
-                        ),
-                        child: state.isLoading
-                            ? SizedBox(
-                                height: 24.h,
-                                width: 24.h,
-                                child: const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 3,
-                                ),
-                              )
-                            : Text(
-                                'Register',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                      ),
+                      child: state.isLoading 
+                          ? const Center(child: CircularProgressIndicator())
+                          : _ProfessionalButton(
+                              onPressed: () {
+                                context.read<RegistrationBloc>().add(
+                                  const RegistrationSubmitted(),
+                                );
+                              },
+                              label: 'Register',
+                            ),
                     ),
                     
                     SizedBox(height: 24.h),
@@ -591,6 +567,91 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
           onChanged: onChanged,
         ),
       ],
+    );
+  }
+}
+
+// Professional button without animations
+class _ProfessionalButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String label;
+
+  const _ProfessionalButton({
+    required this.onPressed,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(14.r),
+        splashColor: Colors.white.withOpacity(0.1),
+        highlightColor: Colors.transparent,
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                colorScheme.primary,
+                colorScheme.primary.withBlue(colorScheme.primary.blue + 15),
+                colorScheme.primary.withRed(colorScheme.primary.red + 10),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(14.r),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.2),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+                spreadRadius: -5,
+              ),
+            ],
+            border: Border.all(
+              color: Colors.white.withOpacity(0.08),
+              width: 1.0,
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.app_registration,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                SizedBox(width: 12.w),
+                Text(
+                  label,
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white.withOpacity(0.8),
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 } 
