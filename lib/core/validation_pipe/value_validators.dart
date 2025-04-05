@@ -126,6 +126,14 @@ Either<ValueFailure<String>, String> validateEmailAddress(String input) {
     failedValue: 'Please enter a valid email address',),);
 }
 
+Either<ValueFailure<String>, String> validateUsername(String input) {
+  if (input.isEmpty) {
+    return left(ValueFailure.empty(failedValue: input));
+  } else {
+    return right(input);
+  }
+}
+
 Either<ValueFailure<String>, String> validatePassword(String input) {
   // Check for empty password
   if (input.isEmpty) {

@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$LoginState {
-  EmailAddress get email => throw _privateConstructorUsedError;
+  Username get username => throw _privateConstructorUsedError;
   Password get password => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isLoginError => throw _privateConstructorUsedError;
@@ -37,7 +37,7 @@ abstract class $LoginStateCopyWith<$Res> {
       _$LoginStateCopyWithImpl<$Res, LoginState>;
   @useResult
   $Res call(
-      {EmailAddress email,
+      {Username username,
       Password password,
       bool isLoading,
       bool isLoginError,
@@ -60,7 +60,7 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? email = null,
+    Object? username = null,
     Object? password = null,
     Object? isLoading = null,
     Object? isLoginError = null,
@@ -68,10 +68,10 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
     Object? showPassword = null,
   }) {
     return _then(_value.copyWith(
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as EmailAddress,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as Username,
       password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
@@ -105,7 +105,7 @@ abstract class _$$LoginStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {EmailAddress email,
+      {Username username,
       Password password,
       bool isLoading,
       bool isLoginError,
@@ -126,7 +126,7 @@ class __$$LoginStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? email = null,
+    Object? username = null,
     Object? password = null,
     Object? isLoading = null,
     Object? isLoginError = null,
@@ -134,10 +134,10 @@ class __$$LoginStateImplCopyWithImpl<$Res>
     Object? showPassword = null,
   }) {
     return _then(_$LoginStateImpl(
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as EmailAddress,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as Username,
       password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
@@ -166,7 +166,7 @@ class __$$LoginStateImplCopyWithImpl<$Res>
 
 class _$LoginStateImpl extends _LoginState {
   const _$LoginStateImpl(
-      {required this.email,
+      {required this.username,
       required this.password,
       this.isLoading = false,
       this.isLoginError = false,
@@ -175,7 +175,7 @@ class _$LoginStateImpl extends _LoginState {
       : super._();
 
   @override
-  final EmailAddress email;
+  final Username username;
   @override
   final Password password;
   @override
@@ -193,7 +193,7 @@ class _$LoginStateImpl extends _LoginState {
 
   @override
   String toString() {
-    return 'LoginState(email: $email, password: $password, isLoading: $isLoading, isLoginError: $isLoginError, showErrorMessages: $showErrorMessages, showPassword: $showPassword)';
+    return 'LoginState(username: $username, password: $password, isLoading: $isLoading, isLoginError: $isLoginError, showErrorMessages: $showErrorMessages, showPassword: $showPassword)';
   }
 
   @override
@@ -201,7 +201,8 @@ class _$LoginStateImpl extends _LoginState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginStateImpl &&
-            (identical(other.email, email) || other.email == email) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.isLoading, isLoading) ||
@@ -215,7 +216,7 @@ class _$LoginStateImpl extends _LoginState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, email, password, isLoading,
+  int get hashCode => Object.hash(runtimeType, username, password, isLoading,
       isLoginError, showErrorMessages, showPassword);
 
   /// Create a copy of LoginState
@@ -229,7 +230,7 @@ class _$LoginStateImpl extends _LoginState {
 
 abstract class _LoginState extends LoginState {
   const factory _LoginState(
-      {required final EmailAddress email,
+      {required final Username username,
       required final Password password,
       final bool isLoading,
       final bool isLoginError,
@@ -238,7 +239,7 @@ abstract class _LoginState extends LoginState {
   const _LoginState._() : super._();
 
   @override
-  EmailAddress get email;
+  Username get username;
   @override
   Password get password;
   @override

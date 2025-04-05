@@ -69,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
         previous.isLoginError != current.isLoginError,
       listener: (context, state) {
         if (!state.isLoading && !state.isLoginError) {
-          context.goNamed(RouteName.home);
+          context.go('/${RouteName.mainScreen}');
         } else if (!state.isLoading && state.isLoginError) {
           AppHelpers.showCheckFlash(
             context,
@@ -217,9 +217,9 @@ class _LoginViewState extends State<LoginView> {
                               hintText: 'Username',
                               keyboardType: TextInputType.emailAddress,
                               onChanged: (value) => context.read<LoginBloc>().add(
-                                LoginEvent.emailChanged(value),
+                                LoginEvent.usernameChanged(value),
                               ),
-                              errorText: state.showErrorMessages && !state.email.isValid()
+                              errorText: state.showErrorMessages && !state.username.isValid()
                                   ? 'Please enter a valid username'
                                   : null,
                             ),
