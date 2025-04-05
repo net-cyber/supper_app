@@ -101,7 +101,7 @@ class _OTPVerificationBodyState extends State<OTPVerificationBody> {
       listener: (context, state) {
         if (state.isVerified) {
           // Navigate to success or home
-          context.goNamed(RouteName.mainScreen);
+          context.goNamed(RouteName.login);
         }
         
         if (state.resendSuccess) {
