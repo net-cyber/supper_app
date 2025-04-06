@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           SizedBox(width: 12.w),
           Text(
-            'Goh Betoch Bank',
+            'GOH Supper App',
             style: GoogleFonts.outfit(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
                   // When accounts are loaded, display account data
                   if (state.accounts.isNotEmpty) {
                     final account = state.accounts[index];
-                    return _buildAccountCard(account);
+                    return _buildAccountCard(account, _currentAccountIndex);
                   } 
                   // When loading or no accounts, display placeholder
                   return _buildAccountCardPlaceholder(state);
@@ -151,9 +151,9 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildAccountCard(Account account) {
+  Widget _buildAccountCard(Account account, int currentAccountIndex) {
     // Set color to match SOL card's black background
-    final Color cardBaseColor = Colors.black;
+    final Color cardBaseColor =currentAccountIndex % 2 == 1 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary;
     final userDetail = getIt<UserService>().getCurrentUser();
     return Container(
       decoration: BoxDecoration(
