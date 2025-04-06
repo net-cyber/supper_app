@@ -16,19 +16,15 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         userName: UserName(''),
         fullName: FullName(''),
         phoneNumber: PhoneNumber(''),
-        emailAddress: EmailAddress(''),
         password: Password(''),
         confirmPassword: ConfirmPassword('', ''),
-        referralCode: ReferralCode(''),
         termsAcceptance: TermsAcceptance(false),
       )) {
     on<UserNameChanged>(_onUserNameChanged);
     on<FullNameChanged>(_onFullNameChanged);
     on<PhoneNumberChanged>(_onPhoneNumberChanged);
-    on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<ConfirmPasswordChanged>(_onConfirmPasswordChanged);
-    on<ReferralCodeChanged>(_onReferralCodeChanged);
     on<TermsAcceptedChanged>(_onTermsAcceptedChanged);
     on<ToggleShowPassword>(_onToggleShowPassword);
     on<ToggleShowConfirmPassword>(_onToggleShowConfirmPassword);
@@ -60,13 +56,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     ),);
   }
 
-  void _onEmailChanged(EmailChanged event, Emitter<RegistrationState> emit) {
-    emit(state.copyWith(
-      emailAddress: EmailAddress(event.email.trim()),
-      showErrorMessages: false,
-      isRegistrationError: false,
-    ),);
-  }
+
 
   void _onPasswordChanged(PasswordChanged event, Emitter<RegistrationState> emit) {
     final password = event.password.trim();
@@ -103,13 +93,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     );
   }
 
-  void _onReferralCodeChanged(ReferralCodeChanged event, Emitter<RegistrationState> emit) {
-    emit(state.copyWith(
-      referralCode: ReferralCode(event.referralCode.trim()),
-      showErrorMessages: false,
-      isRegistrationError: false,
-    ),);
-  }
+
 
   void _onTermsAcceptedChanged(TermsAcceptedChanged event, Emitter<RegistrationState> emit) {
     emit(state.copyWith(
@@ -149,10 +133,8 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       userName: state.userName,
       fullName: state.fullName,
       phoneNumber: state.phoneNumber,
-      emailAddress: state.emailAddress,
       password: state.password,
       confirmPassword: state.confirmPassword,
-      referralCode: state.referralCode,
       termsAcceptance: state.termsAcceptance,
     );
     

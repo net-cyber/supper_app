@@ -31,15 +31,6 @@ class RegistrationFormValidator {
     return null;
   }
   
-  static String? validateEmail(RegistrationState state) {
-    if (state.showErrorMessages && !state.emailAddress.isValid()) {
-      return state.emailAddress.value.fold(
-        (failure) => failure.failedValue,
-        (_) => null,
-      );
-    }
-    return null;
-  }
   
   static String? validatePassword(RegistrationState state) {
     if (state.showErrorMessages && !state.password.isValid()) {
@@ -61,15 +52,6 @@ class RegistrationFormValidator {
     return null;
   }
   
-  static String? validateReferralCode(RegistrationState state) {
-    if (state.showErrorMessages && !state.referralCode.isValid()) {
-      return state.referralCode.value.fold(
-        (failure) => failure.failedValue,
-        (_) => null,
-      );
-    }
-    return null;
-  }
   
   static String? validateTermsAcceptance(RegistrationState state) {
     if (state.showErrorMessages && !state.termsAcceptance.isValid()) {

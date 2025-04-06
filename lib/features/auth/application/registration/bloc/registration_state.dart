@@ -11,10 +11,8 @@ class RegistrationState with _$RegistrationState {
     required UserName userName,
     required FullName fullName,
     required PhoneNumber phoneNumber,
-    required EmailAddress emailAddress,
     required Password password,
     required ConfirmPassword confirmPassword,
-    required ReferralCode referralCode,
     required TermsAcceptance termsAcceptance,
     @Default(false) bool isLoading,
     @Default(false) bool isRegistrationError,
@@ -35,7 +33,6 @@ class RegistrationState with _$RegistrationState {
     userName.isValid() &&
     fullName.isValid() &&
     phoneNumber.isValid() &&
-    emailAddress.isValid() &&
     password.isValid() &&
     confirmPassword.isValid() &&
     termsAcceptance.isValid();

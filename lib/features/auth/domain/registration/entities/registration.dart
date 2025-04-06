@@ -9,10 +9,9 @@ class Registration with _$Registration {
     required UserName userName,
     required FullName fullName,
     required PhoneNumber phoneNumber,
-    required EmailAddress emailAddress,
     required Password password,
     required ConfirmPassword confirmPassword,
-    required TermsAcceptance termsAcceptance, ReferralCode? referralCode,
+    required TermsAcceptance termsAcceptance,
   }) = _Registration;
 
   const Registration._();
@@ -21,10 +20,8 @@ class Registration with _$Registration {
         userName: UserName(''),
         fullName: FullName(''),
         phoneNumber: PhoneNumber(''),
-        emailAddress: EmailAddress(''),
         password: Password(''),
         confirmPassword: ConfirmPassword('', ''),
-        referralCode: ReferralCode(''),
         termsAcceptance: TermsAcceptance(false),
       );
 
@@ -32,7 +29,6 @@ class Registration with _$Registration {
     return userName.isValid() &&
         fullName.isValid() &&
         phoneNumber.isValid() &&
-        emailAddress.isValid() &&
         password.isValid() &&
         confirmPassword.isValid() &&
         termsAcceptance.isValid();
