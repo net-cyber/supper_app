@@ -8,7 +8,7 @@ import 'package:super_app/features/transf/application/internal_transfer/internal
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_event.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_state.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
-import 'package:super_app/core/di/dependency_injection.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 
 class InternalConfirmTransferScreen extends StatelessWidget {
   final Map<String, dynamic> transferData;

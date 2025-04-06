@@ -5,16 +5,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:super_app/core/theme/app_colors.dart';
-import '../../domain/entities/property.dart';
-import 'mortgage_tracking_screen.dart';
+import 'package:super_app/features/mortgages/domain/entities/property.dart';
+import 'package:super_app/features/mortgages/presentation/screens/mortgage_tracking_screen.dart';
 
 class MortgageApplicationScreen extends StatefulWidget {
-  final Property property;
 
   const MortgageApplicationScreen({
     Key? key,
     required this.property,
   }) : super(key: key);
+  final Property property;
 
   @override
   State<MortgageApplicationScreen> createState() => _MortgageApplicationScreenState();
@@ -33,7 +33,7 @@ class _MortgageApplicationScreenState extends State<MortgageApplicationScreen> {
   final _employerController = TextEditingController();
   
   // Loan details
-  double _downPaymentPercentage = 20.0;
+  double _downPaymentPercentage = 20;
   int _loanTermYears = 20;
   
   final currencyFormat = NumberFormat.currency(
@@ -187,8 +187,8 @@ class _MortgageApplicationScreenState extends State<MortgageApplicationScreen> {
   }
   
   Widget _buildStepIndicator(int step, String label) {
-    bool isActive = _currentStep >= step;
-    bool isCurrent = _currentStep == step;
+    final isActive = _currentStep >= step;
+    final isCurrent = _currentStep == step;
     
     return Expanded(
       child: Column(
@@ -472,12 +472,12 @@ class _MortgageApplicationScreenState extends State<MortgageApplicationScreen> {
   
   Widget _buildLoanDetailsStep() {
     // Calculate loan amount and monthly payment
-    double loanAmount = widget.property.price * (1 - _downPaymentPercentage / 100);
-    double monthlyRate = 7.5 / 100 / 12; // 7.5% annual interest rate
-    int totalPayments = _loanTermYears * 12;
+    var loanAmount = widget.property.price * (1 - _downPaymentPercentage / 100);
+    final monthlyRate = 7.5 / 100 / 12; // 7.5% annual interest rate
+    var totalPayments = _loanTermYears * 12;
     
     // Monthly payment formula: P = L[c(1 + c)^n]/[(1 + c)^n - 1]
-    double monthlyPayment = loanAmount * (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 
+    final monthlyPayment = loanAmount * (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 
                            (pow(1 + monthlyRate, totalPayments) - 1);
     
     return Column(
@@ -775,7 +775,7 @@ class _MortgageApplicationScreenState extends State<MortgageApplicationScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.primaryColor),
+              borderSide: const BorderSide(color: AppColors.primaryColor),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.r),
@@ -803,7 +803,7 @@ class _MortgageApplicationScreenState extends State<MortgageApplicationScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Center(
+      builder: (context) => const Center(
         child: CircularProgressIndicator(
           color: AppColors.primaryColor,
         ),

@@ -10,11 +10,6 @@ import 'package:super_app/features/mortgages/presentation/screens/property_value
 import 'package:super_app/features/mortgages/presentation/screens/refinance_calculator_screen.dart';
 
 class MortgageManagementScreen extends StatefulWidget {
-  final String mortgageId;
-  final double loanAmount;
-  final double interestRate;
-  final int loanTerm;
-  final DateTime startDate;
 
   const MortgageManagementScreen({
     Key? key,
@@ -24,6 +19,11 @@ class MortgageManagementScreen extends StatefulWidget {
     required this.loanTerm,
     required this.startDate,
   }) : super(key: key);
+  final String mortgageId;
+  final double loanAmount;
+  final double interestRate;
+  final int loanTerm;
+  final DateTime startDate;
 
   @override
   State<MortgageManagementScreen> createState() => _MortgageManagementScreenState();
@@ -86,11 +86,11 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
 
   @override
   Widget build(BuildContext context) {
-    final double monthlyPayment = _calculateMonthlyPayment();
-    final double totalInterest = (monthlyPayment * widget.loanTerm * 12) - widget.loanAmount;
-    final double remainingBalance = _calculateRemainingBalance();
-    final double paidPrincipal = widget.loanAmount - remainingBalance;
-    final double paidInterest = _calculatePaidInterest();
+    final monthlyPayment = _calculateMonthlyPayment();
+    final totalInterest = (monthlyPayment * widget.loanTerm * 12) - widget.loanAmount;
+    final remainingBalance = _calculateRemainingBalance();
+    final paidPrincipal = widget.loanAmount - remainingBalance;
+    final paidInterest = _calculatePaidInterest();
     
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -220,9 +220,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              _makePayment();
-                            },
+                            onPressed: _makePayment,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primaryColor,
                               padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -260,7 +258,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                       ),
                     );
                   },
-                  icon: Icon(Icons.trending_up, color: Colors.white),
+                  icon: const Icon(Icons.trending_up, color: Colors.white),
                   label: Text(
                     'Track Property Value',
                     style: GoogleFonts.outfit(
@@ -298,7 +296,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                       ),
                     );
                   },
-                  icon: Icon(Icons.calculate, color: Colors.white),
+                  icon: const Icon(Icons.calculate, color: Colors.white),
                   label: Text(
                     'Refinance Calculator',
                     style: GoogleFonts.outfit(
@@ -353,7 +351,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                         ),
                         SizedBox(height: 16.h),
                         _buildEscrowItem(
-                          'Homeowner\'s Insurance',
+                          "Homeowner's Insurance",
                           currencyFormat.format(_escrowDetails['insurance']['annual']),
                           'Next payment: ${DateFormat('MMMM d, yyyy').format(_escrowDetails['insurance']['nextDue'] as DateTime)}',
                           Icons.security_outlined,
@@ -397,21 +395,17 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                           height: 200.h,
                           child: PieChart(
                             dataMap: {
-                              "Principal": monthlyPayment * 0.7,
-                              "Interest": monthlyPayment * 0.2,
-                              "Escrow": monthlyPayment * 0.1,
+                              'Principal': monthlyPayment * 0.7,
+                              'Interest': monthlyPayment * 0.2,
+                              'Escrow': monthlyPayment * 0.1,
                             },
-                            colorList: [
+                            colorList: const [
                               AppColors.primaryColor,
                               Colors.orange,
                               Colors.blue,
                             ],
                             chartType: ChartType.ring,
                             ringStrokeWidth: 32.r,
-                            legendOptions: const LegendOptions(
-                              showLegendsInRow: false,
-                              legendPosition: LegendPosition.right,
-                            ),
                             chartValuesOptions: const ChartValuesOptions(
                               showChartValuesInPercentage: true,
                             ),
@@ -540,9 +534,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _makePayment();
-                    },
+                    onPressed: _makePayment,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
                       padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -564,12 +556,10 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    onPressed: () {
-                      _makeExtraPayment();
-                    },
+                    onPressed: _makeExtraPayment,
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16.h),
-                      side: BorderSide(color: AppColors.primaryColor),
+                      side: const BorderSide(color: AppColors.primaryColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
@@ -676,7 +666,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                     ),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16.h),
-                      side: BorderSide(color: AppColors.primaryColor),
+                      side: const BorderSide(color: AppColors.primaryColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
@@ -892,10 +882,10 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
   double _calculateMonthlyPayment() {
     // P = L[c(1 + c)^n]/[(1 + c)^n - 1]
     // where L = loan amount, c = monthly interest rate, n = number of payments
-    double monthlyRate = widget.interestRate / 100 / 12;
-    int totalPayments = widget.loanTerm * 12;
+    final monthlyRate = widget.interestRate / 100 / 12;
+    final totalPayments = widget.loanTerm * 12;
     
-    double monthlyPayment = widget.loanAmount * 
+    var monthlyPayment = widget.loanAmount * 
         (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 
         (pow(1 + monthlyRate, totalPayments) - 1);
     
@@ -909,11 +899,11 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
                           now.month - widget.startDate.month;
     
     // Calculate remaining balance based on amortization
-    double monthlyRate = widget.interestRate / 100 / 12;
-    int totalPayments = widget.loanTerm * 12;
-    double monthlyPayment = _calculateMonthlyPayment();
+    final monthlyRate = widget.interestRate / 100 / 12;
+    final totalPayments = widget.loanTerm * 12;
+    final monthlyPayment = _calculateMonthlyPayment();
     
-    double balance = widget.loanAmount * 
+    final balance = widget.loanAmount * 
         (pow(1 + monthlyRate, totalPayments) - pow(1 + monthlyRate, monthsElapsed)) / 
         (pow(1 + monthlyRate, totalPayments) - 1);
     
@@ -926,16 +916,16 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
     final monthsElapsed = (now.year - widget.startDate.year) * 12 + 
                           now.month - widget.startDate.month;
     
-    double monthlyPayment = _calculateMonthlyPayment();
-    double totalPaid = monthlyPayment * monthsElapsed;
-    double remainingBalance = _calculateRemainingBalance();
-    double paidPrincipal = widget.loanAmount - remainingBalance;
+    var monthlyPayment = _calculateMonthlyPayment();
+    var totalPaid = monthlyPayment * monthsElapsed;
+    var remainingBalance = _calculateRemainingBalance();
+    var paidPrincipal = widget.loanAmount - remainingBalance;
     
     return totalPaid - paidPrincipal;
   }
   
   void _makePayment() {
-    final double monthlyPayment = _calculateMonthlyPayment();
+    final monthlyPayment = _calculateMonthlyPayment();
     
     showDialog(
       context: context,
@@ -1254,7 +1244,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
   }
   
   void _makeExtraPayment() {
-    final double monthlyPayment = _calculateMonthlyPayment();
+    final monthlyPayment = _calculateMonthlyPayment();
     
     showDialog(
       context: context,
@@ -1296,7 +1286,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -1311,7 +1301,7 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
             ),
-            child: Text('Submit Payment'),
+            child: const Text('Submit Payment'),
           ),
         ],
       ),
@@ -1319,9 +1309,9 @@ class _MortgageManagementScreenState extends State<MortgageManagementScreen> wit
   }
 
   Widget _buildLoanBreakdownChart() {
-    final double remainingBalance = _calculateRemainingBalance();
-    final double paidPrincipal = widget.loanAmount - remainingBalance;
-    final double paidInterest = _calculatePaidInterest();
+    final remainingBalance = _calculateRemainingBalance();
+    final paidPrincipal = widget.loanAmount - remainingBalance;
+    final paidInterest = _calculatePaidInterest();
     
     return Card(
       elevation: 0,

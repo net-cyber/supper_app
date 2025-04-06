@@ -3,15 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/router/route_name.dart';
-import '../../domain/entities/property.dart';
-import '../widgets/property_card.dart';
-import '../widgets/filter_bar.dart';
-import '../widgets/property_skeleton.dart';
-import '../../data/models/property_model.dart';
+import 'package:super_app/features/mortgages/domain/entities/property.dart';
+import 'package:super_app/features/mortgages/presentation/widgets/property_card.dart';
+import 'package:super_app/features/mortgages/presentation/widgets/filter_bar.dart';
+import 'package:super_app/features/mortgages/presentation/widgets/property_skeleton.dart';
+import 'package:super_app/features/mortgages/data/models/property_model.dart';
 import 'package:super_app/core/theme/app_colors.dart';
 
 class AvailablePropertiesScreen extends StatefulWidget {
-  const AvailablePropertiesScreen({Key? key}) : super(key: key);
+  const AvailablePropertiesScreen({super.key});
 
   @override
   State<AvailablePropertiesScreen> createState() => _AvailablePropertiesScreenState();
@@ -33,7 +33,7 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
     'Kazanchis',
     'Ayat',
   ];
-  Set<String> _favoritePropertyIds = {};
+  final Set<String> _favoritePropertyIds = {};
   
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
     await Future.delayed(const Duration(seconds: 2));
     
     // Load dummy data
-    final List<Property> properties = _getDummyProperties();
+    final properties = _getDummyProperties();
     
     setState(() {
       _properties = properties;
@@ -81,7 +81,7 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
     await Future.delayed(const Duration(seconds: 1));
     
     // Add more dummy properties
-    final List<Property> moreProperties = _getDummyProperties().take(3).toList();
+    final moreProperties = _getDummyProperties().take(3).toList();
     
     setState(() {
       _properties.addAll(moreProperties);
@@ -190,7 +190,7 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 16.h),
-                        side: BorderSide(color: AppColors.primaryColor),
+                        side: const BorderSide(color: AppColors.primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
@@ -241,8 +241,8 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
     }
     
     return _properties.where((property) {
-      final bool matchesPropertyType = _selectedFilters.contains(property.specifications.propertyType);
-      final bool matchesLocation = _selectedFilters.contains(property.location.neighborhood);
+      final matchesPropertyType = _selectedFilters.contains(property.specifications.propertyType);
+      final matchesLocation = _selectedFilters.contains(property.location.neighborhood);
       return matchesPropertyType || matchesLocation;
     }).toList();
   }
@@ -452,11 +452,11 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
           size: 85,
           propertyType: 'Apartment',
         ),
-        images: [
+        images: const [
           'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
         ],
-        tags: ['featured'],
+        tags: const ['featured'],
         dateAdded: DateTime.now().subtract(const Duration(days: 5)),
         mortgageEligible: true,
         monthlyPaymentEstimate: 38000,
@@ -477,11 +477,11 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
           size: 320,
           propertyType: 'Villa',
         ),
-        images: [
+        images: const [
           'https://images.unsplash.com/photo-1613977257363-707ba9348227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
           'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
         ],
-        tags: ['new', 'premium'],
+        tags: const ['new', 'premium'],
         dateAdded: DateTime.now().subtract(const Duration(days: 2)),
         mortgageEligible: true,
         monthlyPaymentEstimate: 95000,
@@ -502,11 +502,11 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
           size: 65,
           propertyType: 'Condominium',
         ),
-        images: [
+        images: const [
           'https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
           'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80',
         ],
-        tags: [],
+        tags: const [],
         dateAdded: DateTime.now().subtract(const Duration(days: 10)),
         mortgageEligible: true,
         monthlyPaymentEstimate: 25000,
@@ -527,11 +527,11 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
           size: 220,
           propertyType: 'House',
         ),
-        images: [
+        images: const [
           'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
           'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
         ],
-        tags: ['featured'],
+        tags: const ['featured'],
         dateAdded: DateTime.now().subtract(const Duration(days: 7)),
         mortgageEligible: true,
         monthlyPaymentEstimate: 52000,
@@ -552,11 +552,11 @@ class _AvailablePropertiesScreenState extends State<AvailablePropertiesScreen> {
           size: 110,
           propertyType: 'Apartment',
         ),
-        images: [
+        images: const [
           'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
           'https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
         ],
-        tags: ['new'],
+        tags: const ['new'],
         dateAdded: DateTime.now().subtract(const Duration(days: 3)),
         mortgageEligible: true,
         monthlyPaymentEstimate: 42000,

@@ -3,10 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FilterBar extends StatelessWidget {
-  final List<String> filterOptions;
-  final List<String> selectedFilters;
-  final Function(String) onFilterSelected;
-  final VoidCallback onAdvancedFilterTap;
 
   const FilterBar({
     Key? key,
@@ -15,6 +11,10 @@ class FilterBar extends StatelessWidget {
     required this.onFilterSelected,
     required this.onAdvancedFilterTap,
   }) : super(key: key);
+  final List<String> filterOptions;
+  final List<String> selectedFilters;
+  final Function(String) onFilterSelected;
+  final VoidCallback onAdvancedFilterTap;
 
   @override
   Widget build(BuildContext context) {

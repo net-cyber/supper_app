@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:super_app/core/di/dependency_injection.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_bloc.dart';
 import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_event.dart';

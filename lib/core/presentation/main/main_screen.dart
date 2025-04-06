@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,8 +34,6 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(height: 32.h),
             _buildServiceCategories(),
             SizedBox(height: 32.h),
-            _buildAddAccountsButton(),
-            SizedBox(height: 24.h),
           ],
         ),
       ),
@@ -178,7 +176,7 @@ class _MainScreenState extends State<MainScreen> {
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
-                              letterSpacing: 1.0,
+                              letterSpacing: 1,
                             ),
                           ),
                         ),
@@ -343,10 +341,10 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: actions.map((action) {
           return _buildActionItem(
-            icon: action['icon'] as IconData,
-            label: action['label'] as String,
-            color: action['color'] as Color,
-            route: action['route'] as String,
+            icon: action['icon']! as IconData,
+            label: action['label']! as String,
+            color: action['color']! as Color,
+            route: action['route']! as String,
           );
         }).toList(),
       ),
@@ -526,13 +524,26 @@ class _MainScreenState extends State<MainScreen> {
                 const Spacer(),
                 TextButton(
                   onPressed: () {},
-                  child: Text(
-                    'View All',
-                    style: GoogleFonts.outfit(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.primary,
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'View All',
+                        style: GoogleFonts.outfit(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Icon(Icons.arrow_forward_rounded, size: 16.sp),
+                    ],
                   ),
                 ),
               ],
@@ -543,7 +554,7 @@ class _MainScreenState extends State<MainScreen> {
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              childAspectRatio: 0.85,
+              childAspectRatio: 0.88,
               crossAxisSpacing: 16.w,
               mainAxisSpacing: 20.h,
             ),
@@ -575,7 +586,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         borderRadius: BorderRadius.circular(24.r),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
+          padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 12.w),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24.r),
@@ -584,7 +595,6 @@ class _MainScreenState extends State<MainScreen> {
                 color: Colors.black.withOpacity(0.04),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
-                spreadRadius: 0,
               ),
             ],
           ),
@@ -602,13 +612,12 @@ class _MainScreenState extends State<MainScreen> {
                       color.withOpacity(0.7),
                     ],
                   ),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(18.r),
                   boxShadow: [
                     BoxShadow(
                       color: color.withOpacity(0.25),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
-                      spreadRadius: 0,
                     ),
                   ],
                 ),
@@ -618,7 +627,7 @@ class _MainScreenState extends State<MainScreen> {
                   size: 24.sp,
                 ),
               ),
-              SizedBox(height: 14.h),
+              SizedBox(height: 12.h),
               Text(
                 label,
                 textAlign: TextAlign.center,
@@ -637,65 +646,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
-  Widget _buildAddAccountsButton() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      width: double.infinity,
-      height: 64.h,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.8),
-          ],
-          stops: const [0.3, 1.0],
-        ),
-        borderRadius: BorderRadius.circular(24.r),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.25),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {},
-          borderRadius: BorderRadius.circular(24.r),
-          splashColor: Colors.white.withOpacity(0.1),
-          highlightColor: Colors.white.withOpacity(0.05),
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.add_circle_rounded,
-                  color: Colors.white,
-                  size: 24.sp,
-                ),
-                SizedBox(width: 12.w),
-                Text(
-                  'Add Accounts',
-                  style: GoogleFonts.outfit(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class ChipPatternPainter extends CustomPainter {
@@ -707,7 +657,7 @@ class ChipPatternPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     // Draw horizontal lines
-    for (int i = 0; i < 6; i++) {
+    for (var i = 0; i < 6; i++) {
       final y = i * size.height / 5;
       canvas.drawLine(
         Offset(0, y),
@@ -717,7 +667,7 @@ class ChipPatternPainter extends CustomPainter {
     }
 
     // Draw vertical lines
-    for (int i = 0; i < 8; i++) {
+    for (var i = 0; i < 8; i++) {
       final x = i * size.width / 7;
       canvas.drawLine(
         Offset(x, 0),
@@ -770,7 +720,7 @@ class CardPatternPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     // Draw subtle grid lines
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       // Horizontal lines
       canvas.drawLine(
         Offset(0, i * size.height / 9),

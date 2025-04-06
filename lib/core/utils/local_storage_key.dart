@@ -5,5 +5,6 @@ class LocalStorageKey {
   static const isDarkMode = 'isDarkMode';
   static const refreshToken = 'refreshToken';
   static const themeMode = 'themeMode';
-
+  static const userData = 'userData';
+  static const isFirstTime = 'isFirstTime';
 }

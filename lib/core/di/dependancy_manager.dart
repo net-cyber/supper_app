@@ -1,13 +1,12 @@
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:super_app/core/di/dependancy_manager.config.dart';
 
-// Note: After setting up injectable, individual components will be
-// annotated with @injectable, @singleton, etc., and the manual dependency
-// registration will be replaced by automatic registration.
+final GetIt getIt = GetIt.instance;
 
-@module
-abstract class AppModule {
-  // Register any third-party services or configurations here
-  // Example:
-  // @singleton
-  // MyExternalService get externalService => MyExternalService();
-}
+@InjectableInit(
+  initializerName: 'init',
+  preferRelativeImports: true,
+  asExtension: true,
+)
+void configureDependencies() => getIt.init();

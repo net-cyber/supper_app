@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
-import 'package:super_app/features/auth/domain/value_objects.dart';
+import 'package:super_app/core/value_object/value_objects.dart';
 
 import 'package:super_app/features/auth/application/signup/bloc/signup_event.dart';
 import 'package:super_app/features/auth/application/signup/bloc/signup_state.dart';
@@ -38,8 +38,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       password: password,
       // Update confirmPassword with the new password value
       confirmPassword: ConfirmPassword(
-        state.confirmPassword.getOrCrash(), 
-        password.getOrCrash(),
+        state.confirmPassword.value.getOrElse(() => ''), 
+        password.value.getOrElse(() => ''),
       ),
     ),);
   }
@@ -48,7 +48,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(state.copyWith(
       confirmPassword: ConfirmPassword(
         event.confirmPassword.trim(), 
-        state.password.getOrCrash(),
+        state.password.value.getOrElse(() => ''),
       ),
     ),);
   }
@@ -91,7 +91,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         return;
       }
       
-      if (state.password.getOrCrash() != state.confirmPassword.getOrCrash()) {
+      if (state.password.value.getOrElse(() => '') != state.confirmPassword.value.getOrElse(() => '')) {
         emit(state.copyWith(showErrorMessages: true));
         return;
       }

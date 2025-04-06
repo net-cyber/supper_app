@@ -1,41 +1,40 @@
 class RouteName {
   RouteName._();
+  static const splash = 'splash';
+  static const home = 'home';
+  static const login = 'login';
+  static const signup = 'signup';
+  static const mainScreen = 'mainScreen';
+  static const history = 'history';
+  static const profile = 'profile';
+  static const sendCash = 'sendCash';
+  static const bankTransferCheckout = 'bankTransferCheckout';
+  static const payment = 'payment';
+  static const bankSelection = 'bankSelection';
+  static const bankAmount = 'bankAmount';
+  static const bankAccount = 'bankAccount';
+  static const confirmTransfer = 'confirmTransfer';
+  static const kachaAccount = 'kachaAccount';
+  static const kachaAmount = 'kachaAmount';
+  static const transactionDetail = 'transactionDetail';
+  static const propertyDetail = 'propertyDetail';
+  static const availableProperties = 'availableProperties';
+  static const mortgageDashboard = 'mortgageDashboard';
+  static const onboarding = 'onboarding';
 
-  // Auth
-  static const String splash = 'splash';
-  static const String login = 'login';
-  static const String signup = 'signup';
-  static const String settings = 'settings';
-  static const String register = 'register';
-  static const String mainScreen = 'main';
+  // Auth routes
+  static const registrationScreen = 'registrationScreen';
+  static const otpVerification = 'otpVerification';
+  static const termsAndConditionsScreen = 'termsAndConditionsScreen';
 
-  // Dashboard Items
-  static const String profile = 'profile';
-  static const String history = 'history';
-  static const String transactionDetail = 'transactionDetail';
-
-  // Property screens
-  static const String propertyDetail = 'propertyDetail';
-  static const String availableProperties = 'availableProperties';
-  static const String mortgageDashboard = 'mortgageDashboard';
-
-  // External bank transfer
-  static const String bankSelection = 'bankSelection';
-  static const String bankAccount = 'bankAccount';
-  static const String bankAmount = 'bankAmount';
-  static const String confirmTransfer = 'confirmTransfer';
-
-  // Internal bank transfer
-  static const String internalBankAccount = 'internalBankAccount';
-  static const String internalBankAmount = 'internalBankAmount';
-  static const String internalConfirmTransfer = 'internalConfirmTransfer';
-
-  // Other actions
-  static const String sendCash = 'sendCash';
+  // Internal bank transfer routes
+  static const internalBankAccount = 'internalBankAccount';
+  static const internalBankAmount = 'internalBankAmount';
+  static const internalConfirmTransfer = 'internalConfirmTransfer';
 
   // Wallet routes
-  static const String walletSelection = 'walletSelection';
-  static const String walletPhone = 'walletPhone';
-  static const String walletAmount = 'walletAmount';
-  static const String walletConfirmation = 'walletConfirmation';
+  static const walletSelection = 'walletSelection';
+  static const walletPhone = 'walletPhone';
+  static const walletAmount = 'walletAmount';
+  static const walletConfirmation = 'walletConfirmation';
 }

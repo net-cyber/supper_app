@@ -5,9 +5,7 @@ import 'package:super_app/core/theme/app_colors.dart';
 
 class TextElevatedButton extends StatelessWidget {
   const TextElevatedButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
+    required this.text, required this.onPressed, super.key,
     this.isDisabled = false,
   });
   final String text;
