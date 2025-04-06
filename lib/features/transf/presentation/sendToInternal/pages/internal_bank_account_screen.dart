@@ -17,9 +17,10 @@ class InternalBankAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('🏦 Building InternalBankAccountScreen root');
     return BlocProvider<InternalTransferBloc>(
       create: (context) => getIt<InternalTransferBloc>(),
-      child: _InternalBankAccountScreenContent(),
+      child: const _InternalBankAccountScreenContent(),
     );
   }
 }
@@ -38,14 +39,18 @@ class _InternalBankAccountScreenContentState
       TextEditingController();
   bool _hasInput = false;
   bool _isValidating = false; // Track validation in progress
+  bool _validationTimedOut = false; // Track if validation timed out
+  bool _debugTestRun = false;
 
   @override
   void initState() {
     super.initState();
+    print('🏦 Internal Account Screen: initState');
     _accountNumberController.addListener(_onInputChanged);
 
     // Reset any previous state when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print('🏦 Internal Account Screen: post-frame callback, resetting state');
       context.read<InternalTransferBloc>().add(
             const InternalTransferEvent.reset(),
           );
@@ -54,6 +59,7 @@ class _InternalBankAccountScreenContentState
 
   @override
   void dispose() {
+    print('🏦 Internal Account Screen: dispose');
     _accountNumberController.removeListener(_onInputChanged);
     _accountNumberController.dispose();
     super.dispose();
@@ -62,6 +68,7 @@ class _InternalBankAccountScreenContentState
   void _onInputChanged() {
     final text = _accountNumberController.text;
     final hasInput = text.isNotEmpty;
+    print('🏦 Account input changed: "$text"');
 
     if (hasInput != _hasInput) {
       setState(() {
@@ -77,17 +84,24 @@ class _InternalBankAccountScreenContentState
   }
 
   void _verifyAccount() {
+    print('🏦 _verifyAccount called');
     // Prevent multiple validations at once
-    if (_isValidating) return;
+    if (_isValidating) {
+      print('🏦 Validation already in progress, ignoring request');
+      return;
+    }
 
     // Clear any existing snackbars first before verification
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
     // Get account number from controller
     final accountNumber = _accountNumberController.text.trim();
+    print(
+        '🏦 DEBUG: About to verify account number: "$accountNumber" (length: ${accountNumber.length})');
 
     // Check if account number is empty or invalid format before sending to bloc
     if (accountNumber.isEmpty) {
+      print('🏦 Empty account number, showing error');
       // Manually show snackbar for empty account
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -105,34 +119,116 @@ class _InternalBankAccountScreenContentState
       return;
     }
 
+    // Show a brief verification message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Verifying account...'),
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    print('🏦 Account number validation started for: $accountNumber');
+
+    // Reset timeout flag
+    _validationTimedOut = false;
+
     // Mark validation as in progress
     setState(() {
       _isValidating = true;
     });
 
+    print('🏦 Setting validation state and dispatching event to BLoC');
+
+    // Make sure the BLoC has the most current account number
+    context.read<InternalTransferBloc>().add(
+          InternalTransferEvent.accountNumberChanged(accountNumber),
+        );
+
+    print('🏦 Updated BLoC with account number: $accountNumber');
+
     // Dispatch event to validate account in the BLoC
     context.read<InternalTransferBloc>().add(
           const InternalTransferEvent.validateAccount(),
         );
+
+    print('🏦 Validation event dispatched, waiting for response');
+
+    // Add a safety timeout to prevent UI getting stuck in loading state
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted && _isValidating) {
+        print('🏦 Validation timeout reached, resetting loading state');
+        setState(() {
+          _isValidating = false;
+          _validationTimedOut = true;
+        });
+
+        // Show timeout error if we're still in loading state
+        final currentState = context.read<InternalTransferBloc>().state;
+        print('🏦 DEBUG: After timeout, state is: ${currentState.status}');
+        if (currentState.isLoading ||
+            currentState.status == InternalTransferStatus.validatingAccount) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'Validation is taking longer than expected. Please try again.'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    });
   }
 
   void _continueToNextScreen() {
+    print('🏦 _continueToNextScreen called');
     final state = context.read<InternalTransferBloc>().state;
 
+    // Debug information
+    print('🏦 Current state status: ${state.status}');
+    print('🏦 Is loading: ${state.isLoading}');
+    print('🏦 Has validated account: ${state.validatedAccount != null}');
+    if (state.validatedAccount != null) {
+      print(
+          '🏦 Account holder name: ${state.validatedAccount!.accountHolderName}');
+      print(
+          '🏦 Account number: ${state.validatedAccount!.accountNumber.getOrElse('')}');
+    } else {
+      print('🏦 Validated account is NULL');
+    }
+
     // Prevent actions during loading
-    if (state.isLoading || _isValidating) return;
+    if (state.isLoading || _isValidating) {
+      print('🏦 Still loading, ignoring continue request');
+      return;
+    }
 
     if (state.status != InternalTransferStatus.accountValidated) {
+      print('🏦 Account not validated yet, triggering validation');
       _verifyAccount();
       return;
     }
 
+    print('🏦 Account validated, navigating to amount screen');
     _navigateToAmountScreen();
   }
 
   void _navigateToAmountScreen() {
+    print('🏦 _navigateToAmountScreen called');
     final state = context.read<InternalTransferBloc>().state;
-    if (state.validatedAccount == null) return;
+
+    // More detailed debug info
+    print('🏦 Navigation state check:');
+    print('🏦 - Status: ${state.status}');
+    print('🏦 - Has validated account: ${state.validatedAccount != null}');
+
+    if (state.validatedAccount == null) {
+      print('🏦 validatedAccount is null, cannot navigate');
+      return;
+    }
+
+    print(
+        '🏦 Account holder name: ${state.validatedAccount!.accountHolderName}');
 
     // Create transfer data
     final transferData = {
@@ -145,7 +241,11 @@ class _InternalBankAccountScreenContentState
       'accountHolderName': state.validatedAccount!.accountHolderName,
     };
 
+    // Debug the transfer data
+    print('🏦 Transfer data being sent: $transferData');
+
     // Navigate to the amount entry screen
+    print('🏦 Navigating to amount screen with data: $transferData');
     context.pushNamed(RouteName.internalBankAmount, extra: transferData);
   }
 
@@ -162,26 +262,40 @@ class _InternalBankAccountScreenContentState
 
   @override
   Widget build(BuildContext context) {
+    print('🏦 Building account screen content');
+
     return BlocConsumer<InternalTransferBloc, InternalTransferState>(
       listenWhen: (previous, current) {
-        // Only trigger the listener when:
-        // 1. The status changes from loading to failed state
-        // 2. The error message changes and is not null
-        // 3. When there's an error message but the status might still be initial
-        return (previous.isLoading &&
-                !current.isLoading &&
-                (current.status ==
-                        InternalTransferStatus.accountValidationFailed ||
-                    current.errorMessage != null)) ||
-            (previous.errorMessage != current.errorMessage &&
-                current.errorMessage != null);
+        // Print state changes for debugging
+        print('🏦 State change: ${previous.status} -> ${current.status}');
+        print(
+            '🏦 Loading change: ${previous.isLoading} -> ${current.isLoading}');
+
+        // Debug the validated account
+        print(
+            '🏦 DEBUG Previous validatedAccount: ${previous.validatedAccount?.accountHolderName ?? 'NULL'}');
+        print(
+            '🏦 DEBUG Current validatedAccount: ${current.validatedAccount?.accountHolderName ?? 'NULL'}');
+
+        // Listen for any important state changes
+        return previous.status != current.status ||
+            previous.isLoading != current.isLoading ||
+            previous.errorMessage != current.errorMessage ||
+            previous.validatedAccount != current.validatedAccount;
       },
       listener: (context, state) {
-        // Get previous state
-        final previousState = context.read<InternalTransferBloc>().state;
+        print(
+            '🏦 DEBUG: Listener called with state: ${state.status}, isLoading: ${state.isLoading}');
+        print(
+            '🏦 DEBUG: Has validated account? ${state.validatedAccount != null}');
+        if (state.validatedAccount != null) {
+          print(
+              '🏦 DEBUG: Account holder name: ${state.validatedAccount!.accountHolderName}');
+        }
 
-        // Reset validation flag when loading completes
-        if (previousState.isLoading && !state.isLoading) {
+        // Reset validation flag when state changes from loading to not loading
+        if (_isValidating && !state.isLoading) {
+          print('🏦 Resetting validation flag as loading completed');
           setState(() {
             _isValidating = false;
           });
@@ -189,6 +303,7 @@ class _InternalBankAccountScreenContentState
 
         // Show error messages if any
         if (state.errorMessage != null) {
+          print('🏦 Showing error: ${state.errorMessage}');
           // Clear any existing snackbars first
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -196,9 +311,8 @@ class _InternalBankAccountScreenContentState
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
-              duration:
-                  const Duration(seconds: 4), // Longer duration for readability
-              behavior: SnackBarBehavior.floating, // Makes it more visible
+              duration: const Duration(seconds: 4),
+              behavior: SnackBarBehavior.floating,
               action: SnackBarAction(
                 label: 'Dismiss',
                 onPressed: () {
@@ -208,15 +322,46 @@ class _InternalBankAccountScreenContentState
             ),
           );
         }
+
+        // Log and show confirmation when account validation succeeds
+        if (state.status == InternalTransferStatus.accountValidated &&
+            state.validatedAccount != null) {
+          print(
+              '🏦 Validated account received: ${state.validatedAccount!.accountHolderName}');
+          print('🏦 DEBUG: Account validated successfully, updating UI');
+
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Account verified: ${state.validatedAccount!.accountHolderName}'),
+              duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state.status == InternalTransferStatus.accountValidated &&
+            state.validatedAccount == null) {
+          print(
+              '🏦 DEBUG: Strange state - accountValidated but account is NULL');
+        }
       },
       builder: (context, state) {
-        // Update validation flag based on state
-        if (_isValidating && !state.isLoading) {
-          _isValidating = false;
-        }
+        // Print current state for debugging purposes
+        print(
+            '🏦 Builder called with state: ${state.status}, isLoading: ${state.isLoading}');
 
+        // Check if account has been validated
         final isAccountValidated =
             state.status == InternalTransferStatus.accountValidated;
+        print('🏦 isAccountValidated: $isAccountValidated');
+
+        // Also check if the validated account data is available
+        final hasValidatedAccount = state.validatedAccount != null;
+        print('🏦 hasValidatedAccount: $hasValidatedAccount');
+
+        // If validation timed out, force reset the loading state
+        final isLoading = _validationTimedOut ? false : state.isLoading;
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -270,7 +415,7 @@ class _InternalBankAccountScreenContentState
                 SizedBox(height: 24.h),
 
                 // Account information section (visible only after verification)
-                if (isAccountValidated && state.validatedAccount != null) ...[
+                if (isAccountValidated && hasValidatedAccount) ...[
                   GestureDetector(
                     onTap: _navigateToAmountScreen,
                     child: Container(
@@ -278,79 +423,144 @@ class _InternalBankAccountScreenContentState
                       padding: EdgeInsets.symmetric(
                           vertical: 20.h, horizontal: 16.w),
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.05),
+                        color: Colors.blue.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blue.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Profile circle with initials
-                          Container(
-                            width: 60.w,
-                            height: 60.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.grey[300]!, width: 1),
-                            ),
-                            child: Center(
-                              child: Text(
-                                _getInitials(
-                                    state.validatedAccount!.accountHolderName),
+                          // Account verification status header
+                          Row(
+                            children: [
+                              Icon(Icons.check_circle,
+                                  color: Colors.green, size: 20.sp),
+                              SizedBox(width: 8.w),
+                              Text(
+                                'Account Verified',
                                 style: GoogleFonts.outfit(
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          SizedBox(width: 16.w),
+                          SizedBox(height: 16.h),
 
-                          // Name and account number
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  state.validatedAccount!.accountHolderName
-                                      .toUpperCase(),
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
+                          // Account holder information with initials
+                          Row(
+                            children: [
+                              // Profile circle with initials
+                              Container(
+                                width: 60.w,
+                                height: 60.w,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.1),
+                                  border: Border.all(
+                                      color: Colors.grey[300]!, width: 1),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    _getInitials(state
+                                        .validatedAccount!.accountHolderName),
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
                                   ),
                                 ),
-                                SizedBox(height: 4.h),
+                              ),
+                              SizedBox(width: 16.w),
+
+                              // Name and account number
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      state.validatedAccount!.accountHolderName
+                                          .toUpperCase(),
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      'Account: ${state.accountNumberInput}',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 14.sp,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      'Goh Betoch Bank',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 16.h),
+
+                          // "Tap to Continue" instruction
+                          Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
                                 Text(
-                                  state.accountNumberInput.isEmpty
-                                      ? "1234567890"
-                                      : state.accountNumberInput,
+                                  'Tap to continue',
                                   style: GoogleFonts.outfit(
                                     fontSize: 14.sp,
-                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
+                                ),
+                                SizedBox(width: 4.w),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  size: 16.sp,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ],
                             ),
-                          ),
-
-                          // Forward arrow
-                          Icon(
-                            Icons.chevron_right,
-                            size: 24.sp,
-                            color: Colors.black54,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 24.h),
                 ],
 
                 const Spacer(),
 
                 // Loading indicator for account verification
-                if (state.isLoading) ...[
+                if (isLoading) ...[
                   Center(
                     child: Column(
                       children: [
@@ -368,8 +578,8 @@ class _InternalBankAccountScreenContentState
                   ),
                 ],
 
-                // Continue button - only shown when account info is not visible
-                if (!isAccountValidated && !state.isLoading) ...[
+                // Continue button - simplified as requested
+                if (!isAccountValidated && !isLoading) ...[
                   SizedBox(
                     width: double.infinity,
                     height: 56.h,

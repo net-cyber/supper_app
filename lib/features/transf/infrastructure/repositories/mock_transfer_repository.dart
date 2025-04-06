@@ -10,6 +10,12 @@ import 'package:super_app/features/transf/domain/value_objects/value_objects.dar
 
 @Injectable(as: TransferRepository)
 class MockTransferRepository implements TransferRepository {
+  // Track internal transaction IDs to simulate persistence
+  final List<String> _transactionIds = [];
+
+  // Counter for generating unique transaction IDs
+  int _transactionCounter = 100;
+
   @override
   Future<Either<TransferFailure<dynamic>, Transaction>>
       initiateInternalTransfer({
@@ -20,19 +26,31 @@ class MockTransferRepository implements TransferRepository {
     required String bankName,
     TransferReason? reason,
   }) async {
-    // Simulate network delay
+    // Basic validation for amount
+    if (amount.getOrElse(0.0) <= 0) {
+      return left(TransferFailure.invalidAmount(
+        failedValue: amount.getOrElse(0.0),
+      ));
+    }
+
+    // Simulate network delay for processing
     await Future.delayed(const Duration(seconds: 1));
 
-    // Create a transfer
+    // Generate a unique transaction ID for internal transfer
+    final transactionId = "GB-I-${_transactionCounter++}";
+    _transactionIds.add(transactionId);
+
+    // Create a transfer with the transaction ID
     final transfer = InternalBankTransfer(
-      id: TransferId(),
+      id: TransferId.fromString(transactionId),
       receiverAccountNumber: receiverAccountNumber,
       amount: amount,
       timestamp: DateTime.now(),
       reason: reason,
       senderName: senderName,
       receiverName: receiverName,
-      bankName: bankName,
+      bankName:
+          'Goh Betoch Bank', // Always use Goh Betoch for internal transfers
     );
 
     // Create a successful transaction
@@ -61,9 +79,13 @@ class MockTransferRepository implements TransferRepository {
     // Simulate network delay
     await Future.delayed(const Duration(seconds: 1));
 
+    // Generate a unique transaction ID for external transfer
+    final transactionId = "GB-E-${_transactionCounter++}";
+    _transactionIds.add(transactionId);
+
     // Create a transfer
     final transfer = ExternalBankTransfer(
-      id: TransferId(),
+      id: TransferId.fromString(transactionId),
       receiverAccountNumber: receiverAccountNumber,
       bankCode: bankCode,
       amount: amount,
@@ -99,9 +121,13 @@ class MockTransferRepository implements TransferRepository {
     // Simulate network delay
     await Future.delayed(const Duration(seconds: 1));
 
+    // Generate a unique transaction ID for wallet transfer
+    final transactionId = "GB-W-${_transactionCounter++}";
+    _transactionIds.add(transactionId);
+
     // Create a transfer
     final transfer = WalletTransfer(
-      id: TransferId(),
+      id: TransferId.fromString(transactionId),
       receiverPhone: receiverPhone,
       walletProvider: walletProvider,
       amount: amount,
@@ -131,6 +157,14 @@ class MockTransferRepository implements TransferRepository {
     required Money amount,
     required String reason,
   }) async {
+    // Validate accounts are from Goh Betoch Bank
+    if (!toAccount.isInternal) {
+      return left(const TransferFailure.invalidInput(
+        failedValue: 'Bank account',
+        message: 'Account is not a Goh Betoch Bank account',
+      ));
+    }
+
     return initiateInternalTransfer(
       receiverAccountNumber: toAccount.accountNumber,
       amount: amount,
@@ -229,15 +263,16 @@ class MockTransferRepository implements TransferRepository {
   @override
   Future<Either<TransferFailure<dynamic>, List<Transaction>>>
       getTransactionHistory() async {
-    // Mock transaction history data
+    // Mock internal transaction history data
     final transactions = [
+      // Internal transfer with Goh Betoch Bank
       Transaction(
         transfer: InternalBankTransfer(
-          id: TransferId(),
+          id: TransferId.fromString('GB-I-001'),
           receiverAccountNumber: AccountNumber('0987654321'),
           amount: Money(amount: 1000.0),
           timestamp: DateTime.now().subtract(const Duration(days: 2)),
-          reason: TransferReason('Payment for services'),
+          reason: TransferReason('Rent payment'),
           senderName: 'Bereket Tefera',
           receiverName: 'Abebe Kebede',
           bankName: 'Goh Betoch Bank',
@@ -246,24 +281,83 @@ class MockTransferRepository implements TransferRepository {
         createdAt: DateTime.now().subtract(const Duration(days: 2)),
         completedAt: DateTime.now().subtract(const Duration(days: 2)),
       ),
+      // Another internal transfer
+      Transaction(
+        transfer: InternalBankTransfer(
+          id: TransferId.fromString('GB-I-002'),
+          receiverAccountNumber: AccountNumber('5678901234'),
+          amount: Money(amount: 500.0),
+          timestamp: DateTime.now().subtract(const Duration(days: 4)),
+          reason: TransferReason('Loan repayment'),
+          senderName: 'Bereket Tefera',
+          receiverName: 'Hiwot Girma',
+          bankName: 'Goh Betoch Bank',
+        ),
+        status: TransferStatus.completed,
+        createdAt: DateTime.now().subtract(const Duration(days: 4)),
+        completedAt: DateTime.now().subtract(const Duration(days: 4)),
+      ),
+      // Another internal transfer
+      Transaction(
+        transfer: InternalBankTransfer(
+          id: TransferId.fromString('GB-I-003'),
+          receiverAccountNumber: AccountNumber('6543210987'),
+          amount: Money(amount: 2500.0),
+          timestamp: DateTime.now().subtract(const Duration(days: 7)),
+          reason: TransferReason('Furniture payment'),
+          senderName: 'Bereket Tefera',
+          receiverName: 'Samuel Tadesse',
+          bankName: 'Goh Betoch Bank',
+        ),
+        status: TransferStatus.completed,
+        createdAt: DateTime.now().subtract(const Duration(days: 7)),
+        completedAt: DateTime.now().subtract(const Duration(days: 7)),
+      ),
+      // External transfer from previous code for reference
       Transaction(
         transfer: ExternalBankTransfer(
-          id: TransferId(),
+          id: TransferId.fromString('GB-E-001'),
           receiverAccountNumber: AccountNumber('2345678901'),
           bankCode: BankCode.cbe(),
           amount: Money(amount: 2000.0),
           fee: Money(amount: 25.0),
-          timestamp: DateTime.now().subtract(const Duration(days: 5)),
+          timestamp: DateTime.now().subtract(const Duration(days: 12)),
           reason: TransferReason('Monthly rent'),
           senderName: 'Bereket Tefera',
           receiverName: 'Chaltu Tadesse',
           bankName: 'Commercial Bank of Ethiopia',
         ),
         status: TransferStatus.completed,
-        createdAt: DateTime.now().subtract(const Duration(days: 5)),
-        completedAt: DateTime.now().subtract(const Duration(days: 5)),
+        createdAt: DateTime.now().subtract(const Duration(days: 12)),
+        completedAt: DateTime.now().subtract(const Duration(days: 12)),
       ),
     ];
+
+    // Add any dynamic transactions created during this session
+    for (final transactionId in _transactionIds) {
+      if (!transactions
+          .any((t) => t.transfer.id.getOrElse('') == transactionId)) {
+        // Only add if it doesn't exist yet
+        transactions.add(
+          Transaction(
+            transfer: InternalBankTransfer(
+              id: TransferId.fromString(transactionId),
+              receiverAccountNumber:
+                  AccountNumber('0987654321'), // Default receiver
+              amount: Money(amount: 1200.0), // Default amount
+              timestamp: DateTime.now().subtract(const Duration(hours: 1)),
+              reason: TransferReason('Recent transfer'),
+              senderName: 'Bereket Tefera',
+              receiverName: 'Abebe Kebede',
+              bankName: 'Goh Betoch Bank',
+            ),
+            status: TransferStatus.completed,
+            createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+            completedAt: DateTime.now().subtract(const Duration(minutes: 59)),
+          ),
+        );
+      }
+    }
 
     return right(transactions);
   }
@@ -271,6 +365,7 @@ class MockTransferRepository implements TransferRepository {
   @override
   Future<Either<TransferFailure<dynamic>, List<Transaction>>>
       getPendingTransactions() async {
+    // No pending transactions in this mock
     return right([]);
   }
 

@@ -2,9 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_event.dart';
 import 'package:super_app/features/transf/application/internal_transfer/internal_transfer_state.dart';
+import 'package:super_app/features/transf/domain/entities/bank_account.dart';
 import 'package:super_app/features/transf/domain/repositories/bank_account_repository.dart';
 import 'package:super_app/features/transf/domain/repositories/transfer_repository.dart';
 import 'package:super_app/features/transf/domain/value_objects/failures.dart';
+import 'package:super_app/features/transf/domain/value_objects/value_objects.dart';
 
 @injectable
 class InternalTransferBloc
@@ -32,6 +34,7 @@ class InternalTransferBloc
     AccountNumberChanged event,
     Emitter<InternalTransferState> emit,
   ) {
+    print('📱 BLoC: Account number changed to: ${event.accountNumber}');
     emit(state.copyWith(
       accountNumberInput: event.accountNumber,
       // Clear validated account if account number changes
@@ -48,39 +51,100 @@ class InternalTransferBloc
     ValidateAccount event,
     Emitter<InternalTransferState> emit,
   ) async {
+    print('🔍 Starting account validation');
     final accountNumber = state.accountNumber;
+    print(
+        '🔍 DEBUG: Current account number in state: ${accountNumber?.getOrElse('NULL')}');
+
     if (accountNumber == null || !accountNumber.isValid()) {
+      print('❌ Invalid account number format');
       emit(state.copyWith(
+        status: InternalTransferStatus.accountValidationFailed,
         errorMessage: 'Please enter a valid account number',
+        isLoading: false,
       ));
       return;
     }
 
+    // Get the account number as a string for debugging and validation
+    final accountNumberStr = accountNumber.getOrElse('');
+    print('⏳ Setting loading state, account number: "$accountNumberStr"');
+
+    // Make sure we reset any previous validation state
     emit(state.copyWith(
       status: InternalTransferStatus.validatingAccount,
       isLoading: true,
       errorMessage: null,
+      validatedAccount: null, // Reset any previous account data
     ));
 
-    final result =
-        await bankAccountRepository.verifyInternalAccountNumber(accountNumber);
+    try {
+      // Debug logging for mock accounts
+      print('🔍 Available mock accounts: ${_listAvailableMockAccounts()}');
+      print('🔄 Calling repository to verify account: "$accountNumberStr"');
 
-    result.fold(
-      (failure) {
-        emit(state.copyWith(
-          status: InternalTransferStatus.accountValidationFailed,
-          errorMessage: _mapFailureToMessage(failure),
-          isLoading: false,
-        ));
-      },
-      (account) {
-        emit(state.copyWith(
-          status: InternalTransferStatus.accountValidated,
-          validatedAccount: account,
-          isLoading: false,
-        ));
-      },
-    );
+      final result = await bankAccountRepository
+          .verifyInternalAccountNumber(accountNumber);
+
+      print('🔄 DEBUG: Repository returned. Processing result...');
+
+      // Handle the result immediately after receiving it
+      result.fold(
+        (failure) {
+          print(
+              '❌ Account validation failed: ${_mapFailureToMessage(failure)}');
+          emit(state.copyWith(
+            status: InternalTransferStatus.accountValidationFailed,
+            errorMessage: _mapFailureToMessage(failure),
+            isLoading: false,
+          ));
+        },
+        (account) {
+          print(
+              '✅ Account validated successfully: ${account.accountHolderName}');
+          print(
+              '✅ DEBUG: Account number: ${account.accountNumber.getOrElse('')}');
+          print('✅ DEBUG: Account bank: ${account.bankName}');
+
+          // Explicitly check the account is non-null
+          if (account != null) {
+            print('✅ DEBUG: About to update state with validated account');
+            emit(state.copyWith(
+              status: InternalTransferStatus.accountValidated,
+              validatedAccount: account,
+              isLoading: false,
+            ));
+            print(
+                '✅ DEBUG: State updated with account holder: ${state.validatedAccount?.accountHolderName}');
+          } else {
+            print('⚠️ Account object is null despite successful validation');
+            emit(state.copyWith(
+              status: InternalTransferStatus.accountValidationFailed,
+              errorMessage: 'Error retrieving account details',
+              isLoading: false,
+            ));
+          }
+        },
+      );
+    } catch (e) {
+      print('⚠️ Exception during account validation: $e');
+      emit(state.copyWith(
+        status: InternalTransferStatus.accountValidationFailed,
+        errorMessage: 'An unexpected error occurred: $e',
+        isLoading: false,
+      ));
+    }
+  }
+
+  // Helper method to list mock accounts for debugging
+  String _listAvailableMockAccounts() {
+    try {
+      // Attempt to get available accounts for debugging
+      final accountsFuture = bankAccountRepository.getSavedBankAccounts();
+      return "Mock account retrieval initiated";
+    } catch (e) {
+      return "Error retrieving mock accounts: $e";
+    }
   }
 
   void _onAmountChanged(
