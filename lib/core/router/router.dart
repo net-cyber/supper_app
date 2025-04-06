@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/registration/registration_screen.dart';

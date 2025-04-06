@@ -1,9 +1,15 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/constants/app_constants.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
+import 'package:super_app/features/accounts/domain/entities/account.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -48,9 +54,9 @@ class _MainScreenState extends State<MainScreen> {
       title: Row(
         children: [
           Image.asset(
-            AppConstants.gohbetochLogoHorizontal,
-            width: 28.w,
-            height: 28.h,
+            AppConstants.gohbetochLogoVertical,
+            width: 58.w,
+            height: 58.h,
           ),
           SizedBox(width: 12.w),
           Text(
@@ -83,9 +89,67 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildBalanceCard() {
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      builder: (context, state) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          height: 230.h,
+          child: Stack(
+            children: [
+              // PageView for horizontal scrolling of account cards
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentAccountIndex = index;
+                  });
+                },
+                itemCount: state.accounts.isEmpty ? 1 : state.accounts.length,
+                itemBuilder: (context, index) {
+                  // When accounts are loaded, display account data
+                  if (state.accounts.isNotEmpty) {
+                    final account = state.accounts[index];
+                    return _buildAccountCard(account);
+                  } 
+                  // When loading or no accounts, display placeholder
+                  return _buildAccountCardPlaceholder(state);
+                },
+              ),
+              
+              // Account page indicator (dots)
+              if (state.accounts.length > 1)
+                Positioned(
+                  bottom: 8.h,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      state.accounts.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: index == _currentAccountIndex ? 24.w : 8.w,
+                        height: 8.h,
+                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        decoration: BoxDecoration(
+                          color: index == _currentAccountIndex
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAccountCard(Account account) {
     return Container(
-      margin: EdgeInsets.all(16.w),
-      height: 230.h,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -171,7 +235,7 @@ class _MainScreenState extends State<MainScreen> {
                             borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: Text(
-                            'PLATINUM',
+                            account.currency,
                             style: GoogleFonts.outfit(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
@@ -211,7 +275,7 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'CARD HOLDER',
+                            'ACCOUNT HOLDER',
                             style: GoogleFonts.outfit(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w500,
@@ -221,7 +285,9 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            _isBalanceVisible ? 'ADEN ERICKSON' : '••••••••••',
+                            _isBalanceVisible
+                                ? account.owner.toUpperCase()
+                                : '••••••••••',
                             style: GoogleFonts.spaceGrotesk(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
@@ -286,24 +352,210 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildPageIndicator() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        3,
-        (index) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: index == _currentPageIndex ? 24.w : 8.w,
-          height: 8.h,
-          margin: EdgeInsets.symmetric(horizontal: 4.w),
-          decoration: BoxDecoration(
-            color: index == _currentPageIndex
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey[300],
-            borderRadius: BorderRadius.circular(4.r),
-          ),
+  Widget _buildAccountCardPlaceholder(AccountsState state) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.primary.withOpacity(0.85),
+          ],
         ),
+        borderRadius: BorderRadius.circular(24.r),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
+      child: Stack(
+        children: [
+          // Pattern overlay & decorative elements (same as above)
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.07,
+              child: CustomPaint(
+                painter: CardPatternPainter(),
+              ),
+            ),
+          ),
+          
+          // Card content
+          Padding(
+            padding: EdgeInsets.all(24.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Bank logo/loading indicator
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          AppConstants.gohbetochLogoVertical,
+                          width: 24.w,
+                          height: 24.h,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 12.w),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                          child: Text(
+                            'ACCOUNT',
+                            style: GoogleFonts.outfit(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    // Balance indicator
+                    if (state.isLoading)
+                      SizedBox(
+                        width: 20.w,
+                        height: 20.h,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.w,
+                          color: Colors.white,
+                        ),
+                      )
+                    else if (state.hasError)
+                      IconButton(
+                        icon: Icon(
+                          Icons.refresh_rounded, 
+                          color: Colors.white,
+                          size: 20.sp,
+                        ),
+                        onPressed: () {
+                          context.read<AccountsBloc>().add(
+                            const AccountsEvent.refreshAccounts(),
+                          );
+                        },
+                      )
+                  ],
+                ),
+                
+                const Spacer(),
+                
+                // Placeholder content
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Current Balance',
+                      style: GoogleFonts.outfit(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.8),
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      state.hasError ? 'Error loading account' : '••••••',
+                      style: GoogleFonts.outfit(
+                        fontSize: 28.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                
+                // Placeholder for card details
+                Text(
+                  '•••• •••• •••• ••••',
+                  style: GoogleFonts.spaceGrotesk(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                
+                SizedBox(height: 16.h),
+                
+                // Placeholder for account holder
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'ACCOUNT HOLDER',
+                            style: GoogleFonts.outfit(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white.withOpacity(0.7),
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            '••••••••••',
+                            style: GoogleFonts.spaceGrotesk(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      builder: (context, state) {
+        // Don't show page indicator dots for the card when we already have
+        // dots inside the card for account navigation
+        if (state.accounts.length > 1) {
+          return const SizedBox.shrink();
+        }
+        
+        // Show regular page indicator for other content
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            3,
+            (index) => AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: index == _currentPageIndex ? 24.w : 8.w,
+              height: 8.h,
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              decoration: BoxDecoration(
+                color: index == _currentPageIndex
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey[300],
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/core/theme/app_colors.dart';
 import 'package:super_app/features/auth/application/verification/bloc/otp_verification_bloc.dart';
 
 class OTPVerificationScreen extends StatelessWidget {

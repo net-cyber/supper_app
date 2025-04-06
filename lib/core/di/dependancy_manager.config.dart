@@ -11,6 +11,14 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/accounts/application/list/bloc/accounts_bloc.dart'
+    as _i671;
+import '../../features/accounts/domain/repositories/account_repository.dart'
+    as _i706;
+import '../../features/accounts/infrastructure/datasources/accounts_remote_data_source.dart'
+    as _i811;
+import '../../features/accounts/infrastructure/repositories/account_repository_impl.dart'
+    as _i658;
 import '../../features/auth/application/login/bloc/login_bloc.dart' as _i623;
 import '../../features/auth/application/registration/bloc/registration_bloc.dart'
     as _i859;
@@ -22,6 +30,20 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
     as _i1046;
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
+import '../../features/transf/application/external_transfer/external_transfer_bloc.dart'
+    as _i622;
+import '../../features/transf/domain/repositories/bank_account_repository.dart'
+    as _i291;
+import '../../features/transf/domain/repositories/transfer_repository.dart'
+    as _i754;
+import '../../features/transf/domain/repositories/wallet_repository.dart'
+    as _i915;
+import '../../features/transf/infrastructure/repositories/mock_bank_account_repository.dart'
+    as _i1035;
+import '../../features/transf/infrastructure/repositories/mock_transfer_repository.dart'
+    as _i13;
+import '../../features/transf/infrastructure/repositories/mock_wallet_repository.dart'
+    as _i275;
 import '../handlers/http_service.dart' as _i350;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -36,17 +58,31 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.lazySingleton<_i350.HttpService>(() => _i350.HttpService());
+    gh.factory<_i291.BankAccountRepository>(
+        () => _i1035.MockBankAccountRepository());
     gh.factory<_i1046.AuthRemoteDataSource>(
         () => _i1046.AuthRemoteDataSourceImpl());
+    gh.factory<_i811.AccountsRemoteDataSource>(
+        () => _i811.AccountsRemoteDataSourceImpl());
+    gh.factory<_i915.WalletRepository>(() => _i275.MockWalletRepository());
     gh.factory<_i787.AuthRepository>(
         () => _i446.AuthRepositoryImpl(gh<_i1046.AuthRemoteDataSource>()));
     gh.factory<_i516.UserService>(() => _i516.UserServiceImpl());
+    gh.factory<_i754.TransferRepository>(() => _i13.MockTransferRepository());
+    gh.factory<_i622.ExternalTransferBloc>(() => _i622.ExternalTransferBloc(
+          bankAccountRepository: gh<_i291.BankAccountRepository>(),
+          transferRepository: gh<_i754.TransferRepository>(),
+        ));
+    gh.factory<_i706.AccountRespository>(() =>
+        _i658.AccountRepositoryImpl(gh<_i811.AccountsRemoteDataSource>()));
     gh.factory<_i247.OtpVerificationBloc>(
         () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i623.LoginBloc>(
         () => _i623.LoginBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i859.RegistrationBloc>(
         () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
+    gh.factory<_i671.AccountsBloc>(
+        () => _i671.AccountsBloc(gh<_i706.AccountRespository>()));
     return this;
   }
 }
