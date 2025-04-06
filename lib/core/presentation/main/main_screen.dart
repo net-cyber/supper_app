@@ -10,6 +10,9 @@ import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.
 import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
 import 'package:super_app/features/accounts/domain/entities/account.dart';
+import 'dart:math' as Math;
+
+import 'package:super_app/features/auth/domain/user/user_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -33,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           children: [
             _buildBalanceCard(),
-            SizedBox(height: 12.h),
+            SizedBox(height: 1.h),
             _buildPageIndicator(),
             SizedBox(height: 24.h),
             _buildQuickActions(),
@@ -93,7 +96,7 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, state) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          height: 230.h,
+          height: 290.h,
           child: Stack(
             children: [
               // PageView for horizontal scrolling of account cards
@@ -149,29 +152,29 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildAccountCard(Account account) {
+    // Set color to match SOL card's black background
+    final Color cardBaseColor = Colors.black;
+    final userDetail = getIt<UserService>().getCurrentUser();
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.85),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24.r),
+        color: cardBaseColor,
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          // Subtle pattern overlay
-          Positioned.fill(
+          // Background branding "SOL" as large faded text
+          Positioned(
+            right: 0,
+            top: 20.h,
+            bottom: 20.h,
             child: Opacity(
               opacity: 0.07,
               child: CustomPaint(
@@ -210,15 +213,17 @@ class _MainScreenState extends State<MainScreen> {
 
           // Card content
           Padding(
-            padding: EdgeInsets.all(24.w),
+            padding: EdgeInsets.all(20.w),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Bank logo/platinum indicator
+                // SOL Card branding and Virtual label
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.asset(
                           AppConstants.gohbetochLogoVertical,
@@ -246,6 +251,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ],
                     ),
+                   
                   ],
                 ),
 
@@ -319,31 +325,48 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ],
                 ),
+                
+            
+                
+               
               ],
             ),
           ),
 
           // Tap to show/hide button
           Positioned(
-            top: 16.h,
-            right: 16.w,
+            top: 12.h,
+            right: 12.w,
             child: GestureDetector(
               onTap: () {
                 setState(() {
                   _isBalanceVisible = !_isBalanceVisible;
                 });
               },
-              child: Container(
-                padding: EdgeInsets.all(6.w),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  _isBalanceVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.white,
-                  size: 18.sp,
-                ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      _isBalanceVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.white,
+                      size: 16.sp,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                   Text(
+                     _isBalanceVisible ? 'Hide' : 'Show' ,
+                      style: GoogleFonts.outfit(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -363,7 +386,7 @@ class _MainScreenState extends State<MainScreen> {
             Theme.of(context).colorScheme.primary.withOpacity(0.85),
           ],
         ),
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
@@ -373,11 +396,13 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
         children: [
-          // Pattern overlay & decorative elements (same as above)
+          // Background pattern
           Positioned.fill(
             child: Opacity(
-              opacity: 0.07,
+              opacity: 0.05,
               child: CustomPaint(
                 painter: CardPatternPainter(),
               ),
@@ -386,9 +411,10 @@ class _MainScreenState extends State<MainScreen> {
           
           // Card content
           Padding(
-            padding: EdgeInsets.all(24.w),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Bank logo/loading indicator
                 Row(
@@ -402,9 +428,9 @@ class _MainScreenState extends State<MainScreen> {
                           height: 24.h,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 12.w),
+                        SizedBox(width: 8.w),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius: BorderRadius.circular(4.r),
@@ -412,10 +438,10 @@ class _MainScreenState extends State<MainScreen> {
                           child: Text(
                             'ACCOUNT',
                             style: GoogleFonts.outfit(
-                              fontSize: 12.sp,
+                              fontSize: 9.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
-                              letterSpacing: 1,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
@@ -425,8 +451,8 @@ class _MainScreenState extends State<MainScreen> {
                     // Balance indicator
                     if (state.isLoading)
                       SizedBox(
-                        width: 20.w,
-                        height: 20.h,
+                        width: 16.w,
+                        height: 16.h,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.w,
                           color: Colors.white,
@@ -434,10 +460,12 @@ class _MainScreenState extends State<MainScreen> {
                       )
                     else if (state.hasError)
                       IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
                         icon: Icon(
                           Icons.refresh_rounded, 
                           color: Colors.white,
-                          size: 20.sp,
+                          size: 16.sp,
                         ),
                         onPressed: () {
                           context.read<AccountsBloc>().add(
@@ -448,25 +476,37 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 
-                const Spacer(),
-                
-                // Placeholder content
+                // Placeholder content - middle section
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Card number placeholder
                     Text(
-                      'Current Balance',
-                      style: GoogleFonts.outfit(
+                      '•••• •••• •••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white,
+                        letterSpacing: 1.2,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    
+                    SizedBox(height: 8.h),
+                    
                     Text(
-                      state.hasError ? 'Error loading account' : '••••••',
+                      'AVAILABLE BALANCE',
                       style: GoogleFonts.outfit(
-                        fontSize: 28.sp,
+                        fontSize: 8.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    Text(
+                      state.hasError ? 'Error loading' : '••••••',
+                      style: GoogleFonts.outfit(
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -474,48 +514,31 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 
-                // Placeholder for card details
-                Text(
-                  '•••• •••• •••• ••••',
-                  style: GoogleFonts.spaceGrotesk(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                
-                SizedBox(height: 16.h),
-                
-                // Placeholder for account holder
+                // Placeholder for account holder - bottom section
                 Row(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'ACCOUNT HOLDER',
-                            style: GoogleFonts.outfit(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.7),
-                              letterSpacing: 0.8,
-                            ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'CARDHOLDER',
+                          style: GoogleFonts.outfit(
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.7),
+                            letterSpacing: 0.5,
                           ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            '••••••••••',
-                            style: GoogleFonts.spaceGrotesk(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              letterSpacing: 0.5,
-                            ),
+                        ),
+                        Text(
+                          '••••••••••',
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -530,27 +553,143 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildPageIndicator() {
     return BlocBuilder<AccountsBloc, AccountsState>(
       builder: (context, state) {
-        // Don't show page indicator dots for the card when we already have
-        // dots inside the card for account navigation
-        if (state.accounts.length > 1) {
-          return const SizedBox.shrink();
+        // If no accounts, don't show any indicators
+        if (state.accounts.isEmpty) {
+          return SizedBox(height: 34.h);
         }
+
+        // Get current account and next/previous account if available
+        final currentAccount = state.accounts[_currentAccountIndex];
+        final prevAccountIndex = (_currentAccountIndex - 1).clamp(0, state.accounts.length - 1);
+        final nextAccountIndex = (_currentAccountIndex + 1).clamp(0, state.accounts.length - 1);
         
-        // Show regular page indicator for other content
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            3,
-            (index) => AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: index == _currentPageIndex ? 24.w : 8.w,
-              height: 8.h,
-              margin: EdgeInsets.symmetric(horizontal: 4.w),
+        // Get the alternate account (either prev or next, depending on which side is selected)
+        final alternateAccount = _currentAccountIndex % 2 == 0 
+            ? state.accounts[nextAccountIndex] 
+            : state.accounts[prevAccountIndex];
+        
+        // Selected option (0 = left, 1 = right)
+        final bool isRightSelected = _currentAccountIndex % 2 == 1;
+
+        return Container(
+          height: 42.h,
+          margin: EdgeInsets.symmetric(vertical: 10.h),
+          child: Center(
+            child: Container(
+              width: 0.72.sw,
+              height: 36.h,
               decoration: BoxDecoration(
-                color: index == _currentPageIndex
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey[300],
-                borderRadius: BorderRadius.circular(4.r),
+                color: const Color(0xFFE8E8E8),
+                borderRadius: BorderRadius.circular(18.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    offset: const Offset(0, 1),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.all(3.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  // Left button
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (isRightSelected && state.accounts.isNotEmpty) {
+                          // Switch to the account shown on left
+                          _pageController.animateToPage(
+                            prevAccountIndex,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutCubic,
+                          );
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: !isRightSelected 
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(15.r),
+                          boxShadow: !isRightSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 1),
+                                    spreadRadius: 0,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            isRightSelected 
+                                ? alternateAccount.currency
+                                : currentAccount.currency,
+                            style: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700],
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Right button
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (!isRightSelected && state.accounts.isNotEmpty) {
+                          // Switch to the account shown on right
+                          _pageController.animateToPage(
+                            nextAccountIndex,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutCubic,
+                          );
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: isRightSelected 
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(15.r),
+                          boxShadow: isRightSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 1),
+                                    spreadRadius: 0,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            isRightSelected 
+                                ? currentAccount.currency
+                                : alternateAccount.currency,
+                            style: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700],
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
