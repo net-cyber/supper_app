@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -22,9 +22,25 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  bool _isBalanceVisible = false;
-  int _currentPageIndex = 0;
+  final PageController _pageController = PageController();
+  int _currentAccountIndex = 0;
+  bool _isBalanceVisible = true;
   bool _isGohBetochLoading = false;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch accounts when the screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AccountsBloc>().add(const AccountsEvent.fetchAccounts());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,12 +129,12 @@ class _MainScreenState extends State<MainScreen> {
                   if (state.accounts.isNotEmpty) {
                     final account = state.accounts[index];
                     return _buildAccountCard(account, _currentAccountIndex);
-                  } 
+                  }
                   // When loading or no accounts, display placeholder
                   return _buildAccountCardPlaceholder(state);
                 },
               ),
-              
+
               // Account page indicator (dots)
               if (state.accounts.length > 1)
                 Positioned(
@@ -153,7 +169,9 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildAccountCard(Account account, int currentAccountIndex) {
     // Set color to match SOL card's black background
-    final Color cardBaseColor =currentAccountIndex % 2 == 1 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary;
+    final Color cardBaseColor = currentAccountIndex % 2 == 1
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.secondary;
     final userDetail = getIt<UserService>().getCurrentUser();
     return Container(
       decoration: BoxDecoration(
@@ -251,7 +269,6 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ],
                     ),
-                   
                   ],
                 ),
 
@@ -325,10 +342,6 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ],
                 ),
-                
-            
-                
-               
               ],
             ),
           ),
@@ -352,20 +365,22 @@ class _MainScreenState extends State<MainScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      _isBalanceVisible ? Icons.visibility : Icons.visibility_off,
+                      _isBalanceVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: Colors.white,
                       size: 16.sp,
                     ),
                   ),
                   SizedBox(height: 3.h),
-                   Text(
-                     _isBalanceVisible ? 'Hide' : 'Show' ,
-                      style: GoogleFonts.outfit(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                  Text(
+                    _isBalanceVisible ? 'Hide' : 'Show',
+                    style: GoogleFonts.outfit(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
                     ),
+                  ),
                 ],
               ),
             ),
@@ -408,7 +423,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           ),
-          
+
           // Card content
           Padding(
             padding: EdgeInsets.all(16.w),
@@ -430,7 +445,8 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         SizedBox(width: 8.w),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 6.w, vertical: 2.h),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.secondary,
                             borderRadius: BorderRadius.circular(4.r),
@@ -447,7 +463,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ],
                     ),
-                    
+
                     // Balance indicator
                     if (state.isLoading)
                       SizedBox(
@@ -463,19 +479,19 @@ class _MainScreenState extends State<MainScreen> {
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
                         icon: Icon(
-                          Icons.refresh_rounded, 
+                          Icons.refresh_rounded,
                           color: Colors.white,
                           size: 16.sp,
                         ),
                         onPressed: () {
                           context.read<AccountsBloc>().add(
-                            const AccountsEvent.refreshAccounts(),
-                          );
+                                const AccountsEvent.refreshAccounts(),
+                              );
                         },
                       )
                   ],
                 ),
-                
+
                 // Placeholder content - middle section
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,9 +507,9 @@ class _MainScreenState extends State<MainScreen> {
                         letterSpacing: 1.2,
                       ),
                     ),
-                    
+
                     SizedBox(height: 8.h),
-                    
+
                     Text(
                       'AVAILABLE BALANCE',
                       style: GoogleFonts.outfit(
@@ -513,7 +529,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ],
                 ),
-                
+
                 // Placeholder for account holder - bottom section
                 Row(
                   children: [
@@ -553,23 +569,29 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildPageIndicator() {
     return BlocBuilder<AccountsBloc, AccountsState>(
       builder: (context, state) {
-        // If no accounts, don't show any indicators
-        if (state.accounts.isEmpty) {
+        // If no accounts or loading, don't show any indicators
+        if (state.accounts.isEmpty || state.isLoading) {
           return SizedBox(height: 34.h);
         }
 
+        // Get current account index within bounds
+        final safeCurrentIndex =
+            _currentAccountIndex.clamp(0, state.accounts.length - 1);
+
         // Get current account and next/previous account if available
-        final currentAccount = state.accounts[_currentAccountIndex];
-        final prevAccountIndex = (_currentAccountIndex - 1).clamp(0, state.accounts.length - 1);
-        final nextAccountIndex = (_currentAccountIndex + 1).clamp(0, state.accounts.length - 1);
-        
+        final currentAccount = state.accounts[safeCurrentIndex];
+        final prevAccountIndex =
+            (safeCurrentIndex - 1).clamp(0, state.accounts.length - 1);
+        final nextAccountIndex =
+            (safeCurrentIndex + 1).clamp(0, state.accounts.length - 1);
+
         // Get the alternate account (either prev or next, depending on which side is selected)
-        final alternateAccount = _currentAccountIndex % 2 == 0 
-            ? state.accounts[nextAccountIndex] 
+        final alternateAccount = safeCurrentIndex % 2 == 0
+            ? state.accounts[nextAccountIndex]
             : state.accounts[prevAccountIndex];
-        
+
         // Selected option (0 = left, 1 = right)
-        final bool isRightSelected = _currentAccountIndex % 2 == 1;
+        final bool isRightSelected = safeCurrentIndex % 2 == 1;
 
         return Container(
           height: 42.h,
@@ -610,7 +632,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         decoration: BoxDecoration(
-                          color: !isRightSelected 
+                          color: !isRightSelected
                               ? Colors.white
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(15.r),
@@ -627,7 +649,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            isRightSelected 
+                            isRightSelected
                                 ? alternateAccount.currency
                                 : currentAccount.currency,
                             style: GoogleFonts.outfit(
@@ -641,7 +663,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                  
+
                   // Right button
                   Expanded(
                     child: GestureDetector(
@@ -658,7 +680,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         decoration: BoxDecoration(
-                          color: isRightSelected 
+                          color: isRightSelected
                               ? Colors.white
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(15.r),
@@ -675,7 +697,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            isRightSelected 
+                            isRightSelected
                                 ? currentAccount.currency
                                 : alternateAccount.currency,
                             style: GoogleFonts.outfit(

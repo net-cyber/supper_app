@@ -18,6 +18,8 @@ import 'package:super_app/features/history/presentation/history_screen.dart';
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 
 final router = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
@@ -97,7 +99,11 @@ final router = GoRouter(
             GoRoute(
               name: RouteName.mainScreen,
               path: '/${RouteName.mainScreen}',
-              builder: (context, state) => const MainScreen(),
+              builder: (context, state) => BlocProvider<AccountsBloc>(
+                create: (context) => getIt<AccountsBloc>()
+                  ..add(const AccountsEvent.fetchAccounts()),
+                child: const MainScreen(),
+              ),
               routes: const [],
             ),
           ],
