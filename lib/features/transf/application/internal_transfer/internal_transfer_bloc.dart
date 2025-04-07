@@ -197,6 +197,10 @@ class InternalTransferBloc
       errorMessage: null,
     ));
 
+    // Add debug statements to track the process
+    print(
+        '💸 Starting transfer submission: ${state.accountNumber?.getOrElse('')} - ${state.amount?.getOrElse(0)}');
+
     final result = await transferRepository.initiateInternalTransfer(
       receiverAccountNumber: state.accountNumber!,
       amount: state.amount!,
@@ -207,8 +211,11 @@ class InternalTransferBloc
       reason: state.reason,
     );
 
+    print('💸 Transfer result received from API');
+
     result.fold(
       (failure) {
+        print('❌ Transfer failed: ${_mapFailureToMessage(failure)}');
         emit(state.copyWith(
           status: InternalTransferStatus.failure,
           errorMessage: _mapFailureToMessage(failure),
@@ -216,6 +223,8 @@ class InternalTransferBloc
         ));
       },
       (transaction) {
+        print(
+            '✅ Transfer succeeded! Transaction ID: ${transaction.transfer.id.getOrElse('')}');
         emit(state.copyWith(
           status: InternalTransferStatus.success,
           isSuccess: true,

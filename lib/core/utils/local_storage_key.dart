@@ -7,4 +7,5 @@ class LocalStorageKey {
   static const themeMode = 'themeMode';
   static const userData = 'userData';
   static const isFirstTime = 'isFirstTime';
+  static const tokenExpiration = 'tokenExpiration';
 }

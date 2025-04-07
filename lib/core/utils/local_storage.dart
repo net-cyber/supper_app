@@ -4,13 +4,12 @@ import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_app/core/utils/local_storage_key.dart';
 
-
 class LocalStorage {
   LocalStorage._();
   static SharedPreferences? _preferences;
   static LocalStorage? _localStorage;
   static final LocalStorage instance = LocalStorage._();
-  
+
   static Future<void> ensureInitialized() async {
     try {
       if (_preferences == null) {
@@ -36,15 +35,17 @@ class LocalStorage {
         log('getIsDoneOnboarding: _preferences is null');
         return false;
       }
-      final isDoneOnboarding = _preferences!.getBool(LocalStorageKey.isDoneOnboarding);
+      final isDoneOnboarding =
+          _preferences!.getBool(LocalStorageKey.isDoneOnboarding);
       log('getIsDoneOnboarding: $isDoneOnboarding');
-      
+
       return isDoneOnboarding ?? false;
     } catch (e) {
       log('Error in getIsDoneOnboarding: $e');
       return false;
     }
   }
+
   /// set is onboarding
   Future<void> setIsDoneOnboarding(bool value) async {
     log('setIsDoneOnboarding: $value');
@@ -60,6 +61,7 @@ class LocalStorage {
       log('Error in setIsDoneOnboarding: $e');
     }
   }
+
   /// delete is onboarding
   Future<void> deleteIsDoneOnboarding() async {
     if (_preferences == null) {
@@ -67,6 +69,7 @@ class LocalStorage {
     }
     await _preferences?.remove(LocalStorageKey.isDoneOnboarding);
   }
+
   /// set refresh token
   Future<void> setRefreshToken(String token) async {
     if (_preferences == null) {
@@ -74,6 +77,7 @@ class LocalStorage {
     }
     await _preferences?.setString(LocalStorageKey.refreshToken, token);
   }
+
   /// get refresh token
   String? getRefreshToken() {
     if (_preferences == null) {
@@ -81,6 +85,7 @@ class LocalStorage {
     }
     return _preferences!.getString(LocalStorageKey.refreshToken);
   }
+
   /// delete refresh token
   Future<void> deleteRefreshToken() async {
     if (_preferences == null) {
@@ -88,6 +93,7 @@ class LocalStorage {
     }
     await _preferences!.remove(LocalStorageKey.refreshToken);
   }
+
   /// set token
   Future<void> setAccessToken(String token) async {
     if (_preferences == null) {
@@ -95,6 +101,7 @@ class LocalStorage {
     }
     await _preferences?.setString(LocalStorageKey.accessToken, token);
   }
+
   /// get token
   String? getAccessToken() {
     if (_preferences == null) {
@@ -102,6 +109,7 @@ class LocalStorage {
     }
     return _preferences?.getString(LocalStorageKey.accessToken);
   }
+
   /// delete token
   Future<void> deleteAccessToken() async {
     if (_preferences == null) {
@@ -109,6 +117,7 @@ class LocalStorage {
     }
     await _preferences?.remove(LocalStorageKey.accessToken);
   }
+
   /// set is dark mode
   Future<void> setIsDarkMode(bool value) async {
     if (_preferences == null) {
@@ -116,6 +125,7 @@ class LocalStorage {
     }
     await _preferences?.setBool(LocalStorageKey.isDarkMode, value);
   }
+
   /// get is dark mode
   bool getIsDarkMode() {
     final isDarkMode = _preferences?.getBool(LocalStorageKey.isDarkMode);
@@ -124,6 +134,7 @@ class LocalStorage {
     }
     return isDarkMode;
   }
+
   /// clear all
   Future<void> clear() async {
     if (_preferences == null) {
@@ -131,9 +142,10 @@ class LocalStorage {
     }
     await _preferences?.clear();
   }
+
   // set app theme mode
-    Future<void> setAppThemeMode(bool isDarkMode) async {
-      log('setAppThemeMode: $isDarkMode');
+  Future<void> setAppThemeMode(bool isDarkMode) async {
+    log('setAppThemeMode: $isDarkMode');
     if (_preferences != null) {
       await _preferences!.setBool(LocalStorageKey.themeMode, isDarkMode);
     }
@@ -186,5 +198,31 @@ class LocalStorage {
     await deleteAccessToken();
     await deleteRefreshToken();
     await deleteUserData();
+    await deleteTokenExpiration();
+  }
+
+  /// set token expiration timestamp (in milliseconds)
+  Future<void> setTokenExpiration(int expirationTimestamp) async {
+    if (_preferences == null) {
+      await ensureInitialized();
+    }
+    await _preferences?.setInt(
+        LocalStorageKey.tokenExpiration, expirationTimestamp);
+  }
+
+  /// get token expiration timestamp (in milliseconds)
+  int? getTokenExpiration() {
+    if (_preferences == null) {
+      return null;
+    }
+    return _preferences?.getInt(LocalStorageKey.tokenExpiration);
+  }
+
+  /// delete token expiration
+  Future<void> deleteTokenExpiration() async {
+    if (_preferences == null) {
+      return;
+    }
+    await _preferences?.remove(LocalStorageKey.tokenExpiration);
   }
 }
