@@ -11,6 +11,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
     on<FetchAccounts>(_onFetchAccounts);
     on<LoadMoreAccounts>(_onLoadMoreAccounts);
     on<RefreshAccounts>(_onRefreshAccounts);
+    add(const FetchAccounts());
   }
 
   final AccountRespository _accountRepository;
