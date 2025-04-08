@@ -258,18 +258,58 @@ class _MainScreenState extends State<MainScreen> {
                 ),
 
                 const Spacer(),
+                // Card number
+                Column(
+                  children: [
+                     Text(
+                            'ACCOUNT BALANCE',
+                            style: GoogleFonts.outfit(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white.withOpacity(0.7),
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                    Text(
+                      _isBalanceVisible
+                          ? account.balance.toString()
+                          : '•••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
 
                 // Card number
-                Text(
-                  _isBalanceVisible
-                      ? '1288 7068 2260 2640'
-                      : '•••• •••• •••• ••••',
-                  style: GoogleFonts.spaceGrotesk(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    letterSpacing: 1.5,
-                  ),
+                Column(
+                  children: [
+                     Text(
+                            'ACCOUNT NUMBER',
+                            style: GoogleFonts.outfit(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white.withOpacity(0.7),
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                    Text(
+                      _isBalanceVisible
+                          ? account.id.toString()
+                          : '•••• •••• •••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: 16.h),
