@@ -177,3 +177,29 @@ Either<TransferFailure<String>, String> validateWalletProvider(String input) {
 
   return right(normalized);
 }
+
+// Account ID validation
+Either<TransferFailure<String>, String> validateAccountId(String input) {
+  // Remove any spaces
+  final sanitized = input.trim();
+
+  // Check for empty input
+  if (sanitized.isEmpty) {
+    return left(TransferFailure.invalidInput(
+      failedValue: input,
+      message: 'Account ID cannot be empty',
+    ));
+  }
+
+  // Account IDs are typically alphanumeric
+  // This regex allows for different account ID formats
+  final regex = RegExp(r'^[a-zA-Z0-9_-]+$');
+  if (!regex.hasMatch(sanitized)) {
+    return left(TransferFailure.invalidInput(
+      failedValue: input,
+      message: 'Account ID contains invalid characters',
+    ));
+  }
+
+  return right(sanitized);
+}

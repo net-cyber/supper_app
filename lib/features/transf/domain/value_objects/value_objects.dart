@@ -264,3 +264,53 @@ class WalletProvider extends TransferValueObject<String> {
     return WalletProvider._(right(provider));
   }
 }
+
+/// Represents an account identifier
+class AccountId extends TransferValueObject<String> {
+  @override
+  final Either<TransferFailure<String>, String> value;
+
+  const AccountId._(this.value);
+
+  /// Creates an AccountId from a string
+  factory AccountId(String input) {
+    return AccountId._(validateAccountId(input));
+  }
+
+  /// Creates an AccountId directly without validation
+  /// Use this when the ID is coming directly from a trusted API
+  factory AccountId.fromApi(String id) {
+    return AccountId._(right(id));
+  }
+
+  /// Gets the raw string value
+  String getValue() {
+    return value.getOrElse(() => '');
+  }
+}
+
+/// Represents a transfer amount
+class Amount extends TransferValueObject<double> {
+  @override
+  final Either<TransferFailure<double>, double> value;
+
+  const Amount._(this.value);
+
+  /// Creates an Amount from a double
+  factory Amount(double input) {
+    return Amount._(validateAmount(input));
+  }
+
+  /// Creates an Amount from a string
+  factory Amount.fromString(String input) {
+    return Amount._(parseAndValidateAmount(input).fold(
+      (failure) => left(TransferFailure.invalidAmount(failedValue: 0.0)),
+      (amount) => right(amount),
+    ));
+  }
+
+  /// Gets the raw double value
+  double getValue() {
+    return value.getOrElse(() => 0.0);
+  }
+}
