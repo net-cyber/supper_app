@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
@@ -97,7 +98,10 @@ final router = GoRouter(
             GoRoute(
               name: RouteName.mainScreen,
               path: '/${RouteName.mainScreen}',
-              builder: (context, state) => const MainScreen(),
+              builder: (context, state) => BlocProvider(
+                create: (context) => getIt<AccountsBloc>(),
+                child: const MainScreen(),
+              ),
               routes: const [],
             ),
           ],
