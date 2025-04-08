@@ -25,6 +25,20 @@ class _MainScreenState extends State<MainScreen> {
   bool _isBalanceVisible = false;
   int _currentPageIndex = 0;
   bool _isGohBetochLoading = false;
+  late PageController _pageController;
+  int _currentAccountIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
