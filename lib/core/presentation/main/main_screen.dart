@@ -23,7 +23,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool _isBalanceVisible = false;
-  int _currentPageIndex = 0;
   bool _isGohBetochLoading = false;
   int _currentAccountIndex = 0;
   final PageController _pageController = PageController();
