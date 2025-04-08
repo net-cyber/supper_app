@@ -34,32 +34,26 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    // Fetch accounts when the screen loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AccountsBloc>().add(const AccountsEvent.fetchAccounts());
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            _buildBalanceCard(),
-            SizedBox(height: 1.h),
-            _buildPageIndicator(),
-            SizedBox(height: 24.h),
-            _buildQuickActions(),
-            SizedBox(height: 32.h),
-            _buildServiceCategories(),
-            SizedBox(height: 32.h),
-          ],
+    return BlocProvider<AccountsBloc>(
+      create: (context) => getIt<AccountsBloc>()..add(const FetchAccounts()),
+      child: Scaffold(
+        backgroundColor: Colors.grey[50],
+        appBar: _buildAppBar(),
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              _buildBalanceCard(),
+              SizedBox(height: 1.h),
+              _buildPageIndicator(),
+              SizedBox(height: 24.h),
+              _buildQuickActions(),
+              SizedBox(height: 32.h),
+              _buildServiceCategories(),
+              SizedBox(height: 32.h),
+            ],
+          ),
         ),
       ),
     );
@@ -569,29 +563,25 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildPageIndicator() {
     return BlocBuilder<AccountsBloc, AccountsState>(
       builder: (context, state) {
-        // If no accounts or loading, don't show any indicators
-        if (state.accounts.isEmpty || state.isLoading) {
+        // If no accounts, don't show any indicators
+        if (state.accounts.isEmpty) {
           return SizedBox(height: 34.h);
         }
 
-        // Get current account index within bounds
-        final safeCurrentIndex =
-            _currentAccountIndex.clamp(0, state.accounts.length - 1);
-
         // Get current account and next/previous account if available
-        final currentAccount = state.accounts[safeCurrentIndex];
+        final currentAccount = state.accounts[_currentAccountIndex];
         final prevAccountIndex =
-            (safeCurrentIndex - 1).clamp(0, state.accounts.length - 1);
+            (_currentAccountIndex - 1).clamp(0, state.accounts.length - 1);
         final nextAccountIndex =
-            (safeCurrentIndex + 1).clamp(0, state.accounts.length - 1);
+            (_currentAccountIndex + 1).clamp(0, state.accounts.length - 1);
 
         // Get the alternate account (either prev or next, depending on which side is selected)
-        final alternateAccount = safeCurrentIndex % 2 == 0
+        final alternateAccount = _currentAccountIndex % 2 == 0
             ? state.accounts[nextAccountIndex]
             : state.accounts[prevAccountIndex];
 
         // Selected option (0 = left, 1 = right)
-        final bool isRightSelected = safeCurrentIndex % 2 == 1;
+        final bool isRightSelected = _currentAccountIndex % 2 == 1;
 
         return Container(
           height: 42.h,
@@ -770,37 +760,9 @@ class _MainScreenState extends State<MainScreen> {
     required Color color,
     required String route,
   }) {
-    final bool isGohBetoch = label.contains('Goh Betoch');
-    final bool isLoading = isGohBetoch && _isGohBetochLoading;
-
     return GestureDetector(
       onTap: () {
-        // Prevent multiple taps during loading
-        if (_isGohBetochLoading) return;
-
-        // Special handling for Goh Betoch button
-        if (isGohBetoch) {
-          setState(() {
-            _isGohBetochLoading = true;
-          });
-
-          // Add a small delay to show loading state
-          Future.delayed(const Duration(milliseconds: 300), () {
-            if (mounted) {
-              context.pushNamed(route).then((_) {
-                // Reset loading state when navigation completes or user returns
-                if (mounted) {
-                  setState(() {
-                    _isGohBetochLoading = false;
-                  });
-                }
-              });
-            }
-          });
-        } else {
-          // Normal navigation for other buttons
-          context.pushNamed(route);
-        }
+        context.pushNamed(route);
       },
       child: Column(
         children: [
@@ -827,25 +789,16 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             child: Center(
-              child: isLoading
-                  ? SizedBox(
-                      width: 24.w,
-                      height: 24.h,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2.w,
-                      ),
-                    )
-                  : Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 26.sp,
-                    ),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 26.sp,
+              ),
             ),
           ),
           SizedBox(height: 12.h),
           Text(
-            isLoading ? 'Loading...' : label,
+            label,
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
               fontSize: 12.sp,

@@ -30,14 +30,6 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
     as _i1046;
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
-import '../../features/transf/application/external_transfer/external_transfer_bloc.dart'
-    as _i622;
-import '../../features/transf/domain/repositories/bank_account_repository.dart'
-    as _i291;
-import '../../features/transf/domain/repositories/transfer_repository.dart'
-    as _i754;
-import '../../features/transf/domain/repositories/wallet_repository.dart'
-    as _i915;
 
 import '../handlers/http_service.dart' as _i350;
 
@@ -60,10 +52,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i787.AuthRepository>(
         () => _i446.AuthRepositoryImpl(gh<_i1046.AuthRemoteDataSource>()));
     gh.factory<_i516.UserService>(() => _i516.UserServiceImpl());
-    gh.factory<_i622.ExternalTransferBloc>(() => _i622.ExternalTransferBloc(
-          bankAccountRepository: gh<_i291.BankAccountRepository>(),
-          transferRepository: gh<_i754.TransferRepository>(),
-        ));
     gh.factory<_i706.AccountRespository>(() =>
         _i658.AccountRepositoryImpl(gh<_i811.AccountsRemoteDataSource>()));
     gh.factory<_i247.OtpVerificationBloc>(

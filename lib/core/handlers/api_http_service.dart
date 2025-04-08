@@ -11,20 +11,16 @@ class ApiHttpService {
   ApiHttpService(this._apiConfig, this._tokenService);
 
   Future<Dio> client() async {
-    // Get dynamic token from token service if user is logged in
+    // Get token from token service
     String? authHeader;
-    final isLoggedIn = await _tokenService.isUserLoggedIn();
+    final token = await _tokenService.getAccessToken();
 
-    if (isLoggedIn) {
-      final token = await _tokenService.getAccessToken();
-      if (token != null && token.isNotEmpty) {
-        authHeader = 'Bearer $token';
-      }
+    if (token != null && token.isNotEmpty) {
+      authHeader = 'Bearer $token';
+    } else {
+      // If no token is available, throw an exception
+      throw Exception('Authentication token not available. Please log in.');
     }
-
-    // Use hardcoded token from config as fallback if no user is logged in
-    // This is primarily for development/testing purposes
-    authHeader ??= 'Bearer ${_apiConfig.apiToken}';
 
     return Dio(
       BaseOptions(
