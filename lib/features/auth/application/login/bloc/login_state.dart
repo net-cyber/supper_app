@@ -16,4 +16,4 @@ class LoginState with _$LoginState {
   }) = _LoginState;
 
   const LoginState._();
-} 
+}

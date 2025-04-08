@@ -6,12 +6,12 @@ import 'package:super_app/core/utils/app_helpers.dart';
 import 'package:super_app/core/utils/local_storage.dart';
 
 class TokenInterceptor extends Interceptor {
-
   TokenInterceptor({required this.requireAuth});
   final bool requireAuth;
 
   @override
-  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  Future<void> onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     final accessToken = LocalStorage.instance.getAccessToken();
     if (requireAuth && accessToken != null) {
       options.headers.addAll({'Authorization': 'Bearer $accessToken'});
@@ -24,7 +24,7 @@ class TokenInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       // Clear tokens
       LocalStorage.instance.clearUserSession();
-      
+
       final context = NavigationService.currentContext;
       if (context != null) {
         // Show error message

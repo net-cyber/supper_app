@@ -36,20 +36,20 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  
+
   // Scroll controller for layout
   final ScrollController _scrollController = ScrollController();
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Scroll listener
     _scrollController.addListener(() {
       setState(() {});
     });
   }
-  
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -57,16 +57,16 @@ class _LoginViewState extends State<LoginView> {
     _scrollController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return BlocConsumer<LoginBloc, LoginState>(
-      listenWhen: (previous, current) => 
-        previous.isLoading != current.isLoading || 
-        previous.isLoginError != current.isLoginError,
+      listenWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
+          previous.isLoginError != current.isLoginError,
       listener: (context, state) {
         if (!state.isLoading && !state.isLoginError) {
           context.go('/${RouteName.mainScreen}');
@@ -107,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
               ),
-              
+
               // Main content
               SafeArea(
                 child: CustomScrollView(
@@ -144,7 +144,8 @@ class _LoginViewState extends State<LoginView> {
                                   SizedBox(width: 16.w),
                                   // Logo text
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "GOH BETOCH BANK",
@@ -164,7 +165,8 @@ class _LoginViewState extends State<LoginView> {
                                           gradient: LinearGradient(
                                             colors: [
                                               colorScheme.primary,
-                                              colorScheme.primary.withOpacity(0.5),
+                                              colorScheme.primary
+                                                  .withOpacity(0.5),
                                             ],
                                             begin: Alignment.centerLeft,
                                             end: Alignment.centerRight,
@@ -193,7 +195,8 @@ class _LoginViewState extends State<LoginView> {
                                 Text(
                                   'Welcome back',
                                   style: GoogleFonts.outfit(
-                                    fontSize: theme.textTheme.headlineSmall?.fontSize,
+                                    fontSize:
+                                        theme.textTheme.headlineSmall?.fontSize,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: -0.5,
                                     color: colorScheme.onBackground,
@@ -203,23 +206,26 @@ class _LoginViewState extends State<LoginView> {
                                 Text(
                                   'Sign in to continue',
                                   style: GoogleFonts.outfit(
-                                    fontSize: theme.textTheme.bodyLarge?.fontSize,
+                                    fontSize:
+                                        theme.textTheme.bodyLarge?.fontSize,
                                     color: colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 40.h),
-                            
+
                             // Form fields
                             AppTextField(
                               controller: usernameController,
                               hintText: 'Username',
                               keyboardType: TextInputType.emailAddress,
-                              onChanged: (value) => context.read<LoginBloc>().add(
-                                LoginEvent.usernameChanged(value),
-                              ),
-                              errorText: state.showErrorMessages && !state.username.isValid()
+                              onChanged: (value) =>
+                                  context.read<LoginBloc>().add(
+                                        LoginEvent.usernameChanged(value),
+                                      ),
+                              errorText: state.showErrorMessages &&
+                                      !state.username.isValid()
                                   ? 'Please enter a valid username'
                                   : null,
                             ),
@@ -228,22 +234,24 @@ class _LoginViewState extends State<LoginView> {
                               controller: passwordController,
                               hintText: 'Password',
                               obscureText: !state.showPassword,
-                              onChanged: (value) => context.read<LoginBloc>().add(
-                                LoginEvent.passwordChanged(value),
-                              ),
+                              onChanged: (value) =>
+                                  context.read<LoginBloc>().add(
+                                        LoginEvent.passwordChanged(value),
+                                      ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  state.showPassword 
+                                  state.showPassword
                                       ? Icons.visibility_off_outlined
                                       : Icons.visibility_outlined,
                                   color: colorScheme.onSurfaceVariant,
                                   size: 20.sp,
                                 ),
                                 onPressed: () => context.read<LoginBloc>().add(
-                                  const LoginEvent.toggleShowPassword(),
-                                ),
+                                      const LoginEvent.toggleShowPassword(),
+                                    ),
                               ),
-                              errorText: state.showErrorMessages && !state.password.isValid()
+                              errorText: state.showErrorMessages &&
+                                      !state.password.isValid()
                                   ? 'Password must be at least 6 characters'
                                   : null,
                             ),
@@ -256,14 +264,17 @@ class _LoginViewState extends State<LoginView> {
                                 },
                                 style: TextButton.styleFrom(
                                   foregroundColor: colorScheme.primary,
-                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 4.h),
                                   minimumSize: Size(0, 36.h),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Text(
                                   'Forgot Password?',
                                   style: GoogleFonts.outfit(
-                                    fontSize: theme.textTheme.bodyMedium?.fontSize,
+                                    fontSize:
+                                        theme.textTheme.bodyMedium?.fontSize,
                                     color: colorScheme.primary,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -271,25 +282,26 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             ),
                             SizedBox(height: 40.h),
-                            
+
                             // Sign in button
                             SizedBox(
                               width: double.infinity,
                               height: 56.h,
                               child: state.isLoading
-                                  ? const Center(child: CircularProgressIndicator())
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
                                   : _ProfessionalButton(
                                       onPressed: () {
                                         context.read<LoginBloc>().add(
-                                          const LoginEvent.loginSubmitted(),
-                                        );
+                                              const LoginEvent.loginSubmitted(),
+                                            );
                                       },
                                       label: 'Sign In',
                                     ),
                             ),
-                            
+
                             SizedBox(height: 60.h),
-                            
+
                             // Sign up option
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -297,24 +309,29 @@ class _LoginViewState extends State<LoginView> {
                                 Text(
                                   "Don't have an account?",
                                   style: GoogleFonts.outfit(
-                                    fontSize: theme.textTheme.bodyMedium?.fontSize,
+                                    fontSize:
+                                        theme.textTheme.bodyMedium?.fontSize,
                                     color: colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    context.pushNamed(RouteName.registrationScreen);
+                                    context.pushNamed(
+                                        RouteName.registrationScreen);
                                   },
                                   style: TextButton.styleFrom(
                                     foregroundColor: colorScheme.primary,
-                                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 0),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w, vertical: 0),
                                     minimumSize: Size(0, 30.h),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: Text(
                                     'Sign Up',
                                     style: GoogleFonts.outfit(
-                                      fontSize: theme.textTheme.bodyMedium?.fontSize,
+                                      fontSize:
+                                          theme.textTheme.bodyMedium?.fontSize,
                                       color: colorScheme.primary,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -322,17 +339,18 @@ class _LoginViewState extends State<LoginView> {
                                 ),
                               ],
                             ),
-                            
+
                             SizedBox(height: 30.h),
-                            
+
                             // Security notice
                             Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 16.w, 
+                                horizontal: 16.w,
                                 vertical: 12.h,
                               ),
                               decoration: BoxDecoration(
-                                color: colorScheme.surfaceVariant.withOpacity(0.3),
+                                color:
+                                    colorScheme.surfaceVariant.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(8.r),
                                 border: Border.all(
                                   color: colorScheme.outlineVariant,
@@ -351,7 +369,8 @@ class _LoginViewState extends State<LoginView> {
                                     child: Text(
                                       'Secure banking with end-to-end encryption',
                                       style: GoogleFonts.outfit(
-                                        fontSize: theme.textTheme.bodySmall?.fontSize,
+                                        fontSize:
+                                            theme.textTheme.bodySmall?.fontSize,
                                         color: colorScheme.onSurfaceVariant,
                                       ),
                                     ),
@@ -359,9 +378,9 @@ class _LoginViewState extends State<LoginView> {
                                 ],
                               ),
                             ),
-                            
+
                             SizedBox(height: 40.h),
-                            
+
                             // Professional footer with banking details
                             Column(
                               children: [
@@ -382,7 +401,8 @@ class _LoginViewState extends State<LoginView> {
                                       height: 24.h,
                                       width: 1,
                                       color: colorScheme.outlineVariant,
-                                      margin: EdgeInsets.symmetric(horizontal: 16.w),
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 16.w),
                                     ),
                                     _buildFooterItem(
                                       context: context,
@@ -396,7 +416,8 @@ class _LoginViewState extends State<LoginView> {
                                   "© 2024 Goh Betoch Bank. All rights reserved.",
                                   style: GoogleFonts.outfit(
                                     fontSize: 10.sp,
-                                    color: colorScheme.onSurfaceVariant.withOpacity(0.5),
+                                    color: colorScheme.onSurfaceVariant
+                                        .withOpacity(0.5),
                                   ),
                                 ),
                               ],
@@ -502,7 +523,10 @@ class _ProfessionalButton extends StatelessWidget {
 }
 
 // Helper method to build footer item
-Widget _buildFooterItem({required BuildContext context, required String title, required String value}) {
+Widget _buildFooterItem(
+    {required BuildContext context,
+    required String title,
+    required String value}) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;
   return Column(
@@ -525,4 +549,4 @@ Widget _buildFooterItem({required BuildContext context, required String title, r
       ),
     ],
   );
-} 
+}

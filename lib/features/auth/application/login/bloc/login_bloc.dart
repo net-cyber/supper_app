@@ -11,13 +11,13 @@ import 'package:super_app/features/auth/domain/repositories/auth_repository.dart
 
 @injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-
-  LoginBloc(this._authRepository) : super(
-    LoginState(
-      username: Username(''),
-      password: Password(''),
-    ),
-  ) {
+  LoginBloc(this._authRepository)
+      : super(
+          LoginState(
+            username: Username(''),
+            password: Password(''),
+          ),
+        ) {
     on<UsernameChanged>(_onUsernameChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<ToggleShowPassword>(_onToggleShowPassword);
@@ -26,43 +26,49 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository _authRepository;
 
   void _onUsernameChanged(UsernameChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(
-      username: Username(event.username.trim()),
-    ),);
+    emit(
+      state.copyWith(
+        username: Username(event.username.trim()),
+      ),
+    );
   }
 
   void _onPasswordChanged(PasswordChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(
-      password: Password(event.password.trim()),
-    ),);
+    emit(
+      state.copyWith(
+        password: Password(event.password.trim()),
+      ),
+    );
   }
 
-  void _onToggleShowPassword(ToggleShowPassword event, Emitter<LoginState> emit) {
+  void _onToggleShowPassword(
+      ToggleShowPassword event, Emitter<LoginState> emit) {
     emit(state.copyWith(showPassword: !state.showPassword));
   }
 
-  Future<void> _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
+  Future<void> _onLoginSubmitted(
+      LoginSubmitted event, Emitter<LoginState> emit) async {
     final connected = await AppConnectivity.connectivity();
-    
+
     if (connected) {
       if (!state.username.isValid()) {
         emit(state.copyWith(showErrorMessages: true));
         return;
       }
-      
+
       if (!state.password.isValid()) {
         emit(state.copyWith(showErrorMessages: true));
         return;
       }
-      
+
       emit(state.copyWith(isLoading: true));
-      
+
       // Extract username from email for API compatibility
       final username = state.username.value.getOrElse(() => '');
       final password = state.password.value.getOrElse(() => '');
-      
+
       final result = await _authRepository.login(username, password);
-      
+
       await result.fold(
         (failure) async => emit(state.copyWith(
           isLoading: false,
@@ -72,10 +78,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           // Store tokens
           await LocalStorage.instance.setAccessToken(success.access_token);
           await LocalStorage.instance.setRefreshToken(success.refresh_token);
-          
+
           // Store user data
           await LocalStorage.instance.setUserData(success.user.toJson());
-          
+
           if (!emit.isDone) {
             emit(state.copyWith(
               isLoading: false,
@@ -91,6 +97,4 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ));
     }
   }
-  
-
-} 
+}

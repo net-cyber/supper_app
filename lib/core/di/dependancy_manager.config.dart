@@ -30,6 +30,14 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
     as _i1046;
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
+import '../../features/transf/application/internal_transfer/bloc/internal_transfer_bloc.dart'
+    as _i1234;
+import '../../features/transf/domain/repositories/transfer_repository.dart'
+    as _i1235;
+import '../../features/transf/infrastructure/datasources/transfer_remote_data_source.dart'
+    as _i1236;
+import '../../features/transf/infrastructure/repositories/transfer_repository_impl.dart'
+    as _i1237;
 
 import '../handlers/http_service.dart' as _i350;
 
@@ -62,6 +70,15 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i671.AccountsBloc>(
         () => _i671.AccountsBloc(gh<_i706.AccountRespository>()));
+
+    // Transfer feature dependencies
+    gh.factory<_i1236.TransferRemoteDataSource>(
+        () => _i1236.TransferRemoteDataSourceImpl());
+    gh.factory<_i1235.TransferRepository>(() =>
+        _i1237.TransferRepositoryImpl(gh<_i1236.TransferRemoteDataSource>()));
+    gh.factory<_i1234.InternalTransferBloc>(
+        () => _i1234.InternalTransferBloc(gh<_i1235.TransferRepository>()));
+
     return this;
   }
 }
