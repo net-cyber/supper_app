@@ -22,16 +22,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final PageController _pageController = PageController();
-  int _currentAccountIndex = 0;
-  bool _isBalanceVisible = true;
+  bool _isBalanceVisible = false;
+  int _currentPageIndex = 0;
   bool _isGohBetochLoading = false;
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
