@@ -13,9 +13,9 @@ Either<TransferFailure<String>, String> validateAccountNumber(String input) {
     ));
   }
 
-  // Check if it's a valid account number format (typically 10-16 digits)
-  // This regex allows for different account number formats
-  final regex = RegExp(r'^\d{10,16}$');
+  // Check if it's a valid account number format (1-16 digits)
+  // Updated to allow for shorter account numbers
+  final regex = RegExp(r'^\d{1,16}$');
   if (!regex.hasMatch(sanitized)) {
     return left(TransferFailure.invalidAccountNumber(
       failedValue: input,

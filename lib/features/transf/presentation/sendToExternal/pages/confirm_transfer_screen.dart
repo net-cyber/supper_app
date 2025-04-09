@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/transf/application/external_transfer/external_transfer_bloc.dart';
-import 'package:super_app/features/transf/application/external_transfer/external_transfer_event.dart';
-import 'package:super_app/features/transf/application/external_transfer/external_transfer_state.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class ConfirmTransferScreen extends StatefulWidget {
@@ -23,6 +19,10 @@ class ConfirmTransferScreen extends StatefulWidget {
 
 class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   final TextEditingController _reasonController = TextEditingController();
+  bool _isLoading = false;
+  bool _isTransactionComplete = false;
+  String? _transactionId;
+  String? _errorMessage;
 
   // Mock data for sender (in a real app, this would come from user profile/auth)
   final Map<String, String> _sender = {
@@ -35,301 +35,262 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   void initState() {
     super.initState();
 
-    // Initialize reason in BLoC if it exists in transfer data
+    // Initialize reason if it exists in transfer data
     if (widget.transferData.containsKey('reason') &&
         widget.transferData['reason'] != null &&
         widget.transferData['reason'].toString().isNotEmpty) {
       _reasonController.text = widget.transferData['reason'].toString();
-
-      // Update reason in BLoC
-      context.read<ExternalTransferBloc>().add(
-            ExternalTransferEvent.reasonChanged(_reasonController.text),
-          );
     }
-
-    // Add listener for reason changes
-    _reasonController.addListener(_onReasonChanged);
   }
 
   @override
   void dispose() {
-    _reasonController.removeListener(_onReasonChanged);
     _reasonController.dispose();
     super.dispose();
   }
 
-  void _onReasonChanged() {
-    // Update reason in BLoC
-    context.read<ExternalTransferBloc>().add(
-          ExternalTransferEvent.reasonChanged(_reasonController.text),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ExternalTransferBloc, ExternalTransferState>(
-      listener: (context, state) {
-        // Handle transaction success
-        if (state.status == ExternalTransferStatus.success) {
-          _showSuccessDialog(context, state);
-        }
+    // Calculate total amount with service charge
+    final double amount = (widget.transferData['amount'] as num).toDouble();
+    final double fee = widget.transferData.containsKey('fee')
+        ? (widget.transferData['fee'] as num).toDouble()
+        : 0.0;
+    final double totalAmount = amount + fee;
 
-        // Handle errors
-        if (state.status == ExternalTransferStatus.failure &&
-            state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
-        }
-      },
-      builder: (context, state) {
-        // Calculate total amount with service charge
-        final double amount = (widget.transferData['amount'] as num).toDouble();
-        final double fee = widget.transferData.containsKey('fee')
-            ? (widget.transferData['fee'] as num).toDouble()
-            : (state.calculatedFee ?? 0.0);
-        final double totalAmount = amount + fee;
-
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title: Text(
-              'Confirm Transfer',
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Confirm Transfer',
+          style: GoogleFonts.outfit(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Review',
               style: GoogleFonts.outfit(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Review',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Please verify all details before confirming the transfer',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                SizedBox(height: 24.h),
-
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Single receipt-like card with all transfer details
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(20.w),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: Colors.grey[300]!),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Header with bank logos or transfer icon
-                              Container(
-                                width: 64.w,
-                                height: 64.h,
-                                decoration: BoxDecoration(
-                                  color: Colors.purple.withOpacity(0.1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.swap_horiz_rounded,
-                                  color: Colors.purple,
-                                  size: 32.sp,
-                                ),
-                              ),
-                              SizedBox(height: 16.h),
-                              Text(
-                                'Transfer Details',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(height: 6.h),
-                              Text(
-                                'Transaction ID: ${state.transactionId ?? "Pending"}',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 12.sp,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              SizedBox(height: 24.h),
-
-                              // From (Sender)
-                              _buildSectionLabel('From'),
-                              SizedBox(height: 8.h),
-                              _buildDetailRow('Name', _sender['name']!),
-                              _buildDetailRow(
-                                  'Account Number', _sender['accountNumber']!),
-                              _buildDetailRow('Bank', _sender['bank']!),
-
-                              SizedBox(height: 24.h),
-                              Divider(height: 1, color: Colors.grey[300]),
-                              SizedBox(height: 24.h),
-
-                              // To (Receiver)
-                              _buildSectionLabel('To'),
-                              SizedBox(height: 8.h),
-                              _buildDetailRow(
-                                  'Name',
-                                  widget.transferData['accountHolderName']
-                                      .toString()),
-                              _buildDetailRow(
-                                  'Account Number',
-                                  widget.transferData['accountNumber']
-                                      .toString()),
-                              _buildDetailRow('Bank',
-                                  widget.transferData['name'].toString()),
-
-                              SizedBox(height: 24.h),
-                              Divider(height: 1, color: Colors.grey[300]),
-                              SizedBox(height: 24.h),
-
-                              // Amount Details
-                              _buildSectionLabel('Amount'),
-                              SizedBox(height: 8.h),
-                              _buildDetailRow('Transfer Amount',
-                                  '${amount.toStringAsFixed(2)} ETB'),
-                              _buildDetailRow('Service Charge',
-                                  '${fee.toStringAsFixed(2)} ETB'),
-                              SizedBox(height: 16.h),
-                              _buildDetailRow(
-                                'Total Amount',
-                                '${totalAmount.toStringAsFixed(2)} ETB',
-                                valueStyle: GoogleFonts.outfit(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.purple,
-                                ),
-                              ),
-
-                              SizedBox(height: 24.h),
-                              Divider(height: 1, color: Colors.grey[300]),
-                              SizedBox(height: 24.h),
-
-                              // Date and Time
-                              _buildDetailRow(
-                                'Date & Time',
-                                _formatDateTime(DateTime.now()),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 24.h),
-
-                        // Reason for transfer
-                        Text(
-                          'Reason for Transfer',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Container(
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: Colors.grey[300]!),
-                          ),
-                          child: TextField(
-                            controller: _reasonController,
-                            maxLines: 1,
-                            style: GoogleFonts.outfit(
-                              fontSize: 16.sp,
-                              color: Colors.black87,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'Enter reason for transfer (optional)',
-                              hintStyle: GoogleFonts.outfit(
-                                fontSize: 14.sp,
-                                color: Colors.grey[500],
-                              ),
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding:
-                                  EdgeInsets.symmetric(vertical: 8.h),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 16.h),
-                        Text(
-                          'By confirming this transfer, you agree to the terms and conditions.',
-                          style: GoogleFonts.outfit(
-                            fontSize: 12.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Confirm button
-                SizedBox(height: 16.h),
-                ContinueButton(
-                  onPressed: () => _processTransfer(context),
-                  isEnabled: !state.isLoading,
-                  color: Theme.of(context).colorScheme.primary,
-                  text: state.isLoading ? 'Processing...' : 'Confirm Transfer',
-                ),
-
-                // Show loading indicator if processing
-                if (state.isLoading) ...[
-                  SizedBox(height: 16.h),
-                  Center(
-                    child: LinearProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                      backgroundColor: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.2),
-                    ),
-                  ),
-                ],
-              ],
+            SizedBox(height: 8.h),
+            Text(
+              'Please verify all details before confirming the transfer',
+              style: GoogleFonts.outfit(
+                fontSize: 16.sp,
+                color: Colors.grey[600],
+              ),
             ),
-          ),
-        );
-      },
+            SizedBox(height: 24.h),
+
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Single receipt-like card with all transfer details
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(20.w),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.grey[300]!),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Header with bank logos or transfer icon
+                          Container(
+                            width: 64.w,
+                            height: 64.h,
+                            decoration: BoxDecoration(
+                              color: Colors.purple.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.swap_horiz_rounded,
+                              color: Colors.purple,
+                              size: 32.sp,
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'Transfer Details',
+                            style: GoogleFonts.outfit(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Text(
+                            'Transaction ID: ${_transactionId ?? "Pending"}',
+                            style: GoogleFonts.outfit(
+                              fontSize: 12.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          SizedBox(height: 24.h),
+
+                          // From (Sender)
+                          _buildSectionLabel('From'),
+                          SizedBox(height: 8.h),
+                          _buildDetailRow('Name', _sender['name']!),
+                          _buildDetailRow(
+                              'Account Number', _sender['accountNumber']!),
+                          _buildDetailRow('Bank', _sender['bank']!),
+
+                          SizedBox(height: 24.h),
+                          Divider(height: 1, color: Colors.grey[300]),
+                          SizedBox(height: 24.h),
+
+                          // To (Receiver)
+                          _buildSectionLabel('To'),
+                          SizedBox(height: 8.h),
+                          _buildDetailRow(
+                              'Name',
+                              widget.transferData['accountHolderName']
+                                  .toString()),
+                          _buildDetailRow('Account Number',
+                              widget.transferData['accountNumber'].toString()),
+                          _buildDetailRow(
+                              'Bank', widget.transferData['name'].toString()),
+
+                          SizedBox(height: 24.h),
+                          Divider(height: 1, color: Colors.grey[300]),
+                          SizedBox(height: 24.h),
+
+                          // Amount Details
+                          _buildSectionLabel('Amount'),
+                          SizedBox(height: 8.h),
+                          _buildDetailRow('Transfer Amount',
+                              '${amount.toStringAsFixed(2)} ETB'),
+                          _buildDetailRow('Service Charge',
+                              '${fee.toStringAsFixed(2)} ETB'),
+                          SizedBox(height: 16.h),
+                          _buildDetailRow(
+                            'Total Amount',
+                            '${totalAmount.toStringAsFixed(2)} ETB',
+                            valueStyle: GoogleFonts.outfit(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                            ),
+                          ),
+
+                          SizedBox(height: 24.h),
+                          Divider(height: 1, color: Colors.grey[300]),
+                          SizedBox(height: 24.h),
+
+                          // Date and Time
+                          _buildDetailRow(
+                            'Date & Time',
+                            _formatDateTime(DateTime.now()),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 24.h),
+
+                    // Reason for transfer
+                    Text(
+                      'Reason for Transfer',
+                      style: GoogleFonts.outfit(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Container(
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.grey[300]!),
+                      ),
+                      child: TextField(
+                        controller: _reasonController,
+                        maxLines: 1,
+                        style: GoogleFonts.outfit(
+                          fontSize: 16.sp,
+                          color: Colors.black87,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Enter reason for transfer (optional)',
+                          hintStyle: GoogleFonts.outfit(
+                            fontSize: 14.sp,
+                            color: Colors.grey[500],
+                          ),
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(vertical: 8.h),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+                    Text(
+                      'By confirming this transfer, you agree to the terms and conditions.',
+                      style: GoogleFonts.outfit(
+                        fontSize: 12.sp,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                  ],
+                ),
+              ),
+            ),
+
+            // Confirm button
+            SizedBox(height: 16.h),
+            ContinueButton(
+              onPressed: () => _processTransfer(context),
+              isEnabled: !_isLoading,
+              color: Theme.of(context).colorScheme.primary,
+              text: _isLoading ? 'Processing...' : 'Confirm Transfer',
+            ),
+
+            // Show loading indicator if processing
+            if (_isLoading) ...[
+              SizedBox(height: 16.h),
+              Center(
+                child: LinearProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -387,18 +348,39 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   }
 
   void _processTransfer(BuildContext context) {
-    // Dispatch submit transfer event to BLoC
-    context.read<ExternalTransferBloc>().add(
-          const ExternalTransferEvent.submitTransfer(),
-        );
+    if (_isLoading || _isTransactionComplete) return;
+
+    // Set loading state
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    // Simulate network delay
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
+
+      // Generate transaction ID
+      final randomId =
+          "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
+
+      setState(() {
+        _isLoading = false;
+        _isTransactionComplete = true;
+        _transactionId = randomId;
+      });
+
+      // Show success dialog
+      _showSuccessDialog(context, randomId);
+    });
   }
 
-  void _showSuccessDialog(BuildContext context, ExternalTransferState state) {
+  void _showSuccessDialog(BuildContext context, String transactionId) {
     // Get amount from transfer data
     final amount = (widget.transferData['amount'] as num).toDouble();
     final fee = widget.transferData.containsKey('fee')
         ? (widget.transferData['fee'] as num).toDouble()
-        : (state.calculatedFee ?? 0.0);
+        : 0.0;
 
     // Show success dialog
     showDialog<void>(
@@ -499,7 +481,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    state.transactionId ?? "Transaction pending",
+                    transactionId,
                     style: GoogleFonts.outfit(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -515,11 +497,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Reset BLoC state
-                  context.read<ExternalTransferBloc>().add(
-                        const ExternalTransferEvent.reset(),
-                      );
-
                   // Close dialog and navigate back to home screen
                   Navigator.of(context).pop();
                   Navigator.of(context).popUntil((route) => route.isFirst);
@@ -577,11 +554,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             SizedBox(height: 16.h),
             TextButton(
               onPressed: () {
-                // Reset BLoC state
-                context.read<ExternalTransferBloc>().add(
-                      const ExternalTransferEvent.reset(),
-                    );
-
                 // Close dialog and navigate to transaction history
                 Navigator.of(context).pop();
                 context.goNamed(RouteName.history);

@@ -9,9 +9,9 @@ import 'package:super_app/features/accounts/infrastructure/datasources/accounts_
 @Injectable(as: AccountRespository)
 class AccountRepositoryImpl implements AccountRespository {
   AccountRepositoryImpl(this._remoteDataSource);
-  
+
   final AccountsRemoteDataSource _remoteDataSource;
-  
+
   @override
   Future<Either<NetworkExceptions, List<Account>>> getAccounts({
     required int pageId,

@@ -1,29 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_bloc.dart';
-import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_event.dart';
-import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_state.dart';
 
 class WalletSelectionScreen extends StatelessWidget {
   const WalletSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<WalletTransferBloc>(
-      create: (context) => getIt<WalletTransferBloc>()
-        ..add(const WalletTransferEvent.loadWalletProviders()),
-      child: const _WalletSelectionScreenContent(),
-    );
+    return const _WalletSelectionScreenContent();
   }
 }
 
-class _WalletSelectionScreenContent extends StatelessWidget {
+class _WalletSelectionScreenContent extends StatefulWidget {
   const _WalletSelectionScreenContent();
+
+  @override
+  State<_WalletSelectionScreenContent> createState() =>
+      _WalletSelectionScreenContentState();
+}
+
+class _WalletSelectionScreenContentState
+    extends State<_WalletSelectionScreenContent> {
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _providers = [];
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWalletProviders();
+  }
+
+  void _loadWalletProviders() {
+    // Simulate API call delay
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+        _providers = _getMockWalletProviders();
+      });
+    });
+  }
+
+  List<Map<String, dynamic>> _getMockWalletProviders() {
+    return [
+      {
+        'id': '1',
+        'name': 'Telebirr',
+        'code': 'TELEBIRR',
+        'imagePath': 'assets/images/wallets/telebirr.png',
+      },
+      {
+        'id': '2',
+        'name': 'Amole',
+        'code': 'AMOLE',
+        'imagePath': 'assets/images/wallets/amole.png',
+      },
+      {
+        'id': '3',
+        'name': 'HelloCash',
+        'code': 'HELLOCASH',
+        'imagePath': 'assets/images/wallets/hellocash.png',
+      },
+      {
+        'id': '4',
+        'name': 'E-Birr',
+        'code': 'EBIRR',
+        'imagePath': 'assets/images/wallets/ebirr.png',
+      },
+    ];
+  }
+
+  void _handleWalletSelection(Map<String, dynamic> provider) {
+    // Navigate to the next screen with provider data
+    context.pushNamed(RouteName.walletPhone, extra: provider);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,81 +99,70 @@ class _WalletSelectionScreenContent extends StatelessWidget {
           ),
         ),
       ),
-      body: BlocConsumer<WalletTransferBloc, WalletTransferState>(
-        listener: (context, state) {
-          // Handle error messages if any
-          if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
-          }
-
-          // Handle provider selection and navigation
-          if (state.status == WalletTransferStatus.providerSelected &&
-              state.selectedProvider != null) {
-            context.pushNamed(
-              RouteName.walletPhone,
-              extra: state.selectedProvider,
-            );
-          }
-        },
-        builder: (context, state) {
-          // Show loading indicator while loading providers
-          if (state.status == WalletTransferStatus.loadingProviders) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          // Show providers when loaded
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                  child: Text(
-                    'Select Wallet Provider',
-                    style: GoogleFonts.outfit(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    child: Text(
+                      'Select Wallet Provider',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
-                ),
-                if (state.providers.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 32.h),
+
+                  // Show error message if any
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
-                        'No wallet providers available',
+                        _errorMessage!,
                         style: GoogleFonts.outfit(
-                          fontSize: 16.sp,
-                          color: Colors.grey[600],
+                          fontSize: 14.sp,
+                          color: Colors.red,
                         ),
                       ),
                     ),
-                  )
-                else
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.providers.length,
-                    itemBuilder: (context, index) {
-                      final provider = state.providers[index];
-                      return _buildWalletOption(
-                        context,
-                        provider['name'] as String,
-                        provider['imagePath'] as String? ?? '',
-                        () => _handleWalletSelection(context, provider),
-                      );
-                    },
-                  ),
-              ],
+
+                  if (_providers.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 32.h),
+                        child: Text(
+                          'No wallet providers available',
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _providers.length,
+                      itemBuilder: (context, index) {
+                        final provider = _providers[index];
+                        return _buildWalletOption(
+                          context,
+                          provider['name'] as String,
+                          provider['imagePath'] as String? ?? '',
+                          () => _handleWalletSelection(provider),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
     );
   }
 
@@ -213,13 +256,5 @@ class _WalletSelectionScreenContent extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _handleWalletSelection(
-      BuildContext context, Map<String, dynamic> provider) {
-    // Dispatch select wallet provider event to BLoC
-    context.read<WalletTransferBloc>().add(
-          WalletTransferEvent.selectWalletProvider(provider),
-        );
   }
 }

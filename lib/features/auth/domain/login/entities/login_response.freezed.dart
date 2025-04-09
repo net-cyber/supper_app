@@ -298,6 +298,7 @@ LoginUser _$LoginUserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LoginUser {
+  int? get id => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
   String get full_name => throw _privateConstructorUsedError;
   String get international_phone_number => throw _privateConstructorUsedError;
@@ -321,7 +322,8 @@ abstract class $LoginUserCopyWith<$Res> {
       _$LoginUserCopyWithImpl<$Res, LoginUser>;
   @useResult
   $Res call(
-      {String username,
+      {int? id,
+      String username,
       String full_name,
       String international_phone_number,
       bool phone_verified,
@@ -344,6 +346,7 @@ class _$LoginUserCopyWithImpl<$Res, $Val extends LoginUser>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? username = null,
     Object? full_name = null,
     Object? international_phone_number = null,
@@ -352,6 +355,10 @@ class _$LoginUserCopyWithImpl<$Res, $Val extends LoginUser>
     Object? created_at = null,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -389,7 +396,8 @@ abstract class _$$LoginUserImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String username,
+      {int? id,
+      String username,
       String full_name,
       String international_phone_number,
       bool phone_verified,
@@ -410,6 +418,7 @@ class __$$LoginUserImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? username = null,
     Object? full_name = null,
     Object? international_phone_number = null,
@@ -418,6 +427,10 @@ class __$$LoginUserImplCopyWithImpl<$Res>
     Object? created_at = null,
   }) {
     return _then(_$LoginUserImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -450,7 +463,8 @@ class __$$LoginUserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$LoginUserImpl extends _LoginUser {
   const _$LoginUserImpl(
-      {required this.username,
+      {this.id,
+      required this.username,
       required this.full_name,
       required this.international_phone_number,
       required this.phone_verified,
@@ -461,6 +475,8 @@ class _$LoginUserImpl extends _LoginUser {
   factory _$LoginUserImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginUserImplFromJson(json);
 
+  @override
+  final int? id;
   @override
   final String username;
   @override
@@ -476,7 +492,7 @@ class _$LoginUserImpl extends _LoginUser {
 
   @override
   String toString() {
-    return 'LoginUser(username: $username, full_name: $full_name, international_phone_number: $international_phone_number, phone_verified: $phone_verified, password_changed_at: $password_changed_at, created_at: $created_at)';
+    return 'LoginUser(id: $id, username: $username, full_name: $full_name, international_phone_number: $international_phone_number, phone_verified: $phone_verified, password_changed_at: $password_changed_at, created_at: $created_at)';
   }
 
   @override
@@ -484,6 +500,7 @@ class _$LoginUserImpl extends _LoginUser {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginUserImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.full_name, full_name) ||
@@ -504,6 +521,7 @@ class _$LoginUserImpl extends _LoginUser {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       username,
       full_name,
       international_phone_number,
@@ -529,7 +547,8 @@ class _$LoginUserImpl extends _LoginUser {
 
 abstract class _LoginUser extends LoginUser {
   const factory _LoginUser(
-      {required final String username,
+      {final int? id,
+      required final String username,
       required final String full_name,
       required final String international_phone_number,
       required final bool phone_verified,
@@ -540,6 +559,8 @@ abstract class _LoginUser extends LoginUser {
   factory _LoginUser.fromJson(Map<String, dynamic> json) =
       _$LoginUserImpl.fromJson;
 
+  @override
+  int? get id;
   @override
   String get username;
   @override

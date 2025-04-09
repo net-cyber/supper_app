@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_bloc.dart';
-import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_event.dart';
-import 'package:super_app/features/transf/application/wallet_transfer/wallet_transfer_state.dart';
 
 class WalletAmountScreen extends StatefulWidget {
-  const WalletAmountScreen({super.key});
+  final Map<String, dynamic>? walletProvider;
+  final String phoneNumber;
+  final Map<String, dynamic>? validatedWallet;
+
+  const WalletAmountScreen({
+    super.key,
+    this.walletProvider,
+    this.phoneNumber = '',
+    this.validatedWallet,
+  });
 
   @override
   State<WalletAmountScreen> createState() => _WalletAmountScreenState();
@@ -21,267 +25,268 @@ class _WalletAmountScreenState extends State<WalletAmountScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _amountController.addListener(_onAmountChanged);
-    _reasonController.addListener(_onReasonChanged);
-  }
+  bool _isCalculatingFee = false;
+  double? _calculatedFee;
+  String? _errorMessage;
 
   @override
   void dispose() {
-    _amountController.removeListener(_onAmountChanged);
-    _reasonController.removeListener(_onReasonChanged);
     _amountController.dispose();
     _reasonController.dispose();
     super.dispose();
   }
 
-  void _onAmountChanged() {
-    // Dispatch amount changed event to BLoC
-    context.read<WalletTransferBloc>().add(
-          WalletTransferEvent.amountChanged(_amountController.text),
-        );
-  }
-
-  void _onReasonChanged() {
-    // Dispatch reason changed event to BLoC
-    context.read<WalletTransferBloc>().add(
-          WalletTransferEvent.reasonChanged(_reasonController.text),
-        );
-  }
+  bool get _canCalculateFee =>
+      _amountController.text.isNotEmpty &&
+      widget.phoneNumber.isNotEmpty &&
+      widget.validatedWallet != null;
 
   void _calculateFee() {
-    // Dispatch calculate fee event to BLoC
-    context.read<WalletTransferBloc>().add(
-          const WalletTransferEvent.calculateFee(),
-        );
+    // Simulate fee calculation
+    if (!_canCalculateFee) {
+      setState(() {
+        _errorMessage = 'Please enter a valid amount';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_errorMessage!)),
+      );
+      return;
+    }
+
+    setState(() {
+      _isCalculatingFee = true;
+      _errorMessage = null;
+    });
+
+    // Simulate network delay
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted) return;
+
+      // Parse amount and calculate fee (5%)
+      double amount = double.tryParse(_amountController.text) ?? 0;
+      double fee = amount * 0.05;
+
+      setState(() {
+        _calculatedFee = fee;
+        _isCalculatingFee = false;
+      });
+
+      // Navigate to confirmation
+      _continueToConfirmation();
+    });
   }
 
   void _continueToConfirmation() {
+    // Prepare data for confirmation screen
+    final transferData = {
+      'provider': widget.walletProvider,
+      'phoneNumber': widget.phoneNumber,
+      'accountHolder':
+          widget.validatedWallet?['accountHolderName'] ?? 'Unknown',
+      'amount': double.tryParse(_amountController.text) ?? 0.0,
+      'fee': _calculatedFee ?? 0.0,
+      'reason': _reasonController.text,
+    };
+
     // Navigate to confirmation screen
-    context.pushNamed(RouteName.walletConfirmation);
+    context.pushNamed(RouteName.walletConfirmation, extra: transferData);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WalletTransferBloc, WalletTransferState>(
-      listener: (context, state) {
-        // Handle error messages
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
-        }
+    final walletProvider = widget.walletProvider?['name'] as String? ?? '';
+    final phoneNumber = widget.phoneNumber;
+    final validatedWallet = widget.validatedWallet;
 
-        // Navigate to confirmation when fee is calculated
-        if (state.status == WalletTransferStatus.feeCalculated) {
-          _continueToConfirmation();
-        }
-      },
-      builder: (context, state) {
-        final walletProvider = state.selectedProvider?['name'] as String? ?? '';
-        final phoneNumber = state.phoneNumberInput;
-        final validatedWallet = state.validatedWallet;
-        final bool isCalculatingFee =
-            state.status == WalletTransferStatus.calculatingFee;
-        final bool canCalculateFee = state.amountInput.isNotEmpty &&
-            state.phoneNumber != null &&
-            state.validatedWallet != null;
-
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.pop(context),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Enter Load Amount',
+          style: GoogleFonts.outfit(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Wallet information section with branded container
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.account_balance_wallet_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 24.sp,
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        '$walletProvider Wallet',
+                        style: GoogleFonts.outfit(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+                  if (phoneNumber.isNotEmpty)
+                    _buildDetailRow('Phone Number', phoneNumber),
+                  if (validatedWallet != null &&
+                      validatedWallet['accountHolderName'] != null) ...[
+                    SizedBox(height: 8.h),
+                    _buildDetailRow('Account Holder',
+                        validatedWallet['accountHolderName'] as String),
+                  ],
+                ],
+              ),
             ),
-            title: Text(
-              'Enter Load Amount',
+
+            SizedBox(height: 32.h),
+
+            // Amount input section
+            Text(
+              'Enter Amount',
               style: GoogleFonts.outfit(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Wallet information section with branded container
-                Container(
-                  padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.3),
+            SizedBox(height: 8.h),
+            Text(
+              'Enter the amount you want to load to wallet',
+              style: GoogleFonts.outfit(
+                fontSize: 16.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            _buildAmountInput(),
+
+            SizedBox(height: 24.h),
+
+            // Reason input section
+            Text(
+              'Reason (Optional)',
+              style: GoogleFonts.outfit(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            _buildReasonInput(),
+
+            // Fee display if calculated
+            if (_calculatedFee != null) ...[
+              SizedBox(height: 16.h),
+              Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: Colors.blue[200]!),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: Colors.blue[700],
+                      size: 20.sp,
                     ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Text(
+                        'Service fee: ${_calculatedFee!.toStringAsFixed(2)} ETB',
+                        style: GoogleFonts.outfit(
+                          fontSize: 14.sp,
+                          color: Colors.blue[700],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            const Spacer(),
+
+            // Continue button
+            SizedBox(
+              width: double.infinity,
+              height: 56.h,
+              child: ElevatedButton(
+                onPressed: _isCalculatingFee || !_canCalculateFee
+                    ? null
+                    : _calculateFee,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  disabledBackgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28.r),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                ),
+                child: _isCalculatingFee
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.account_balance_wallet_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 24.sp,
+                          SizedBox(
+                            width: 20.w,
+                            height: 20.w,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.w,
+                            ),
                           ),
                           SizedBox(width: 12.w),
                           Text(
-                            '$walletProvider Wallet',
+                            'Calculating Fee...',
                             style: GoogleFonts.outfit(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      if (phoneNumber.isNotEmpty)
-                        _buildDetailRow('Phone Number', phoneNumber),
-                      if (validatedWallet?.accountHolderName != null) ...[
-                        SizedBox(height: 8.h),
-                        _buildDetailRow('Account Holder',
-                            validatedWallet!.accountHolderName!),
-                      ],
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 32.h),
-
-                // Amount input section
-                Text(
-                  'Enter Amount',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Enter the amount you want to load to wallet',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                _buildAmountInput(),
-
-                SizedBox(height: 24.h),
-
-                // Reason input section
-                Text(
-                  'Reason (Optional)',
-                  style: GoogleFonts.outfit(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                _buildReasonInput(),
-
-                // Fee display if calculated
-                if (state.calculatedFee != null) ...[
-                  SizedBox(height: 16.h),
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: Colors.blue[200]!),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Colors.blue[700],
-                          size: 20.sp,
-                        ),
-                        SizedBox(width: 8.w),
-                        Expanded(
-                          child: Text(
-                            'Service fee: ${state.calculatedFee!.toStringAsFixed(2)} ETB',
-                            style: GoogleFonts.outfit(
-                              fontSize: 14.sp,
-                              color: Colors.blue[700],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-
-                const Spacer(),
-
-                // Continue button
-                SizedBox(
-                  width: double.infinity,
-                  height: 56.h,
-                  child: ElevatedButton(
-                    onPressed: isCalculatingFee || !canCalculateFee
-                        ? null
-                        : _calculateFee,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      disabledBackgroundColor: Colors.grey[300],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28.r),
-                      ),
-                    ),
-                    child: isCalculatingFee
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 20.w,
-                                height: 20.w,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2.w,
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Text(
-                                'Calculating Fee...',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            'Continue',
-                            style: GoogleFonts.outfit(
-                              fontSize: 18.sp,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),
-                  ),
-                ),
-                SizedBox(height: 16.h),
-              ],
+                        ],
+                      )
+                    : Text(
+                        'Continue',
+                        style: GoogleFonts.outfit(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
             ),
-          ),
-        );
-      },
+            SizedBox(height: 16.h),
+          ],
+        ),
+      ),
     );
   }
 
@@ -341,7 +346,8 @@ class _WalletAmountScreenState extends State<WalletAmountScreen> {
                 fontSize: 16.sp,
                 color: Colors.black87,
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
               ],

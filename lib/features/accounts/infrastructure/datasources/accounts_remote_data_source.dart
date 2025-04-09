@@ -26,11 +26,12 @@ class AccountsRemoteDataSourceImpl implements AccountsRemoteDataSource {
           'page_size': pageSize,
         },
       );
-      
+
       // Convert the response data to a list of accounts
       final List<dynamic> accountsData = response.data as List<dynamic>;
       return accountsData
-          .map((accountData) => Account.fromJson(accountData as Map<String, dynamic>))
+          .map((accountData) =>
+              Account.fromJson(accountData as Map<String, dynamic>))
           .toList();
     } on DioException {
       rethrow;

@@ -190,6 +190,26 @@ class LocalStorage {
     await _preferences?.remove(LocalStorageKey.userData);
   }
 
+  /// Get user account ID
+  int? getUserId() {
+    if (_preferences == null) {
+      return null;
+    }
+
+    final userData = getUserData();
+    if (userData == null) {
+      return null;
+    }
+
+    // Try to get user ID from userData map
+    // The field might be named 'id', 'userId', 'accountId', etc. depending on API
+    return userData['id'] as int? ??
+        userData['userId'] as int? ??
+        userData['accountId'] as int? ??
+        userData['user_id'] as int? ??
+        userData['account_id'] as int?;
+  }
+
   /// clear user session (tokens and data)
   Future<void> clearUserSession() async {
     if (_preferences == null) {

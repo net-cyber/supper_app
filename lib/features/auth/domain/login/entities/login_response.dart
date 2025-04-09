@@ -16,12 +16,14 @@ class LoginResponse with _$LoginResponse {
 
   const LoginResponse._();
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
 }
 
 @freezed
 class LoginUser with _$LoginUser {
   const factory LoginUser({
+    int? id,
     required String username,
     required String full_name,
     required String international_phone_number,
@@ -32,5 +34,6 @@ class LoginUser with _$LoginUser {
 
   const LoginUser._();
 
-  factory LoginUser.fromJson(Map<String, dynamic> json) => _$LoginUserFromJson(json);
-} 
+  factory LoginUser.fromJson(Map<String, dynamic> json) =>
+      _$LoginUserFromJson(json);
+}

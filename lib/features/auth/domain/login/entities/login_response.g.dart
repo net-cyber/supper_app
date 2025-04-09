@@ -32,6 +32,7 @@ Map<String, dynamic> _$$LoginResponseImplToJson(_$LoginResponseImpl instance) =>
 
 _$LoginUserImpl _$$LoginUserImplFromJson(Map<String, dynamic> json) =>
     _$LoginUserImpl(
+      id: (json['id'] as num?)?.toInt(),
       username: json['username'] as String,
       full_name: json['full_name'] as String,
       international_phone_number: json['international_phone_number'] as String,
@@ -43,6 +44,7 @@ _$LoginUserImpl _$$LoginUserImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$LoginUserImplToJson(_$LoginUserImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'username': instance.username,
       'full_name': instance.full_name,
       'international_phone_number': instance.international_phone_number,
