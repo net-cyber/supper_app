@@ -38,18 +38,17 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
     _validationBloc = getIt<AccountValidationBloc>();
     _accountsBloc = getIt<AccountsBloc>();
     _amountController.addListener(_onAmountChanged);
-
-    // Ensure we have accounts loaded
     _fetchAccountsIfNeeded();
   }
 
   void _fetchAccountsIfNeeded() {
     final accountsState = _accountsBloc.state;
-    if (accountsState.accounts.isEmpty && !accountsState.isLoading) {
+    if (!accountsState.isLoading && accountsState.accounts.isNotEmpty) {
+      setState(() {
+        _isAccountsFetched = true;
+      });
+    } else if (accountsState.accounts.isEmpty && !accountsState.isLoading) {
       _accountsBloc.add(const FetchAccounts());
-      _isAccountsFetched = true;
-    } else {
-      _isAccountsFetched = true;
     }
   }
 
@@ -61,107 +60,84 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   }
 
   void _onAmountChanged() {
-    final text = _amountController.text;
-    final hasInput = text.isNotEmpty;
-
-    if (hasInput != _hasInput) {
+    final hasText = _amountController.text.trim().isNotEmpty;
+    if (hasText != _hasInput) {
       setState(() {
-        _hasInput = hasInput;
+        _hasInput = hasText;
       });
-    }
-
-    // Update the validation bloc with the new amount if available
-    if (text.isNotEmpty) {
-      final double? amount = double.tryParse(text);
-      if (amount != null) {
-        // We still need to store the recipient's account ID in the bloc state
-        // for display purposes, but it won't be used for validation
-        final recipientAccountId = int.tryParse(
-                widget.transferData['accountNumber']?.toString() ?? '') ??
-            0;
-
-        // Update the bloc with the new details
-        _validationBloc.add(
-          AccountValidationEvent.accountDetailsChanged(
-            accountId:
-                recipientAccountId, // This is not used for validation anymore
-            amount: amount,
-          ),
-        );
-      }
     }
   }
 
   void _validateBalance() {
-    // Check if accounts are loaded first
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
     final accountsState = _accountsBloc.state;
     if (accountsState.accounts.isEmpty) {
-      // If accounts are loading, show a message to wait
       if (accountsState.isLoading) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Loading your accounts. Please wait a moment...'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
         return;
       }
-
-      // If accounts failed to load, try again
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Unable to load your accounts. Trying again...'),
-          behavior: SnackBarBehavior.floating,
-          action: SnackBarAction(
-            label: 'Retry',
-            onPressed: () {
-              _accountsBloc.add(const FetchAccounts());
-            },
-          ),
-        ),
-      );
-
-      // Trigger a fetch
       _accountsBloc.add(const FetchAccounts());
       return;
     }
 
-    // Validate amount format first
-    final double? amount = double.tryParse(_amountController.text);
-    if (amount == null || amount <= 0) {
+    final amountText = _amountController.text.trim();
+    if (amountText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter a valid amount'),
+          content: Text('Please enter an amount'),
           behavior: SnackBarBehavior.floating,
         ),
       );
       return;
     }
 
-    // Get recipient account ID for display purposes (not used in validation)
+    final double? amount = double.tryParse(amountText);
+    if (amount == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid number'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    if (amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Amount must be greater than zero'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final etbAccount = accountsState.accounts.firstWhere(
+      (account) =>
+          account.currency.toLowerCase() == 'etb' ||
+          account.currency.toLowerCase() == 'birr',
+      orElse: () => accountsState.accounts.first,
+    );
+
     final recipientAccountId =
         int.tryParse(widget.transferData['accountNumber']?.toString() ?? '') ??
             0;
 
-    // Update the bloc state with the parsed values
     _validationBloc.add(
       AccountValidationEvent.accountDetailsChanged(
-        accountId: recipientAccountId, // Just stored for reference
+        accountId: recipientAccountId,
         amount: amount,
       ),
     );
 
-    // Trigger validation (now the validation will use the account ID from AccountsBloc)
     _validationBloc.add(
       const AccountValidationEvent.validateAccountSubmitted(),
     );
   }
 
   void _handleSessionExpired() async {
-    // Clear user session data
     await LocalStorage.instance.clearUserSession();
 
-    // Show message
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -171,7 +147,6 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
         ),
       );
 
-      // Navigate to login screen
       Future.delayed(const Duration(seconds: 1), () {
         if (mounted) {
           context.go('/login');
@@ -181,14 +156,12 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   }
 
   void _navigateToConfirmationScreen() {
-    // Add amount to transfer data and navigate to confirmation screen
     final completeTransferData = {
       ...widget.transferData,
       'amount': double.parse(_amountController.text),
       'name': 'Goh Betoch Bank',
     };
 
-    // Navigate to internal confirmation screen
     context.pushNamed(RouteName.internalConfirmTransfer,
         extra: completeTransferData);
   }
@@ -204,8 +177,6 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
         listeners: [
           BlocListener<AccountsBloc, AccountsState>(
             listener: (context, accountsState) {
-              // If accounts are loaded successfully and we have accounts,
-              // we can potentially re-enable validation
               if (!accountsState.isLoading &&
                   !accountsState.hasError &&
                   accountsState.accounts.isNotEmpty) {
@@ -214,8 +185,7 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                 });
               }
 
-              // Show error if account loading failed
-              if (accountsState.hasError) {
+              if (accountsState.hasError && _hasInput) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text(
@@ -237,26 +207,55 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
           ),
           BlocListener<AccountValidationBloc, AccountValidationState>(
             listener: (context, state) {
-              // Handle authentication error / session expired
               if (state.validationError &&
-                  state.errorMessage.toLowerCase().contains('unauthorised')) {
+                      state.errorMessage
+                          .toLowerCase()
+                          .contains('unauthorised') ||
+                  state.errorMessage
+                      .toLowerCase()
+                      .contains('session has expired')) {
                 _handleSessionExpired();
                 return;
               }
 
-              // If validation error mentions no accounts available
               if (state.validationError &&
                   state.errorMessage.contains('No accounts available')) {
-                // Try to fetch accounts again
                 _accountsBloc.add(const FetchAccounts());
                 return;
               }
 
-              // Show error message when validation fails
-              if (state.validationError) {
+              if (state.validationError &&
+                  state.errorMessage
+                      .toLowerCase()
+                      .contains('service is currently unavailable')) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.errorMessage),
+                    content: const Text(
+                      'The balance validation service is temporarily unavailable. Please try again later.',
+                    ),
+                    duration: const Duration(seconds: 4),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.orange,
+                    action: SnackBarAction(
+                      label: 'Retry',
+                      onPressed: () {
+                        if (_hasInput) {
+                          _validateBalance();
+                        }
+                      },
+                      textColor: Colors.white,
+                    ),
+                  ),
+                );
+                return;
+              }
+
+              if (state.validationError) {
+                final errorMessage = state.errorMessage;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(errorMessage),
                     duration: const Duration(seconds: 4),
                     behavior: SnackBarBehavior.floating,
                     backgroundColor: Colors.red,
@@ -270,7 +269,6 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                 );
               }
 
-              // Handle successful validation but insufficient funds
               if (state.isValidated && !state.isSufficient) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -279,7 +277,7 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                     behavior: SnackBarBehavior.floating,
                     backgroundColor: Colors.orange,
                     action: SnackBarAction(
-                      label: 'Dismiss',
+                      label: 'Try Different Amount',
                       onPressed: () =>
                           ScaffoldMessenger.of(context).hideCurrentSnackBar(),
                       textColor: Colors.white,
@@ -288,253 +286,219 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                 );
               }
 
-              // Handle successful validation with sufficient funds
               if (state.isValidated && state.isSufficient) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    duration: const Duration(seconds: 2),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.green,
-                  ),
-                );
-
-                // Navigate to confirmation screen after a short delay
-                Future.delayed(const Duration(seconds: 1), () {
-                  if (mounted && state.isValidated && state.isSufficient) {
-                    _navigateToConfirmationScreen();
-                  }
-                });
+                _navigateToConfirmationScreen();
               }
             },
           ),
         ],
-        child: BlocBuilder<AccountValidationBloc, AccountValidationState>(
-            builder: (context, state) {
-          return Scaffold(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: Text(
-                'Enter Transfer Amount',
-                style: GoogleFonts.outfit(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(
+              'Enter Transfer Amount',
+              style: GoogleFonts.outfit(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
               ),
             ),
-            body: Padding(
-              padding: EdgeInsets.all(20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Account verification section with Goh Betoch Bank branding
-                  Container(
-                    padding: EdgeInsets.all(16.w),
+          ),
+          body: BlocBuilder<AccountsBloc, AccountsState>(
+            builder: (context, accountsState) {
+              if (accountsState.isLoading && !_isAccountsFetched) {
+                return Center(
+                  child: Container(
+                    padding: EdgeInsets.all(24.w),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.3)),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
+                      shape: BoxShape.circle,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.account_balance_rounded,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 24.sp,
-                            ),
-                            SizedBox(width: 12.w),
-                            Text(
-                              'Goh Betoch Bank Account',
-                              style: GoogleFonts.outfit(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildDetailRow('Account Number',
-                            widget.transferData['accountNumber'].toString()),
-                        SizedBox(height: 8.h),
-                        _buildDetailRow(
-                            'Account Holder',
-                            widget.transferData['accountHolderName']
-                                .toString()),
-                      ],
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                      strokeWidth: 3.w,
                     ),
                   ),
+                );
+              }
 
-                  SizedBox(height: 32.h),
-
-                  // Amount input section
-                  Text(
-                    'Enter Amount',
-                    style: GoogleFonts.outfit(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    'Enter the amount you want to transfer',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                  _buildAmountInput(),
-
-                  // Sample amounts section
-                  SizedBox(height: 24.h),
-                  Text(
-                    'Quick Amounts',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              if (accountsState.hasError &&
+                  accountsState.accounts.isEmpty &&
+                  !_isAccountsFetched) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildQuickAmountButton('500'),
-                      _buildQuickAmountButton('1,000'),
-                      _buildQuickAmountButton('5,000'),
-                      _buildQuickAmountButton('10,000'),
-                    ],
-                  ),
-
-                  const Spacer(),
-
-                  // Loading indicator for accounts
-                  BlocBuilder<AccountsBloc, AccountsState>(
-                    builder: (context, accountsState) {
-                      if (accountsState.isLoading) {
-                        return Column(
-                          children: [
-                            Center(
-                              child: Column(
-                                children: [
-                                  const CircularProgressIndicator(),
-                                  SizedBox(height: 16.h),
-                                  Text(
-                                    'Loading your accounts...',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 16.sp,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 40.h),
-                          ],
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-
-                  // Loading indicator when validating
-                  if (state.isValidating) ...[
-                    Center(
-                      child: Column(
-                        children: [
-                          const CircularProgressIndicator(),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'Validating transaction...',
-                            style: GoogleFonts.outfit(
-                              fontSize: 16.sp,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
+                      Icon(
+                        Icons.error_outline_rounded,
+                        color: Colors.orange,
+                        size: 48.sp,
                       ),
-                    ),
-                    SizedBox(height: 40.h),
-                  ],
-
-                  // Continue button
-                  if (!state.isValidating) ...[
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56.h,
-                      child: ElevatedButton(
-                        onPressed: _hasInput
-                            ? (state.isValidated && state.isSufficient
-                                ? _navigateToConfirmationScreen
-                                : _validateBalance)
-                            : null,
+                      SizedBox(height: 24.h),
+                      ElevatedButton(
+                        onPressed: () {
+                          _accountsBloc.add(const FetchAccounts());
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               Theme.of(context).colorScheme.primary,
-                          disabledBackgroundColor: Colors.grey[300],
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24.w, vertical: 12.h),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28.r),
+                            borderRadius: BorderRadius.circular(24.r),
                           ),
                         ),
                         child: Text(
-                          state.isValidated && state.isSufficient
-                              ? 'Continue to Confirm'
-                              : 'Validate Amount',
+                          'Retry',
                           style: GoogleFonts.outfit(
-                            fontSize: 18.sp,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                  SizedBox(height: 16.h),
-                ],
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
+                    ],
+                  ),
+                );
+              }
 
-  Widget _buildQuickAmountButton(String amount) {
-    return OutlinedButton(
-      onPressed: () {
-        _amountController.text = amount.replaceAll(',', '');
-      },
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      ),
-      child: Text(
-        amount,
-        style: GoogleFonts.outfit(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
-          color: Theme.of(context).colorScheme.primary,
+              return BlocBuilder<AccountValidationBloc, AccountValidationState>(
+                builder: (context, validationState) {
+                  return SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.3)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.account_balance_rounded,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      size: 24.sp,
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    Text(
+                                      'Recipient Account',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 16.h),
+                                _buildDetailRow(
+                                    'Account Number',
+                                    widget.transferData['accountNumber']
+                                        .toString()),
+                                SizedBox(height: 8.h),
+                                _buildDetailRow(
+                                    'Account Holder',
+                                    widget.transferData['accountHolderName']
+                                        .toString()),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 24.h),
+                          Text(
+                            'Enter Amount',
+                            style: GoogleFonts.outfit(
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            'Enter the amount you want to transfer',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          _buildAmountInput(),
+                          Expanded(
+                            child: Center(
+                              child: validationState.isValidating
+                                  ? Container(
+                                      padding: EdgeInsets.all(24.w),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.1),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        strokeWidth: 3.w,
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ),
+                          ),
+                          if (!validationState.isValidating)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 56.h,
+                              child: ElevatedButton(
+                                onPressed: _hasInput ? _validateBalance : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  disabledBackgroundColor: Colors.grey[300],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(28.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Validate Amount',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

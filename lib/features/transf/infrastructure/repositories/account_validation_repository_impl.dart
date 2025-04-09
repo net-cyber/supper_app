@@ -22,19 +22,15 @@ class AccountValidationRepositoryImpl implements AccountValidationRepository {
       );
       return right(validation);
     } on DioException catch (e) {
-      // Check specifically for auth-related errors
       if (e.response?.statusCode == 401) {
         return left(const NetworkExceptions.unauthorisedRequest());
       }
-
       return left(NetworkExceptions.getDioException(e));
     } catch (e) {
-      // Special handling for null errors that might come from type casting
       if (e.toString().contains("type 'Null'") ||
           e.toString().contains("null is not a subtype of")) {
         return left(const NetworkExceptions.unexpectedError());
       }
-
       return left(NetworkExceptions.defaultError(e.toString()));
     }
   }

@@ -46,7 +46,7 @@ class AccountValidationBloc
       emit(
         state.copyWith(
           validationError: true,
-          errorMessage: 'Please enter a valid account ID',
+          errorMessage: 'Invalid account information',
         ),
       );
       return;
@@ -64,7 +64,6 @@ class AccountValidationBloc
 
     emit(state.copyWith(isValidating: true));
 
-    // Check internet connection
     if (!await AppConnectivity.connectivity()) {
       emit(
         state.copyWith(
@@ -76,7 +75,6 @@ class AccountValidationBloc
       return;
     }
 
-    // Get current account from accounts bloc
     final accountsState = _accountsBloc.state;
     if (accountsState.accounts.isEmpty) {
       emit(
@@ -89,37 +87,50 @@ class AccountValidationBloc
       return;
     }
 
-    // Get the current account (first one or selected one)
-    final currentAccount = accountsState.accounts[0]; // Or use selected account
-
-    // Use the account ID from the account entity
-    final currentAccountId = currentAccount.id;
-
-    final result = await _validationRepository.validateAccount(
-      state.amount,
-      currentAccountId,
+    final etbAccount = accountsState.accounts.firstWhere(
+      (account) =>
+          account.currency.toLowerCase() == 'etb' ||
+          account.currency.toLowerCase() == 'birr',
+      orElse: () => accountsState.accounts.first,
     );
 
-    result.fold(
-      (failure) {
-        emit(
-          state.copyWith(
-            isValidating: false,
-            validationError: true,
-            errorMessage: NetworkExceptions.getErrorMessage(failure),
-          ),
-        );
-      },
-      (validation) {
-        emit(
-          state.copyWith(
-            isValidating: false,
-            isValidated: true,
-            isSufficient: validation.isSufficient,
-            message: validation.message,
-          ),
-        );
-      },
-    );
+    final senderAccountId = etbAccount.id;
+
+    try {
+      final result = await _validationRepository.validateAccount(
+        state.amount,
+        senderAccountId,
+      );
+
+      result.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              isValidating: false,
+              validationError: true,
+              errorMessage: NetworkExceptions.getErrorMessage(failure),
+            ),
+          );
+        },
+        (validation) {
+          emit(
+            state.copyWith(
+              isValidating: false,
+              isValidated: true,
+              isSufficient: validation.isSufficient,
+              message: validation.message,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isValidating: false,
+          validationError: true,
+          errorMessage: 'An unexpected error occurred. Please try again.',
+        ),
+      );
+    }
   }
 }

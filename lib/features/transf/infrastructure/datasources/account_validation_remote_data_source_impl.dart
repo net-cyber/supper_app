@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:super_app/core/di/dependancy_manager.dart';
-import 'package:super_app/core/handlers/http_service.dart';
 import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/features/transf/domain/entities/account_validation.dart';
 
@@ -10,10 +8,8 @@ class AccountValidationRemoteDataSource {
   Future<AccountValidation> validateAccount(
       double amount, int currentAccountId) async {
     try {
-      // Get the access token
       final accessToken = await LocalStorage.instance.getAccessToken();
 
-      // Check if token is null or empty
       if (accessToken == null || accessToken.isEmpty) {
         throw DioException(
           requestOptions: RequestOptions(path: '/accounts/validate'),
@@ -27,46 +23,50 @@ class AccountValidationRemoteDataSource {
         );
       }
 
-      // Prepare headers with authorization
       final Map<String, dynamic> headers = {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       };
 
-      // Prepare request body
       final Map<String, dynamic> body = {
-        'account_id': currentAccountId, // Use the passed account ID
-        'amount': amount,
+        'amount': amount.toInt(),
+        'account_id': currentAccountId,
       };
 
-      // Make API request
-      final response = await getIt<HttpService>().client().post(
-            '/accounts/validate',
-            data: body,
-            options: Options(headers: headers),
-          );
+      final dio = Dio(BaseOptions(
+        baseUrl: 'https://nekapay-a88c51536db4.herokuapp.com',
+        headers: headers,
+      ));
 
-      // Check if response data is null
+      final response = await dio.request(
+        '/accounts/validate',
+        data: body,
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+
       if (response.data == null) {
         throw Exception('Server returned null response');
       }
 
-      // Handle different response formats
       if (response.data is Map<String, dynamic>) {
         final data = response.data as Map<String, dynamic>;
-
-        // Extract message
         final message = data['message'] as String? ?? 'Account validated';
+        bool isSufficient = false;
 
-        // Determine if sufficient based on message
-        final isSufficient = message.toLowerCase().contains('sufficient');
+        if (data.containsKey('is_sufficient')) {
+          isSufficient = data['is_sufficient'] as bool;
+        } else {
+          isSufficient = message.toLowerCase().contains('sufficient');
+        }
 
         return AccountValidation(
           message: message,
           isSufficient: isSufficient,
         );
       } else if (response.data is String) {
-        // Handle string response
         final message = response.data as String;
         final isSufficient = message.toLowerCase().contains('sufficient');
 
@@ -78,10 +78,37 @@ class AccountValidationRemoteDataSource {
 
       throw Exception('Unexpected response format');
     } on DioException catch (e) {
-      // Re-throw to be handled by the repository
+      if (e.response?.statusCode == 401) {
+        throw DioException(
+          requestOptions: e.requestOptions,
+          error: 'Your session has expired. Please login again.',
+          type: DioExceptionType.badResponse,
+          response: e.response,
+        );
+      } else if (e.response?.statusCode == 422) {
+        final message = e.response?.data?['message'] as String? ??
+            'Insufficient funds for this transaction';
+
+        throw Exception(message);
+      } else if (e.response?.statusCode == 404) {
+        throw Exception(
+            'Account validation service unavailable. Please try again later.');
+      } else if (e.response?.statusCode == 400) {
+        String errorMessage = 'Invalid request format';
+
+        if (e.response?.data != null && e.response?.data is Map) {
+          final errorData = e.response?.data as Map;
+          if (errorData.containsKey('message')) {
+            errorMessage = errorData['message'].toString();
+          } else if (errorData.containsKey('error')) {
+            errorMessage = errorData['error'].toString();
+          }
+        }
+
+        throw Exception('Validation failed: $errorMessage');
+      }
       throw e;
     } catch (e) {
-      // Re-throw any other exceptions
       throw e;
     }
   }
