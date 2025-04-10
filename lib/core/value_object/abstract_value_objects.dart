@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:meta/meta.dart';
 import 'package:super_app/core/errors/errors.dart';
 import 'package:super_app/core/value_failures/value_failures.dart';
 import 'package:super_app/core/value_object/common_interfaces.dart';
-import 'package:meta/meta.dart';
 
 @immutable
 abstract class AbstractValueObject<T> implements IValidatable {
@@ -65,4 +65,3 @@ abstract class AbstractValueObject<T> implements IValidatable {
 
 //   const UniqueId._(this.value);
 // }
-

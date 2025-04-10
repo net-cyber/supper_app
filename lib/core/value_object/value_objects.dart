@@ -15,6 +15,18 @@ class EmailAddress extends AbstractValueObject<String> {
   final Either<ValueFailure<String>, String> value;
 }
 
+class Username extends AbstractValueObject<String> {
+  factory Username(String input) {
+    return Username._(
+      validateUsername(input),
+    );
+  }
+
+  const Username._(this.value);
+  @override
+  final Either<ValueFailure<String>, String> value;
+}
+
 class Password extends AbstractValueObject<String> {
   factory Password(String input) {
     return Password._(

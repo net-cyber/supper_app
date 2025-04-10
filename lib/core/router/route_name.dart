@@ -22,4 +22,9 @@ class RouteName {
   static const mortgageDashboard = 'mortgageDashboard';
   static const registrationScreen = 'registrationScreen';
   static const termsAndConditionsScreen = 'termsAndConditionsScreen';
+  static const mobileTopup = 'mobileTopup';
+  static const mobileTopupPhoneNumber = 'mobileTopupPhoneNumber';
+  static const mobileTopupAmount = 'mobileTopupAmount';
+  static const mobileTopupConfirmation = 'mobileTopupConfirmation';
+  static const mobileTopupSuccess = 'mobileTopupSuccess';
 }
