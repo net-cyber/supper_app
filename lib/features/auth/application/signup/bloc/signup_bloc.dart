@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
-import 'package:super_app/features/auth/domain/value_objects.dart';
+import 'package:super_app/core/value_object/value_objects.dart';
 
 import 'package:super_app/features/auth/application/signup/bloc/signup_event.dart';
 import 'package:super_app/features/auth/application/signup/bloc/signup_state.dart';
