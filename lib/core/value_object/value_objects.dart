@@ -4,7 +4,6 @@ import 'package:super_app/core/value_failures/value_failures.dart';
 import 'package:super_app/core/value_object/abstract_value_objects.dart';
 
 class EmailAddress extends AbstractValueObject<String> {
-
   factory EmailAddress(String input) {
     return EmailAddress._(
       validateEmailAddress(input),
@@ -17,7 +16,6 @@ class EmailAddress extends AbstractValueObject<String> {
 }
 
 class Password extends AbstractValueObject<String> {
-
   factory Password(String input) {
     return Password._(
       validatePassword(input),
@@ -30,7 +28,6 @@ class Password extends AbstractValueObject<String> {
 }
 
 class ConfirmPassword extends AbstractValueObject<String> {
-
   factory ConfirmPassword(String input, String originalPassword) {
     return ConfirmPassword._(
       validateConfirmPassword(input, originalPassword),
@@ -42,9 +39,7 @@ class ConfirmPassword extends AbstractValueObject<String> {
   final Either<ValueFailure<String>, String> value;
 }
 
-
 class FullName extends AbstractValueObject<String> {
-
   factory FullName(String input) {
     return FullName._(
       validateFullName(input),
@@ -102,4 +97,12 @@ class TermsAcceptance extends AbstractValueObject<bool> {
   const TermsAcceptance._(this.value);
   @override
   final Either<ValueFailure<bool>, bool> value;
+
+  @override
+  bool isValid() {
+    return value.fold(
+      (_) => false,
+      (value) => value == true,
+    );
+  }
 }

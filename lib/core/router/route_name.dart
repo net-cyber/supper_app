@@ -20,6 +20,8 @@ class RouteName {
   static const propertyDetail = 'propertyDetail';
   static const availableProperties = 'availableProperties';
   static const mortgageDashboard = 'mortgageDashboard';
+  static const registrationScreen = 'registrationScreen';
+  static const termsAndConditionsScreen = 'termsAndConditionsScreen';
   static const mobileTopup = 'mobileTopup';
   static const mobileTopupPhoneNumber = 'mobileTopup_phone_number';
   static const mobileTopupAmount = 'mobileTopup_amount';

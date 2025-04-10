@@ -19,6 +19,9 @@ import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
 
+import '../../features/auth/presentation/pages/registration/registration_screen.dart';
+import '../../features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
+
 // Path constants
 const String homeScreenPath = '/home';
 
@@ -219,6 +222,17 @@ final router = GoRouter(
       name: RouteName.mobileTopupSuccess,
       path: mobileTopupSuccessPath,
       builder: (context, state) => const SuccessScreen(),
+    ),
+    GoRoute(
+      name: RouteName.registrationScreen,
+      path: '/${RouteName.registrationScreen}',
+      builder: (context, state) => const RegistrationScreen(),
+    ),
+
+    GoRoute(
+      name: RouteName.termsAndConditionsScreen,
+      path: '/${RouteName.termsAndConditionsScreen}',
+      builder: (context, state) => const TermsAndConditionsScreen(),
     ),
   ],
 );

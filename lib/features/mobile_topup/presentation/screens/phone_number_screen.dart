@@ -28,12 +28,17 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   bool _isPhoneValid = false;
   bool _isSubmitting = false;
 
-  // TODO: Replace with actual user phone number from auth repository
-  final String _userPhoneNumber = '912345678'; // Mock user phone number
+  // Mock user phone numbers based on operator
+  late String _userPhoneNumber;
 
   @override
   void initState() {
     super.initState();
+    // Set the appropriate mock phone number based on operator
+    _userPhoneNumber = widget.operatorName.toLowerCase().contains('safaricom')
+        ? '712345678' // Safaricom number starting with 7
+        : '912345678'; // Ethio-Telecom number starting with 9
+
     // Initialize with user's phone number for self top-up
     if (_topupType == TopupType.self) {
       _phoneController.text = _userPhoneNumber;
@@ -58,8 +63,14 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   }
 
   void _validatePhoneNumber(String value) {
+    // Check if phone number starts with correct digit for the operator
+    final bool startsWithCorrectDigit =
+        widget.operatorName.toLowerCase().contains('safaricom')
+            ? (value.isNotEmpty && value.startsWith('7'))
+            : (value.isNotEmpty && value.startsWith('9'));
+
     setState(() {
-      _isPhoneValid = value.length >= 9;
+      _isPhoneValid = value.length >= 9 && startsWithCorrectDigit;
     });
   }
 
@@ -155,6 +166,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                 controller: _phoneController,
                 countryCode: _countryCode,
                 flagAssetPath: 'assets/ethio-flag.png',
+                operatorName: widget.operatorName,
                 onContactsTap: _topupType == TopupType.others
                     ? () {
                         // Handle contacts tap
@@ -236,8 +248,13 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
               _phoneController.text = _userPhoneNumber;
               _validatePhoneNumber(_userPhoneNumber);
             } else {
-              _phoneController.clear();
-              _validatePhoneNumber('');
+              // For Others tab, clear or set starting digit
+              if (widget.operatorName.toLowerCase().contains('safaricom')) {
+                _phoneController.text = '7'; // Prefill with 7 for Safaricom
+              } else {
+                _phoneController.text = '9'; // Prefill with 9 for Ethio-Telecom
+              }
+              _validatePhoneNumber(_phoneController.text);
             }
           });
         },

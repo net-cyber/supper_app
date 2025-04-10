@@ -51,11 +51,12 @@ class RegistrationBody extends StatefulWidget {
   State<RegistrationBody> createState() => _RegistrationBodyState();
 }
 
-class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerProviderStateMixin {
+class _RegistrationBodyState extends State<RegistrationBody>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -65,14 +66,14 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
       ),
     );
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.1),
       end: Offset.zero,
@@ -82,7 +83,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
         curve: Curves.easeOut,
       ),
     );
-    
+
     _animationController.forward();
   }
 
@@ -109,8 +110,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegistrationBloc, RegistrationState>(
-      listenWhen: (previous, current) => 
-        previous.isRegistrationError != current.isRegistrationError,
+      listenWhen: (previous, current) =>
+          previous.isRegistrationError != current.isRegistrationError,
       listener: (context, state) {
         if (state.isRegistrationError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -119,7 +120,9 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
               backgroundColor: Colors.red,
             ),
           );
-        } else if (!state.isLoading && !state.isRegistrationError && state.isFormValid) {
+        } else if (!state.isLoading &&
+            !state.isRegistrationError &&
+            state.isFormValid) {
           // Registration successful
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -134,7 +137,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
       builder: (context, state) {
         final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         final colorScheme = Theme.of(context).colorScheme;
-        
+
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -148,7 +151,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 30.h),
-                    
+
                     // Logo with animation
                     TweenAnimationBuilder<double>(
                       tween: Tween<double>(begin: 0.8, end: 1.0),
@@ -165,9 +168,9 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                         );
                       },
                     ),
-                    
+
                     SizedBox(height: 20.h),
-                    
+
                     // Title and subtitle
                     Text(
                       'Create an Account',
@@ -177,9 +180,9 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                         color: colorScheme.onSurface,
                       ),
                     ),
-                    
+
                     SizedBox(height: 8.h),
-                    
+
                     Text(
                       'Secure and fast registration to manage your finances',
                       textAlign: TextAlign.center,
@@ -188,13 +191,15 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
-                    
+
                     SizedBox(height: 30.h),
-                    
+
                     // Form fields in card layout
                     Container(
                       decoration: BoxDecoration(
-                        color: isDarkMode ? colorScheme.surfaceContainerHighest : colorScheme.surface,
+                        color: isDarkMode
+                            ? colorScheme.surfaceContainerHighest
+                            : colorScheme.surface,
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
@@ -214,14 +219,16 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             icon: Icons.person_outline,
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                UserNameChanged(value),
-                              );
+                                    UserNameChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validateUserName(state),
+                            errorText:
+                                RegistrationFormValidator.validateUserName(
+                                    state),
                           ),
-                          
+
                           SizedBox(height: 20.h),
-                          
+
                           // Full Name field
                           _buildTextField(
                             label: 'Full Name',
@@ -229,14 +236,16 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             icon: Icons.person_outline,
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                FullNameChanged(value),
-                              );
+                                    FullNameChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validateFullName(state),
+                            errorText:
+                                RegistrationFormValidator.validateFullName(
+                                    state),
                           ),
-                          
+
                           SizedBox(height: 20.h),
-                          
+
                           // Phone Number field
                           _buildTextField(
                             label: 'Phone Number',
@@ -245,14 +254,16 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             keyboardType: TextInputType.phone,
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                PhoneNumberChanged(value),
-                              );
+                                    PhoneNumberChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validatePhoneNumber(state),
+                            errorText:
+                                RegistrationFormValidator.validatePhoneNumber(
+                                    state),
                           ),
-                          
+
                           SizedBox(height: 20.h),
-                          
+
                           // Email field
                           _buildTextField(
                             label: 'Email Address',
@@ -261,14 +272,15 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             keyboardType: TextInputType.emailAddress,
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                EmailChanged(value),
-                              );
+                                    EmailChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validateEmail(state),
+                            errorText:
+                                RegistrationFormValidator.validateEmail(state),
                           ),
-                          
+
                           SizedBox(height: 20.h),
-                          
+
                           // Password field with strength indicator
                           _buildTextField(
                             label: 'Password',
@@ -277,25 +289,30 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             obscureText: !state.showPassword,
                             suffixIcon: IconButton(
                               icon: Icon(
-                                state.showPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                state.showPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
                                 color: Colors.grey,
                               ),
                               onPressed: () {
                                 context.read<RegistrationBloc>().add(
-                                  const ToggleShowPassword(),
-                                );
+                                      const ToggleShowPassword(),
+                                    );
                               },
                             ),
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                PasswordChanged(value),
-                              );
+                                    PasswordChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validatePassword(state),
+                            errorText:
+                                RegistrationFormValidator.validatePassword(
+                                    state),
                           ),
-                          
+
                           // Password strength indicator
-                          if (state.password.getOrCrash().isNotEmpty) ...[
+                          if (state.password.isValid() &&
+                              state.password.getOrCrash().isNotEmpty) ...[
                             SizedBox(height: 8.h),
                             Row(
                               children: [
@@ -304,8 +321,10 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                     borderRadius: BorderRadius.circular(4.r),
                                     child: LinearProgressIndicator(
                                       value: state.passwordStrength,
-                                      backgroundColor: colorScheme.outlineVariant,
-                                      color: _getStrengthColor(state.passwordStrength),
+                                      backgroundColor:
+                                          colorScheme.outlineVariant,
+                                      color: _getStrengthColor(
+                                          state.passwordStrength),
                                       minHeight: 5.h,
                                     ),
                                   ),
@@ -315,7 +334,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                   _getStrengthText(state.passwordStrength),
                                   style: GoogleFonts.outfit(
                                     fontSize: 12.sp,
-                                    color: _getStrengthColor(state.passwordStrength),
+                                    color: _getStrengthColor(
+                                        state.passwordStrength),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -323,7 +343,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             ),
                             SizedBox(height: 10.h),
                           ],
-                          
+
                           // Confirm Password field
                           _buildTextField(
                             label: 'Confirm Password',
@@ -332,25 +352,28 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             obscureText: !state.showConfirmPassword,
                             suffixIcon: IconButton(
                               icon: Icon(
-                                state.showConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                state.showConfirmPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
                                 color: Colors.grey,
                               ),
                               onPressed: () {
                                 context.read<RegistrationBloc>().add(
-                                  const ToggleShowConfirmPassword(),
-                                );
+                                      const ToggleShowConfirmPassword(),
+                                    );
                               },
                             ),
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                ConfirmPasswordChanged(value),
-                              );
+                                    ConfirmPasswordChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validateConfirmPassword(state),
+                            errorText: RegistrationFormValidator
+                                .validateConfirmPassword(state),
                           ),
-                          
+
                           SizedBox(height: 20.h),
-                          
+
                           // Referral Code field (optional)
                           _buildTextField(
                             label: 'Referral Code (Optional)',
@@ -358,17 +381,19 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                             icon: Icons.card_giftcard_outlined,
                             onChanged: (value) {
                               context.read<RegistrationBloc>().add(
-                                ReferralCodeChanged(value),
-                              );
+                                    ReferralCodeChanged(value),
+                                  );
                             },
-                            errorText: RegistrationFormValidator.validateReferralCode(state),
+                            errorText:
+                                RegistrationFormValidator.validateReferralCode(
+                                    state),
                           ),
                         ],
                       ),
                     ),
-                    
+
                     SizedBox(height: 20.h),
-                    
+
                     // Terms and Conditions switch
                     Row(
                       children: [
@@ -376,8 +401,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                           value: state.termsAcceptance.getOrCrash(),
                           onChanged: (value) {
                             context.read<RegistrationBloc>().add(
-                              TermsAcceptedChanged(value),
-                            );
+                                  TermsAcceptedChanged(value),
+                                );
                           },
                           activeColor: AppColors.primaryColor,
                         ),
@@ -401,7 +426,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      context.pushNamed(RouteName.termsAndConditionsScreen);
+                                      context.pushNamed(
+                                          RouteName.termsAndConditionsScreen);
                                     },
                                 ),
                                 TextSpan(
@@ -424,7 +450,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const TermsAndConditionsScreen(),
+                                          builder: (context) =>
+                                              const TermsAndConditionsScreen(),
                                         ),
                                       );
                                     },
@@ -435,32 +462,35 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                         ),
                       ],
                     ),
-                    if (state.showErrorMessages && !state.termsAcceptance.isValid())
+                    if (state.showErrorMessages &&
+                        !state.termsAcceptance.isValid())
                       Padding(
                         padding: EdgeInsets.only(left: 16.w, top: 4.h),
                         child: Text(
-                          RegistrationFormValidator.validateTermsAcceptance(state) ?? '',
+                          RegistrationFormValidator.validateTermsAcceptance(
+                                  state) ??
+                              '',
                           style: GoogleFonts.outfit(
                             fontSize: 12.sp,
                             color: Colors.red,
                           ),
                         ),
                       ),
-                    
+
                     SizedBox(height: 30.h),
-                    
+
                     // Register Button with gradient
                     SizedBox(
                       width: double.infinity,
                       height: 56.h,
                       child: ElevatedButton(
-                        onPressed: state.isLoading 
-                          ? null 
-                          : () {
-                              context.read<RegistrationBloc>().add(
-                                const RegistrationSubmitted(),
-                              );
-                            },
+                        onPressed: state.isLoading
+                            ? null
+                            : () {
+                                context.read<RegistrationBloc>().add(
+                                      const RegistrationSubmitted(),
+                                    );
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colorScheme.primary,
                           foregroundColor: colorScheme.onPrimary,
@@ -488,9 +518,9 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                               ),
                       ),
                     ),
-                    
+
                     SizedBox(height: 24.h),
-                    
+
                     // Login option
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -515,7 +545,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
                         ),
                       ],
                     ),
-                    
+
                     SizedBox(height: 40.h),
                   ],
                 ),
@@ -539,7 +569,7 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
   }) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -572,7 +602,9 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
             ),
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: isDarkMode ? colorScheme.surfaceContainerHighest : colorScheme.surfaceVariant,
+            fillColor: isDarkMode
+                ? colorScheme.surfaceContainerHighest
+                : colorScheme.surfaceVariant,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide.none,
@@ -581,7 +613,8 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: colorScheme.primary, width: 1.w),
             ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             errorText: errorText,
             errorStyle: GoogleFonts.outfit(
               fontSize: 12.sp,
@@ -593,4 +626,4 @@ class _RegistrationBodyState extends State<RegistrationBody> with SingleTickerPr
       ],
     );
   }
-} 
+}

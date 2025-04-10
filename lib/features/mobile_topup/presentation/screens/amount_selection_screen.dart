@@ -46,9 +46,10 @@ class _AmountSelectionScreenState extends State<AmountSelectionScreen> {
 
   void _handleBackNavigation(BuildContext context) {
     try {
+      // Try to go back normally first
       context.pop();
     } catch (e) {
-      // Navigate to phone number screen with operator details
+      // If popping fails, navigate to phone number screen with operator details
       context.goNamed(
         RouteName.mobileTopupPhoneNumber,
         extra: {
