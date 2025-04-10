@@ -97,12 +97,4 @@ class TermsAcceptance extends AbstractValueObject<bool> {
   const TermsAcceptance._(this.value);
   @override
   final Either<ValueFailure<bool>, bool> value;
-
-  @override
-  bool isValid() {
-    return value.fold(
-      (_) => false,
-      (value) => value == true,
-    );
-  }
 }

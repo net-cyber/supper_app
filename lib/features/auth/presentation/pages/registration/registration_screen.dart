@@ -311,8 +311,7 @@ class _RegistrationBodyState extends State<RegistrationBody>
                           ),
 
                           // Password strength indicator
-                          if (state.password.isValid() &&
-                              state.password.getOrCrash().isNotEmpty) ...[
+                          if (state.password.getOrCrash().isNotEmpty) ...[
                             SizedBox(height: 8.h),
                             Row(
                               children: [

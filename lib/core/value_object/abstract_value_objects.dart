@@ -15,11 +15,8 @@ abstract class AbstractValueObject<T> implements IValidatable {
     return value.fold((f) => throw UnexpectedValueError(f), id);
   }
 
-  T getOrElse(T defaultValue) {
-    return value.fold(
-      (failure) => defaultValue,
-      (value) => value,
-    );
+  T getOrElse(T dflt) {
+    return value.getOrElse(() => dflt);
   }
 
   Either<ValueFailure<dynamic>, Unit> get failureOrUnit {

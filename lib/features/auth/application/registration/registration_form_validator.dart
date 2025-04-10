@@ -73,7 +73,10 @@ class RegistrationFormValidator {
 
   static String? validateTermsAcceptance(RegistrationState state) {
     if (state.showErrorMessages && !state.termsAcceptance.isValid()) {
-      return "You must accept the Terms & Conditions to continue";
+      return state.termsAcceptance.value.fold(
+        (failure) => failure.failedValue.toString(),
+        (_) => null,
+      );
     }
     return null;
   }

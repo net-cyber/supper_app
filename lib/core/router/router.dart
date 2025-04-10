@@ -2,11 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
-import 'package:super_app/features/mobile_topup/presentation/screens/amount_selection_screen.dart';
-import 'package:super_app/features/mobile_topup/presentation/screens/confirmation_screen.dart';
-import 'package:super_app/features/mobile_topup/presentation/screens/phone_number_screen.dart';
-import 'package:super_app/features/mobile_topup/presentation/screens/select_operator_screen.dart';
-import 'package:super_app/features/mobile_topup/presentation/screens/success_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/registration/registration_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
 import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/features/mortgages/presentation/screens/available_properties_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
@@ -191,38 +188,6 @@ final router = GoRouter(
       builder: (context, state) => const AvailablePropertiesScreen(),
     ),
 
-    // Mobile Topup Routes
-    GoRoute(
-      name: RouteName.mobileTopup,
-      path: mobileTopupPath,
-      builder: (context, state) => const SelectOperatorScreen(),
-    ),
-    GoRoute(
-      name: RouteName.mobileTopupPhoneNumber,
-      path: mobileTopupPhoneNumberPath,
-      builder: (context, state) {
-        final Map<String, dynamic> extra = state.extra as Map<String, dynamic>;
-        return PhoneNumberScreen(
-          operatorName: extra['operatorName'] as String,
-          operatorLogo: extra['operatorLogo'] as String,
-        );
-      },
-    ),
-    GoRoute(
-      name: RouteName.mobileTopupAmount,
-      path: mobileTopupAmountPath,
-      builder: (context, state) => const AmountSelectionScreen(),
-    ),
-    GoRoute(
-      name: RouteName.mobileTopupConfirmation,
-      path: mobileTopupConfirmationPath,
-      builder: (context, state) => const ConfirmationScreen(),
-    ),
-    GoRoute(
-      name: RouteName.mobileTopupSuccess,
-      path: mobileTopupSuccessPath,
-      builder: (context, state) => const SuccessScreen(),
-    ),
     GoRoute(
       name: RouteName.registrationScreen,
       path: '/${RouteName.registrationScreen}',
@@ -236,72 +201,3 @@ final router = GoRouter(
     ),
   ],
 );
-
-// Extension methods for navigation
-extension RouterExtensions on BuildContext {
-  void navigateToMobileTopup() {
-    goNamed(RouteName.mobileTopup);
-  }
-
-  void navigateToMobileTopupPhoneNumber({
-    required String operatorName,
-    required String operatorLogo,
-  }) {
-    goNamed(
-      RouteName.mobileTopupPhoneNumber,
-      extra: {
-        'operatorName': operatorName,
-        'operatorLogo': operatorLogo,
-      },
-    );
-  }
-
-  void navigateToMobileTopupAmount({
-    required String phoneNumber,
-    required String operatorName,
-    required String operatorLogo,
-  }) {
-    goNamed(
-      RouteName.mobileTopupAmount,
-      extra: {
-        'phoneNumber': phoneNumber,
-        'operatorName': operatorName,
-        'operatorLogo': operatorLogo,
-      },
-    );
-  }
-
-  void navigateToMobileTopupConfirmation({
-    required String phoneNumber,
-    required String operatorName,
-    required String operatorLogo,
-    required double amount,
-  }) {
-    goNamed(
-      RouteName.mobileTopupConfirmation,
-      extra: {
-        'phoneNumber': phoneNumber,
-        'operatorName': operatorName,
-        'operatorLogo': operatorLogo,
-        'amount': amount,
-      },
-    );
-  }
-
-  void navigateToMobileTopupSuccess({
-    required String phoneNumber,
-    required String operatorName,
-    required String operatorLogo,
-    required double amount,
-  }) {
-    goNamed(
-      RouteName.mobileTopupSuccess,
-      extra: {
-        'phoneNumber': phoneNumber,
-        'operatorName': operatorName,
-        'operatorLogo': operatorLogo,
-        'amount': amount,
-      },
-    );
-  }
-}

@@ -614,9 +614,11 @@ Either<ValueFailure<String>, String> validateReferralCode(String input) {
 
 Either<ValueFailure<bool>, bool> validateTermsAcceptance(bool input) {
   if (!input) {
-    // Using a different approach - instead of returning a failure,
-    // we'll just return the value itself when checking in the UI
-    return right(input);
+    return left(
+      const ValueFailure.empty(
+        failedValue: false,
+      ),
+    );
   }
 
   return right(input);
