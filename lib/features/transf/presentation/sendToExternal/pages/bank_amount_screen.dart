@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class BankAmountScreen extends StatefulWidget {
   final Map<String, dynamic> transferData;
@@ -69,7 +70,11 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_errorMessage!)),
+        SnackBar(
+          content: Text(_errorMessage!),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red[700],
+        ),
       );
       return;
     }
@@ -81,7 +86,11 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_errorMessage!)),
+        SnackBar(
+          content: Text(_errorMessage!),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red[700],
+        ),
       );
       return;
     }
@@ -93,12 +102,29 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
     });
 
     // Simulate network delay
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       if (!mounted) return;
 
-      // Calculate fee (for demo: 1% of amount or minimum 15 ETB)
+      // Calculate fee based on bank and amount
       final amountValue = double.parse(_amountController.text);
-      final calculatedFee = (amountValue * 0.01).clamp(15.0, 100.0);
+      double calculatedFee;
+      
+      // Different fee structures for different banks
+      final bankCode = widget.transferData['code'] as String;
+      switch (bankCode) {
+        case 'CBE':
+          // CBE: 0.5% of amount or min 10 ETB, max 50 ETB
+          calculatedFee = (amountValue * 0.005).clamp(10.0, 50.0);
+          break;
+        case 'DASHEN':
+        case 'AWASH':
+          // Dashen & Awash: 0.75% of amount or min 12 ETB, max 75 ETB
+          calculatedFee = (amountValue * 0.0075).clamp(12.0, 75.0);
+          break;
+        default:
+          // Other banks: 1% of amount or min 15 ETB, max 100 ETB
+          calculatedFee = (amountValue * 0.01).clamp(15.0, 100.0);
+      }
 
       setState(() {
         _isLoading = false;
@@ -121,6 +147,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
         'amount': double.tryParse(_amountController.text) ?? 0.0,
         'fee': _calculatedFee ?? 0.0,
         'reason': _reasonController.text,
+        'timestamp': DateTime.now().toIso8601String(),
       };
 
       // Navigate to confirmation screen
@@ -130,6 +157,10 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bankName = widget.transferData['name'] as String;
+    final accountHolderName = widget.transferData['accountHolderName'] as String;
+    final accountType = widget.transferData['accountType'] as String? ?? 'Account';
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -175,7 +206,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                       ),
                       SizedBox(width: 12.w),
                       Text(
-                        'Account Details',
+                        'Recipient Details',
                         style: GoogleFonts.outfit(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
@@ -186,13 +217,16 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                   ),
                   SizedBox(height: 16.h),
                   _buildDetailRow(
-                      'Bank', widget.transferData['name'].toString()),
+                      'Bank', bankName),
                   SizedBox(height: 8.h),
                   _buildDetailRow('Account Number',
                       widget.transferData['accountNumber'].toString()),
                   SizedBox(height: 8.h),
                   _buildDetailRow('Account Holder',
-                      widget.transferData['accountHolderName'].toString()),
+                      accountHolderName),
+                  SizedBox(height: 8.h),
+                  _buildDetailRow('Account Type',
+                      accountType),
                 ],
               ),
             ),
@@ -226,25 +260,50 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: Colors.green.withOpacity(0.3),
+                  ),
                 ),
-                child: Row(
+                child: Column(
                   children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: Colors.green[700],
-                      size: 18.sp,
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        'Transfer fee: ETB ${_calculatedFee!.toStringAsFixed(2)}',
-                        style: GoogleFonts.outfit(
-                          fontSize: 14.sp,
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
                           color: Colors.green[700],
+                          size: 18.sp,
                         ),
-                      ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            'Transfer fee: ETB ${_calculatedFee!.toStringAsFixed(2)}',
+                            style: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green[700],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    if (double.tryParse(_amountController.text) != null) ...[
+                      SizedBox(height: 8.h),
+                      Row(
+                        children: [
+                          SizedBox(width: 26.w), // To align with the text above
+                          Expanded(
+                            child: Text(
+                              'Total amount: ETB ${(double.parse(_amountController.text) + _calculatedFee!).toStringAsFixed(2)}',
+                              style: GoogleFonts.outfit(
+                                fontSize: 14.sp,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -266,6 +325,9 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: Colors.grey[300]!,
+                ),
               ),
               child: TextField(
                 controller: _reasonController,
@@ -297,7 +359,9 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
               Center(
                 child: Column(
                   children: [
-                    CircularProgressIndicator(),
+                    CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     SizedBox(height: 16.h),
                     Text(
                       'Calculating fee...',
@@ -314,27 +378,11 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
 
             // Continue button
             if (!_isLoading) ...[
-              SizedBox(
-                width: double.infinity,
-                height: 56.h,
-                child: ElevatedButton(
-                  onPressed: _hasInput ? _continueToConfirmation : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    disabledBackgroundColor: Colors.grey[300],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28.r),
-                    ),
-                  ),
-                  child: Text(
-                    _isFeeCalculated ? 'Continue' : 'Calculate Fee',
-                    style: GoogleFonts.outfit(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+              ContinueButton(
+                onPressed: _continueToConfirmation,
+                isEnabled: _hasInput,
+                isLoading: false,
+                text: _isFeeCalculated ? 'Continue' : 'Calculate Fee',
               ),
             ],
             SizedBox(height: 16.h),
@@ -372,6 +420,9 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey[300]!,
+        ),
       ),
       child: Row(
         children: [
@@ -400,7 +451,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                 fontSize: 16.sp,
                 color: Colors.black87,
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
               ],

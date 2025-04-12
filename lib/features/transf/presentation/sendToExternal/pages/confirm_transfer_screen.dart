@@ -550,23 +550,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                 ),
               ),
             ),
-
-            SizedBox(height: 16.h),
-            TextButton(
-              onPressed: () {
-                // Close dialog and navigate to transaction history
-                Navigator.of(context).pop();
-                context.goNamed(RouteName.history);
-              },
-              child: Text(
-                'View Transaction History',
-                style: GoogleFonts.outfit(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
           ],
         ),
       ),

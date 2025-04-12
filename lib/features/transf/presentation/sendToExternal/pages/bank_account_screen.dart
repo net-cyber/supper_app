@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/transf/presentation/widget/account_input_field.dart';
+import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class BankAccountScreen extends StatefulWidget {
   final Map<String, dynamic> bank;
@@ -28,34 +29,68 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
   // Mock validated account data
   Map<String, dynamic>? _validatedAccount;
 
-  // Map of sample accounts for validation
-  final Map<String, Map<String, dynamic>> _sampleAccounts = {
-    '1234567890': {
+  // Map of sample accounts for validation - different account formats for different banks
+  final Map<String, Map<String, Map<String, dynamic>>> _bankAccounts = {
+    'CBE': {
+      '1000123456': {
       'accountHolderName': 'Abebe Kebede',
-      'accountNumber': '1234567890',
+        'accountNumber': '1000123456',
+        'bankName': 'Commercial Bank of Ethiopia',
+        'branch': 'Addis Ababa Main Branch',
+        'accountType': 'Savings',
+      },
+      '1000789012': {
+        'accountHolderName': 'Hiwot Tesfaye',
+        'accountNumber': '1000789012',
       'bankName': 'Commercial Bank of Ethiopia',
+        'branch': 'Bole Branch',
+        'accountType': 'Current',
+      }
     },
-    '2345678901': {
+    'DASHEN': {
+      '0152345678': {
       'accountHolderName': 'Tigist Haile',
-      'accountNumber': '2345678901',
+        'accountNumber': '0152345678',
       'bankName': 'Dashen Bank',
+        'branch': 'Megenagna Branch',
+        'accountType': 'Savings',
+      }
     },
-    '3456789012': {
+    'AWASH': {
+      '00123456789': {
       'accountHolderName': 'Solomon Tesfaye',
-      'accountNumber': '3456789012',
+        'accountNumber': '00123456789',
       'bankName': 'Awash Bank',
+        'branch': 'Merkato Branch',
+        'accountType': 'Current',
+      }
     },
-    '4567890123': {
+    'ABYSSINIA': {
+      'ETB-456789123': {
       'accountHolderName': 'Meron Tadesse',
-      'accountNumber': '4567890123',
+        'accountNumber': 'ETB-456789123',
       'bankName': 'Abyssinia Bank',
+        'branch': 'Piassa Branch',
+        'accountType': 'Savings',
+      }
     },
-    // Default test account
+    // Default test accounts for all banks
+    'DEFAULT': {
+      '1234567890': {
+        'accountHolderName': 'John Doe',
+        'accountNumber': '1234567890',
+        'bankName': 'Test Bank',
+        'branch': 'Test Branch',
+        'accountType': 'Savings',
+      },
     '158040484': {
-      'accountHolderName': 'John Doe',
+        'accountHolderName': 'Jane Smith',
       'accountNumber': '158040484',
-      'bankName': 'Commercial Bank of Ethiopia',
-    },
+        'bankName': 'Test Bank',
+        'branch': 'Test Branch',
+        'accountType': 'Current',
+      }
+    }
   };
 
   @override
@@ -87,6 +122,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
   }
 
   void _verifyAccount() {
+    // Default to test account number if empty
     final accountNumber = _accountNumberController.text.isEmpty
         ? '158040484'
         : _accountNumberController.text;
@@ -97,15 +133,34 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
     });
 
     // Simulate network delay
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
 
-      if (_sampleAccounts.containsKey(accountNumber)) {
+      // Try to find account in the specific bank's account list
+      final bankCode = widget.bank['code'] as String;
+      Map<String, dynamic>? foundAccount;
+
+      // Check in bank-specific accounts
+      if (_bankAccounts.containsKey(bankCode) && 
+          _bankAccounts[bankCode]!.containsKey(accountNumber)) {
+        foundAccount = _bankAccounts[bankCode]![accountNumber];
+      } 
+      // If not found, check in DEFAULT accounts
+      else if (_bankAccounts['DEFAULT']!.containsKey(accountNumber)) {
+        foundAccount = _bankAccounts['DEFAULT']![accountNumber];
+        // Update bank name to match the selected bank
+        foundAccount = {
+          ...foundAccount!,
+          'bankName': widget.bank['name'],
+        };
+      }
+
+      if (foundAccount != null) {
         // Account exists in our sample data
         setState(() {
           _isLoading = false;
           _isAccountValidated = true;
-          _validatedAccount = _sampleAccounts[accountNumber];
+          _validatedAccount = foundAccount;
         });
       } else {
         // Account doesn't exist
@@ -116,7 +171,19 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_errorMessage!)),
+          SnackBar(
+            content: Text(_errorMessage!),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red[700],
+            action: SnackBarAction(
+              label: 'Try Again',
+              textColor: Colors.white,
+              onPressed: () {
+                _accountNumberController.clear();
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+            ),
+          ),
         );
       }
     });
@@ -140,8 +207,10 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
     final transferData = {
       ...widget.bank,
       'accountNumber': accountNumber,
-      'accountHolderName':
-          _validatedAccount?['accountHolderName'] ?? 'John Doe',
+      'accountHolderName': _validatedAccount?['accountHolderName'] ?? 'John Doe',
+      'accountType': _validatedAccount?['accountType'] ?? 'Savings',
+      'branch': _validatedAccount?['branch'] ?? 'Main Branch',
+      'timestamp': DateTime.now().toIso8601String(),
     };
 
     context.pushNamed(RouteName.bankAmount, extra: transferData);
@@ -154,7 +223,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
           (parts.length > 2
               ? parts[2][0].toUpperCase()
               : parts[1][0].toUpperCase());
-    } else if (parts.length == 1) {
+    } else if (parts.length == 1 && parts[0].isNotEmpty) {
       return parts[0][0].toUpperCase();
     } else {
       return '';
@@ -163,6 +232,9 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bankName = widget.bank['name'] as String;
+    final bankCode = widget.bank['code'] as String;
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -173,7 +245,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Transfer to ${widget.bank['name']}',
+          'Transfer to $bankName',
           style: GoogleFonts.outfit(
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
@@ -186,6 +258,72 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Bank info header
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48.w,
+                    height: 48.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(color: Colors.grey[300]!),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        bankCode,
+                        style: GoogleFonts.outfit(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bankName,
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        if (widget.bank.containsKey('swift'))
+                          Text(
+                            'SWIFT: ${widget.bank['swift']}',
+                            style: GoogleFonts.outfit(
+                              fontSize: 12.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            SizedBox(height: 24.h),
+            
             Text(
               'Enter Account Number',
               style: GoogleFonts.outfit(
@@ -196,13 +334,22 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
             ),
             SizedBox(height: 8.h),
             Text(
-              'Enter recipient bank account number.',
+              'Enter recipient bank account number for $bankName.',
               style: GoogleFonts.outfit(
                 fontSize: 16.sp,
                 color: Colors.grey[600],
               ),
             ),
-            SizedBox(height: 32.h),
+            SizedBox(height: 16.h),
+            Text(
+              'For testing, you can use account numbers: 1234567890 or 158040484',
+              style: GoogleFonts.outfit(
+                fontSize: 12.sp,
+                color: Colors.grey[500],
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            SizedBox(height: 16.h),
             AccountInputField(
               label: 'Account Number',
               controller: _accountNumberController,
@@ -222,6 +369,9 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                   decoration: BoxDecoration(
                     color: Colors.blue.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -231,8 +381,11 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                         height: 60.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              Border.all(color: Colors.grey[300]!, width: 1),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                            width: 1.5,
+                          ),
                         ),
                         child: Center(
                           child: Text(
@@ -241,7 +394,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                             style: GoogleFonts.outfit(
                               fontSize: 24.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -271,15 +424,37 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                                 color: Colors.black54,
                               ),
                             ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              _validatedAccount!['accountType'] as String,
+                              style: GoogleFonts.outfit(
+                                fontSize: 12.sp,
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ],
                         ),
                       ),
 
-                      // Forward arrow
+                      // Forward arrow and tap indicator
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                       Icon(
-                        Icons.chevron_right,
-                        size: 24.sp,
-                        color: Colors.black54,
+                            Icons.arrow_forward_ios,
+                            size: 20.sp,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            "Tap to continue",
+                            style: GoogleFonts.outfit(
+                              fontSize: 10.sp,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -295,7 +470,9 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
               Center(
                 child: Column(
                   children: [
-                    CircularProgressIndicator(),
+                    CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     SizedBox(height: 16.h),
                     Text(
                       'Verifying account...',
@@ -311,28 +488,11 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
 
             // Continue button - only shown when account info is not visible
             if (!_isAccountValidated && !_isLoading) ...[
-              SizedBox(
-                width: double.infinity,
-                height: 56.h,
-                child: ElevatedButton(
-                  onPressed: _hasInput ? _continueToNextScreen : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _hasInput
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey[300],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28.r),
-                    ),
-                  ),
-                  child: Text(
-                    'Continue',
-                    style: GoogleFonts.outfit(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+              ContinueButton(
+                onPressed: _continueToNextScreen,
+                isEnabled: _hasInput,
+                isLoading: false,
+                text: 'Continue',
               ),
             ],
             SizedBox(height: 16.h),
