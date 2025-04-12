@@ -1180,7 +1180,7 @@ class _InternalConfirmTransferScreenState
           text: 'NekaPayTransfer Receipt',
           subject: 'Transfer Receipt',
         );
-      } catch (e) {
+        } catch (e) {
         log('Error sharing file with Share.shareXFiles: $e');
         
         // Fallback method: open file with default viewer
@@ -1333,7 +1333,7 @@ class _InternalConfirmTransferScreenState
           ),
           actions: [
             TextButton(
-              onPressed: () {
+                onPressed: () {
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -1344,10 +1344,10 @@ class _InternalConfirmTransferScreenState
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+                onPressed: () {
                 Navigator.of(context).pop();
-                openAppSettings();
-              },
+                  openAppSettings();
+                },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 shape: RoundedRectangleBorder(
@@ -1428,7 +1428,7 @@ class _InternalConfirmTransferScreenState
                   await appScreenshotsDir.create(recursive: true);
                 }
                 screenshotPath = '${appScreenshotsDir.path}/$screenshotFileName';
-              } else {
+      } else {
                 final appDocDir = await getApplicationDocumentsDirectory();
                 screenshotPath = '${appDocDir.path}/$screenshotFileName';
               }
@@ -1444,9 +1444,9 @@ class _InternalConfirmTransferScreenState
                   final appDocDir = await getApplicationDocumentsDirectory();
                   screenshotPath = '${appDocDir.path}/$screenshotFileName';
                 }
-              }
-            }
-          } catch (e) {
+        }
+      }
+    } catch (e) {
             log('Error determining screenshot path: $e');
             final appDocDir = await getApplicationDocumentsDirectory();
             final screenshotFileName = 'Transfer_Screenshot_${DateTime.now().millisecondsSinceEpoch}.png';

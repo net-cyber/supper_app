@@ -348,94 +348,94 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
             final isButtonLoading = validationState.isValidating || _isValidationLoading;
             
             return Scaffold(
-              backgroundColor: Colors.white,
-              appBar: AppBar(
-                backgroundColor: Colors.white,
-                elevation: 0,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                title: Text(
-                  'Enter Transfer Amount',
-                  style: GoogleFonts.outfit(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Enter Transfer Amount',
+          style: GoogleFonts.outfit(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+      ),
               body: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(16.w),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.3)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.account_balance_rounded,
-                                  color:
-                                      Theme.of(context).colorScheme.primary,
-                                  size: 24.sp,
-                                ),
-                                SizedBox(width: 12.w),
-                                Text(
-                                  'Recipient Account',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16.h),
-                            _buildDetailRow(
-                                'Account Number',
-                                widget.transferData['accountNumber']
-                                    .toString()),
-                            SizedBox(height: 8.h),
-                            _buildDetailRow(
-                                'Account Holder',
-                                widget.transferData['accountHolderName']
-                                    .toString()),
-                          ],
-                        ),
+                      Icon(
+                        Icons.account_balance_rounded,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                        size: 24.sp,
                       ),
-                      SizedBox(height: 24.h),
+                      SizedBox(width: 12.w),
                       Text(
-                        'Enter Amount',
+                                      'Recipient Account',
                         style: GoogleFonts.outfit(
-                          fontSize: 24.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        'Enter the amount you want to transfer',
-                        style: GoogleFonts.outfit(
-                          fontSize: 16.sp,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      _buildAmountInput(),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+                                _buildDetailRow(
+                                    'Account Number',
+                                    widget.transferData['accountNumber']
+                                        .toString()),
+                  SizedBox(height: 8.h),
+                                _buildDetailRow(
+                                    'Account Holder',
+                                    widget.transferData['accountHolderName']
+                                        .toString()),
+                ],
+              ),
+            ),
+                          SizedBox(height: 24.h),
+            Text(
+              'Enter Amount',
+              style: GoogleFonts.outfit(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'Enter the amount you want to transfer',
+              style: GoogleFonts.outfit(
+                fontSize: 16.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            _buildAmountInput(),
                       
                       Spacer(),
                       
@@ -448,9 +448,9 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                       SizedBox(height: 16.h),
                     ],
                   ),
-                ),
-              ),
-            );
+        ),
+      ),
+    );
           }
         ),
       ),
