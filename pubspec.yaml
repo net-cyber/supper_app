@@ -39,6 +39,17 @@ dependencies:
   injectable: ^2.5.0
   smooth_page_indicator: ^1.2.1
   pin_code_fields: ^8.0.1
+  path_provider: ^2.1.5
+  url_launcher: ^6.0.0
+     # or a PDF viewer like
+  flutter_pdfview: ^1.0.0
+  permission_handler: ^12.0.0
+  pdf: ^3.11.3
+  share_plus: ^10.1.4
+  open_file: ^3.5.10
+  result_type: ^1.0.0
+  device_info_plus: ^9.1.2
+  path: ^1.9.0
 
 
 dev_dependencies:

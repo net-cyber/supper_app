@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.superapp.org.super_app"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 35  // Updated to 35 for permission_handler_android compatibility
     ndkVersion "25.1.8937393"  // Explicitly set NDK version
 
     compileOptions {
