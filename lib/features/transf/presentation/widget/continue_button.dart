@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ContinueButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isEnabled;
+  final bool isLoading;
   final Color? color;
   final String text;
 
@@ -12,6 +13,7 @@ class ContinueButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.isEnabled = true,
+    this.isLoading = false,
     this.color,
     this.text = 'Continue',
   });
@@ -24,7 +26,7 @@ class ContinueButton extends StatelessWidget {
       width: double.infinity,
       height: 56.h,
       child: ElevatedButton(
-        onPressed: isEnabled ? onPressed : null,
+        onPressed: (isEnabled && !isLoading) ? onPressed : null,
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.zero,
           backgroundColor: Colors.transparent,
@@ -36,7 +38,7 @@ class ContinueButton extends StatelessWidget {
         ),
         child: Ink(
           decoration: BoxDecoration(
-            gradient: isEnabled 
+            gradient: (isEnabled || isLoading)
                 ? LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -47,9 +49,9 @@ class ContinueButton extends StatelessWidget {
                     stops: const [0.3, 1.0],
                   )
                 : null,
-            color: isEnabled ? null : Colors.grey[400],
+            color: (isEnabled || isLoading) ? null : Colors.grey[400],
             borderRadius: BorderRadius.circular(28.r),
-            boxShadow: isEnabled
+            boxShadow: (isEnabled || isLoading)
                 ? [
                     BoxShadow(
                       color: buttonColor.withOpacity(0.25),
@@ -64,15 +66,38 @@ class ContinueButton extends StatelessWidget {
             width: double.infinity,
             height: 56.h,
             alignment: Alignment.center,
-            child: Text(
-              text,
-              style: GoogleFonts.outfit(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                letterSpacing: 0.3,
-              ),
-            ),
+            child: isLoading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 20.h,
+                        width: 20.h,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.w,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        'Processing...',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(
+                    text,
+                    style: GoogleFonts.outfit(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
           ),
         ),
       ),

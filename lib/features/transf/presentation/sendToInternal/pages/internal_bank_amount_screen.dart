@@ -11,6 +11,7 @@ import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.
 import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
 import 'package:super_app/features/transf/application/validation/bloc/account_validation_bloc.dart';
+import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class InternalBankAmountScreen extends StatefulWidget {
   final Map<String, dynamic> transferData;
@@ -31,6 +32,7 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   late final AccountValidationBloc _validationBloc;
   late final AccountsBloc _accountsBloc;
   bool _isAccountsFetched = false;
+  bool _isValidationLoading = false;
 
   @override
   void initState() {
@@ -76,6 +78,9 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
       if (accountsState.isLoading) {
         return;
       }
+      setState(() {
+        _isValidationLoading = true;
+      });
       _accountsBloc.add(const FetchAccounts());
       return;
     }
@@ -111,6 +116,10 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
       );
       return;
     }
+
+    setState(() {
+      _isValidationLoading = true;
+    });
 
     final etbAccount = accountsState.accounts.firstWhere(
       (account) =>
@@ -160,7 +169,29 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
       ...widget.transferData,
       'amount': double.parse(_amountController.text),
       'name': 'Goh Betoch Bank',
+      'preloaded': true,
     };
+
+    final accountsState = _accountsBloc.state;
+    if (accountsState.accounts.isNotEmpty) {
+      final senderAccount = accountsState.accounts.firstWhere(
+        (account) =>
+            account.currency.toLowerCase() == 'etb' ||
+            account.currency.toLowerCase() == 'birr',
+        orElse: () => accountsState.accounts.first,
+      );
+      
+      completeTransferData['senderAccount'] = {
+        'id': senderAccount.id,
+        'balance': senderAccount.balance,
+        'currency': senderAccount.currency,
+      };
+      
+      final userData = LocalStorage.instance.getUserData();
+      if (userData != null && userData.containsKey('full_name')) {
+        completeTransferData['senderName'] = userData['full_name'];
+      }
+    }
 
     context.pushNamed(RouteName.internalConfirmTransfer,
         extra: completeTransferData);
@@ -182,10 +213,16 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                   accountsState.accounts.isNotEmpty) {
                 setState(() {
                   _isAccountsFetched = true;
+                  if (_isValidationLoading) {
+                    _isValidationLoading = false;
+                  }
                 });
               }
 
               if (accountsState.hasError && _hasInput) {
+                setState(() {
+                  _isValidationLoading = false;
+                });
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text(
@@ -196,6 +233,9 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
                     action: SnackBarAction(
                       label: 'Retry',
                       onPressed: () {
+                        setState(() {
+                          _isValidationLoading = true;
+                        });
                         _accountsBloc.add(const FetchAccounts());
                       },
                       textColor: Colors.white,
@@ -207,6 +247,12 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
           ),
           BlocListener<AccountValidationBloc, AccountValidationState>(
             listener: (context, state) {
+              if (state.validationError || state.isValidated) {
+                setState(() {
+                  _isValidationLoading = false;
+                });
+              }
+              
               if (state.validationError &&
                       state.errorMessage
                           .toLowerCase()
@@ -220,6 +266,9 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
 
               if (state.validationError &&
                   state.errorMessage.contains('No accounts available')) {
+                setState(() {
+                  _isValidationLoading = true;
+                });
                 _accountsBloc.add(const FetchAccounts());
                 return;
               }
@@ -292,213 +341,117 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
             },
           ),
         ],
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title: Text(
-              'Enter Transfer Amount',
-              style: GoogleFonts.outfit(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+        child: Builder(
+          builder: (context) {
+            final validationState = context.watch<AccountValidationBloc>().state;
+            
+            final isButtonLoading = validationState.isValidating || _isValidationLoading;
+            
+            return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                title: Text(
+                  'Enter Transfer Amount',
+                  style: GoogleFonts.outfit(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
               ),
-            ),
-          ),
-          body: BlocBuilder<AccountsBloc, AccountsState>(
-            builder: (context, accountsState) {
-              if (accountsState.isLoading && !_isAccountsFetched) {
-                return Center(
-                  child: Container(
-                    padding: EdgeInsets.all(24.w),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                      strokeWidth: 3.w,
-                    ),
-                  ),
-                );
-              }
-
-              if (accountsState.hasError &&
-                  accountsState.accounts.isEmpty &&
-                  !_isAccountsFetched) {
-                return Center(
+              body: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20.w),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.error_outline_rounded,
-                        color: Colors.orange,
-                        size: 48.sp,
-                      ),
-                      SizedBox(height: 24.h),
-                      ElevatedButton(
-                        onPressed: () {
-                          _accountsBloc.add(const FetchAccounts());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 24.w, vertical: 12.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24.r),
-                          ),
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.3)),
                         ),
-                        child: Text(
-                          'Retry',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              return BlocBuilder<AccountValidationBloc, AccountValidationState>(
-                builder: (context, validationState) {
-                  return SafeArea(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(16.w),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.3)),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.account_balance_rounded,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      size: 24.sp,
-                                    ),
-                                    SizedBox(width: 12.w),
-                                    Text(
-                                      'Recipient Account',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 16.h),
-                                _buildDetailRow(
-                                    'Account Number',
-                                    widget.transferData['accountNumber']
-                                        .toString()),
-                                SizedBox(height: 8.h),
-                                _buildDetailRow(
-                                    'Account Holder',
-                                    widget.transferData['accountHolderName']
-                                        .toString()),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 24.h),
-                          Text(
-                            'Enter Amount',
-                            style: GoogleFonts.outfit(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Text(
-                            'Enter the amount you want to transfer',
-                            style: GoogleFonts.outfit(
-                              fontSize: 16.sp,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          _buildAmountInput(),
-                          Expanded(
-                            child: Center(
-                              child: validationState.isValidating
-                                  ? Container(
-                                      padding: EdgeInsets.all(24.w),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(0.1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: CircularProgressIndicator(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        strokeWidth: 3.w,
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                            ),
-                          ),
-                          if (!validationState.isValidating)
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56.h,
-                              child: ElevatedButton(
-                                onPressed: _hasInput ? _validateBalance : null,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
+                                Icon(
+                                  Icons.account_balance_rounded,
+                                  color:
                                       Theme.of(context).colorScheme.primary,
-                                  disabledBackgroundColor: Colors.grey[300],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(28.r),
-                                  ),
+                                  size: 24.sp,
                                 ),
-                                child: Text(
-                                  'Validate Amount',
+                                SizedBox(width: 12.w),
+                                Text(
+                                  'Recipient Account',
                                   style: GoogleFonts.outfit(
                                     fontSize: 18.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                        ],
+                            SizedBox(height: 16.h),
+                            _buildDetailRow(
+                                'Account Number',
+                                widget.transferData['accountNumber']
+                                    .toString()),
+                            SizedBox(height: 8.h),
+                            _buildDetailRow(
+                                'Account Holder',
+                                widget.transferData['accountHolderName']
+                                    .toString()),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+                      SizedBox(height: 24.h),
+                      Text(
+                        'Enter Amount',
+                        style: GoogleFonts.outfit(
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Enter the amount you want to transfer',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      _buildAmountInput(),
+                      
+                      Spacer(),
+                      
+                      ContinueButton(
+                        onPressed: _validateBalance,
+                        isEnabled: _hasInput,
+                        isLoading: isButtonLoading,
+                        text: 'Continue',
+                      ),
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );

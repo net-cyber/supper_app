@@ -8,6 +8,7 @@ import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/features/transf/application/verification/bloc/account_verification_bloc.dart';
 import 'package:super_app/features/transf/presentation/widget/account_input_field.dart';
+import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class InternalBankAccountScreen extends StatefulWidget {
   const InternalBankAccountScreen({
@@ -387,50 +388,13 @@ class _InternalBankAccountScreenState extends State<InternalBankAccountScreen> {
 
                   const Spacer(),
 
-                  // Loading indicator when validating account
-                  if (state.isVerifying) ...[
-                    Center(
-                      child: Column(
-                        children: [
-                          const CircularProgressIndicator(),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'Verifying account...',
-                            style: GoogleFonts.outfit(
-                              fontSize: 16.sp,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 40.h),
-                  ],
-
                   // Continue button - only shown when not yet verified and not validating
-                  if (!state.isVerifying && !state.isVerified) ...[
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56.h,
-                      child: ElevatedButton(
-                        onPressed: _hasText ? _verifyAccount : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: _hasText
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.grey[300],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28.r),
-                          ),
-                        ),
-                        child: Text(
-                          'Verify Account',
-                          style: GoogleFonts.outfit(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                  if (!state.isVerified) ...[
+                    ContinueButton(
+                      onPressed: _verifyAccount,
+                      isEnabled: _hasText,
+                      isLoading: state.isVerifying,
+                      text: 'Continue',
                     ),
                   ],
                   SizedBox(height: 16.h),
