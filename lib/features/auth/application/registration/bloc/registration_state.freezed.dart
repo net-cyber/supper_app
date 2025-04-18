@@ -22,6 +22,7 @@ mixin _$RegistrationState {
   Password get password => throw _privateConstructorUsedError;
   ConfirmPassword get confirmPassword => throw _privateConstructorUsedError;
   TermsAcceptance get termsAcceptance => throw _privateConstructorUsedError;
+  ProfilePhoto get profilePhoto => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isRegistrationError => throw _privateConstructorUsedError;
   bool get showErrorMessages => throw _privateConstructorUsedError;
@@ -55,6 +56,7 @@ abstract class $RegistrationStateCopyWith<$Res> {
       Password password,
       ConfirmPassword confirmPassword,
       TermsAcceptance termsAcceptance,
+      ProfilePhoto profilePhoto,
       bool isLoading,
       bool isRegistrationError,
       bool showErrorMessages,
@@ -91,6 +93,7 @@ class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
     Object? password = null,
     Object? confirmPassword = null,
     Object? termsAcceptance = null,
+    Object? profilePhoto = null,
     Object? isLoading = null,
     Object? isRegistrationError = null,
     Object? showErrorMessages = null,
@@ -127,6 +130,10 @@ class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
           ? _value.termsAcceptance
           : termsAcceptance // ignore: cast_nullable_to_non_nullable
               as TermsAcceptance,
+      profilePhoto: null == profilePhoto
+          ? _value.profilePhoto
+          : profilePhoto // ignore: cast_nullable_to_non_nullable
+              as ProfilePhoto,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -216,6 +223,7 @@ abstract class _$$RegistrationStateImplCopyWith<$Res>
       Password password,
       ConfirmPassword confirmPassword,
       TermsAcceptance termsAcceptance,
+      ProfilePhoto profilePhoto,
       bool isLoading,
       bool isRegistrationError,
       bool showErrorMessages,
@@ -252,6 +260,7 @@ class __$$RegistrationStateImplCopyWithImpl<$Res>
     Object? password = null,
     Object? confirmPassword = null,
     Object? termsAcceptance = null,
+    Object? profilePhoto = null,
     Object? isLoading = null,
     Object? isRegistrationError = null,
     Object? showErrorMessages = null,
@@ -288,6 +297,10 @@ class __$$RegistrationStateImplCopyWithImpl<$Res>
           ? _value.termsAcceptance
           : termsAcceptance // ignore: cast_nullable_to_non_nullable
               as TermsAcceptance,
+      profilePhoto: null == profilePhoto
+          ? _value.profilePhoto
+          : profilePhoto // ignore: cast_nullable_to_non_nullable
+              as ProfilePhoto,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -342,6 +355,7 @@ class _$RegistrationStateImpl extends _RegistrationState {
       required this.password,
       required this.confirmPassword,
       required this.termsAcceptance,
+      required this.profilePhoto,
       this.isLoading = false,
       this.isRegistrationError = false,
       this.showErrorMessages = false,
@@ -366,6 +380,8 @@ class _$RegistrationStateImpl extends _RegistrationState {
   final ConfirmPassword confirmPassword;
   @override
   final TermsAcceptance termsAcceptance;
+  @override
+  final ProfilePhoto profilePhoto;
   @override
   @JsonKey()
   final bool isLoading;
@@ -397,7 +413,7 @@ class _$RegistrationStateImpl extends _RegistrationState {
 
   @override
   String toString() {
-    return 'RegistrationState(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, password: $password, confirmPassword: $confirmPassword, termsAcceptance: $termsAcceptance, isLoading: $isLoading, isRegistrationError: $isRegistrationError, showErrorMessages: $showErrorMessages, showPassword: $showPassword, showConfirmPassword: $showConfirmPassword, errorMessage: $errorMessage, passwordStrength: $passwordStrength, verificationSent: $verificationSent, registrationResponse: $registrationResponse, verificationResponse: $verificationResponse)';
+    return 'RegistrationState(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, password: $password, confirmPassword: $confirmPassword, termsAcceptance: $termsAcceptance, profilePhoto: $profilePhoto, isLoading: $isLoading, isRegistrationError: $isRegistrationError, showErrorMessages: $showErrorMessages, showPassword: $showPassword, showConfirmPassword: $showConfirmPassword, errorMessage: $errorMessage, passwordStrength: $passwordStrength, verificationSent: $verificationSent, registrationResponse: $registrationResponse, verificationResponse: $verificationResponse)';
   }
 
   @override
@@ -417,6 +433,8 @@ class _$RegistrationStateImpl extends _RegistrationState {
                 other.confirmPassword == confirmPassword) &&
             (identical(other.termsAcceptance, termsAcceptance) ||
                 other.termsAcceptance == termsAcceptance) &&
+            (identical(other.profilePhoto, profilePhoto) ||
+                other.profilePhoto == profilePhoto) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.isRegistrationError, isRegistrationError) ||
@@ -448,6 +466,7 @@ class _$RegistrationStateImpl extends _RegistrationState {
       password,
       confirmPassword,
       termsAcceptance,
+      profilePhoto,
       isLoading,
       isRegistrationError,
       showErrorMessages,
@@ -477,6 +496,7 @@ abstract class _RegistrationState extends RegistrationState {
           required final Password password,
           required final ConfirmPassword confirmPassword,
           required final TermsAcceptance termsAcceptance,
+          required final ProfilePhoto profilePhoto,
           final bool isLoading,
           final bool isRegistrationError,
           final bool showErrorMessages,
@@ -502,6 +522,8 @@ abstract class _RegistrationState extends RegistrationState {
   ConfirmPassword get confirmPassword;
   @override
   TermsAcceptance get termsAcceptance;
+  @override
+  ProfilePhoto get profilePhoto;
   @override
   bool get isLoading;
   @override

@@ -631,3 +631,29 @@ Either<ValueFailure<bool>, bool> validateTermsAcceptance(bool input) {
 
   return right(input);
 }
+
+// New validator for profile photo
+Either<ValueFailure<String?>, String?> validateProfilePhoto(String? input) {
+  // Profile photo is optional during registration, so null is acceptable
+  if (input == null) {
+    return right(null);
+  }
+  
+  // Check if the file path is empty
+  if (input.isEmpty) {
+    return right(null);
+  }
+  
+  // Check file extension
+  final validExtensions = ['.jpg', '.jpeg', '.png'];
+  final fileExtension = input.toLowerCase().substring(input.lastIndexOf('.'));
+  if (!validExtensions.contains(fileExtension)) {
+    return left(ValueFailure.invalidPhotoUrl(
+      failedValue: 'Only JPG, JPEG, and PNG files are allowed',),);
+  }
+  
+  // Check file size (this would typically be done when actually reading the file)
+  // But here we'll just return the valid path
+  
+  return right(input);
+}

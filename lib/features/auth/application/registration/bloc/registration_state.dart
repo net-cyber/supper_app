@@ -14,6 +14,7 @@ class RegistrationState with _$RegistrationState {
     required Password password,
     required ConfirmPassword confirmPassword,
     required TermsAcceptance termsAcceptance,
+    required ProfilePhoto profilePhoto,
     @Default(false) bool isLoading,
     @Default(false) bool isRegistrationError,
     @Default(false) bool showErrorMessages,
@@ -35,5 +36,6 @@ class RegistrationState with _$RegistrationState {
     phoneNumber.isValid() &&
     password.isValid() &&
     confirmPassword.isValid() &&
-    termsAcceptance.isValid();
+    termsAcceptance.isValid() &&
+    (profilePhoto.value.getOrElse(() => null) == null || profilePhoto.isValid());
 } 
