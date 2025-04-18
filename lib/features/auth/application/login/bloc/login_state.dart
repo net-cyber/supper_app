@@ -10,6 +10,7 @@ class LoginState with _$LoginState {
     required Username username,
     required Password password,
     @Default(false) bool isLoading,
+    @Default('') String errorMessage,
     @Default(false) bool isLoginError,
     @Default(false) bool showErrorMessages,
     @Default(false) bool showPassword,

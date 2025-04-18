@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
@@ -21,18 +22,41 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<RegistrationResponse> register(Registration registration) async {
     try {
-      final data = <String, dynamic>{
+      // Get the profile photo path if available
+      final profilePhotoPath = registration.profilePhoto.value.getOrElse(() => null);
+      
+      // Create a FormData object for multipart request
+      final FormData formData = FormData.fromMap({
         'username': registration.userName.value.getOrElse(() => ''),
         'full_name': registration.fullName.value.getOrElse(() => ''),
         'international_phone_number': registration.phoneNumber.value.getOrElse(() => ''),
         'password': registration.password.value.getOrElse(() => ''),
-        'profile_photo': registration.profilePhoto.value.getOrElse(() => ''),
-      };
+        // Add FCM token if needed - assuming a default value for now
+        'fcmtoken': 'default_fcm_token', 
+      });
       
-      final response = await getIt<HttpService>().client().post(
-        '/users',
-        data: data,
-      );
+      // Add logo/profile photo if path is available
+      if (profilePhotoPath != null && profilePhotoPath.isNotEmpty) {
+        // Create MultipartFile from the file path
+        final File imageFile = File(profilePhotoPath);
+        
+        if (await imageFile.exists()) {
+          formData.files.add(
+            MapEntry(
+              'logo', 
+              await MultipartFile.fromFile(
+                profilePhotoPath,
+                filename: profilePhotoPath.split('/').last,
+              ),
+            ),
+          );
+        }
+      }
+      
+      // Use the HttpService with multipart flag set to true
+      final response = await getIt<HttpService>()
+          .client(isMultipart: true)
+          .post('/users', data: formData);
       
       return RegistrationResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {

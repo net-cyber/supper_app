@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
-import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration.dart';
 import 'package:super_app/features/auth/domain/registration/entities/registration_response.dart';
@@ -24,8 +23,6 @@ class AuthRepositoryImpl implements AuthRepository {
       return right(response);
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
-    } catch (e) {
-      return left(NetworkExceptions.defaultError(e.toString()));
     }
   }
   
@@ -36,8 +33,6 @@ class AuthRepositoryImpl implements AuthRepository {
       return right(response);
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
-    } catch (e) {
-      return left(NetworkExceptions.defaultError(e.toString()));
     }
   }
 
@@ -48,8 +43,6 @@ class AuthRepositoryImpl implements AuthRepository {
       return right(response);
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
-    } catch (e) {
-      return left(NetworkExceptions.defaultError(e.toString()));
     }
   }
 
@@ -62,8 +55,6 @@ class AuthRepositoryImpl implements AuthRepository {
       return right(response);
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
-    } catch (e) {
-      return left(const NetworkExceptions.unexpectedError());
     }
   }
 } 

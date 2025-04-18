@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
+import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/core/value_object/value_objects.dart';
@@ -64,10 +65,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final result = await _authRepository.login(username, password);
       
       await result.fold(
-        (failure) async => emit(state.copyWith(
-          isLoading: false,
-          isLoginError: true,
-        )),
+        (failure) async {
+          // Extract just the error message
+          final errorMessage = NetworkExceptions.getRawErrorMessage(failure);
+          
+          // For debugging
+          print('Error message: $errorMessage');
+          
+          emit(state.copyWith(
+            isLoading: false,
+            isLoginError: true,
+            errorMessage: errorMessage,
+          ));
+        },
         (success) async {
           // Store tokens
           await LocalStorage.instance.setAccessToken(success.access_token);
@@ -88,9 +98,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(
         isLoading: false,
         isLoginError: true,
+        errorMessage: "No internet connection. Please check your network.",
       ));
     }
   }
-  
-
-} 
+}

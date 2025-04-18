@@ -157,7 +157,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         emit(state.copyWith(
           isLoading: false,
           isRegistrationError: true,
-          errorMessage: NetworkExceptions.getErrorMessage(failure!),
+          errorMessage: NetworkExceptions.getRawErrorMessage(failure!),
         ),);
       }
       return;
@@ -178,7 +178,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         verificationResponse: verificationResponse,
         isRegistrationError: verificationResult.isLeft(),
         errorMessage: verificationResult.isLeft() 
-          ? NetworkExceptions.getErrorMessage(verificationResult.fold((l) => l, (r) => null)!)
+          ? NetworkExceptions.getRawErrorMessage(verificationResult.fold((l) => l, (r) => null)!)
           : '',
       ),);
     }
