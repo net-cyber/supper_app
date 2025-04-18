@@ -12,6 +12,7 @@ class RegistrationEvent with _$RegistrationEvent {
   const factory RegistrationEvent.confirmPasswordChanged(String confirmPassword) = ConfirmPasswordChanged;
   const factory RegistrationEvent.referralCodeChanged(String referralCode) = ReferralCodeChanged;
   const factory RegistrationEvent.termsAcceptedChanged(bool accepted) = TermsAcceptedChanged;
+  const factory RegistrationEvent.profilePhotoChanged(String? photoPath) = ProfilePhotoChanged;
   const factory RegistrationEvent.toggleShowPassword() = ToggleShowPassword;
   const factory RegistrationEvent.toggleShowConfirmPassword() = ToggleShowConfirmPassword;
   const factory RegistrationEvent.registrationSubmitted() = RegistrationSubmitted;

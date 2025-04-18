@@ -22,6 +22,7 @@ mixin _$Registration {
   Password get password => throw _privateConstructorUsedError;
   ConfirmPassword get confirmPassword => throw _privateConstructorUsedError;
   TermsAcceptance get termsAcceptance => throw _privateConstructorUsedError;
+  ProfilePhoto get profilePhoto => throw _privateConstructorUsedError;
 
   /// Create a copy of Registration
   /// with the given fields replaced by the non-null parameter values.
@@ -42,7 +43,8 @@ abstract class $RegistrationCopyWith<$Res> {
       PhoneNumber phoneNumber,
       Password password,
       ConfirmPassword confirmPassword,
-      TermsAcceptance termsAcceptance});
+      TermsAcceptance termsAcceptance,
+      ProfilePhoto profilePhoto});
 }
 
 /// @nodoc
@@ -66,6 +68,7 @@ class _$RegistrationCopyWithImpl<$Res, $Val extends Registration>
     Object? password = null,
     Object? confirmPassword = null,
     Object? termsAcceptance = null,
+    Object? profilePhoto = null,
   }) {
     return _then(_value.copyWith(
       userName: null == userName
@@ -92,6 +95,10 @@ class _$RegistrationCopyWithImpl<$Res, $Val extends Registration>
           ? _value.termsAcceptance
           : termsAcceptance // ignore: cast_nullable_to_non_nullable
               as TermsAcceptance,
+      profilePhoto: null == profilePhoto
+          ? _value.profilePhoto
+          : profilePhoto // ignore: cast_nullable_to_non_nullable
+              as ProfilePhoto,
     ) as $Val);
   }
 }
@@ -110,7 +117,8 @@ abstract class _$$RegistrationImplCopyWith<$Res>
       PhoneNumber phoneNumber,
       Password password,
       ConfirmPassword confirmPassword,
-      TermsAcceptance termsAcceptance});
+      TermsAcceptance termsAcceptance,
+      ProfilePhoto profilePhoto});
 }
 
 /// @nodoc
@@ -132,6 +140,7 @@ class __$$RegistrationImplCopyWithImpl<$Res>
     Object? password = null,
     Object? confirmPassword = null,
     Object? termsAcceptance = null,
+    Object? profilePhoto = null,
   }) {
     return _then(_$RegistrationImpl(
       userName: null == userName
@@ -158,6 +167,10 @@ class __$$RegistrationImplCopyWithImpl<$Res>
           ? _value.termsAcceptance
           : termsAcceptance // ignore: cast_nullable_to_non_nullable
               as TermsAcceptance,
+      profilePhoto: null == profilePhoto
+          ? _value.profilePhoto
+          : profilePhoto // ignore: cast_nullable_to_non_nullable
+              as ProfilePhoto,
     ));
   }
 }
@@ -171,7 +184,8 @@ class _$RegistrationImpl extends _Registration {
       required this.phoneNumber,
       required this.password,
       required this.confirmPassword,
-      required this.termsAcceptance})
+      required this.termsAcceptance,
+      required this.profilePhoto})
       : super._();
 
   @override
@@ -186,10 +200,12 @@ class _$RegistrationImpl extends _Registration {
   final ConfirmPassword confirmPassword;
   @override
   final TermsAcceptance termsAcceptance;
+  @override
+  final ProfilePhoto profilePhoto;
 
   @override
   String toString() {
-    return 'Registration(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, password: $password, confirmPassword: $confirmPassword, termsAcceptance: $termsAcceptance)';
+    return 'Registration(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, password: $password, confirmPassword: $confirmPassword, termsAcceptance: $termsAcceptance, profilePhoto: $profilePhoto)';
   }
 
   @override
@@ -208,12 +224,14 @@ class _$RegistrationImpl extends _Registration {
             (identical(other.confirmPassword, confirmPassword) ||
                 other.confirmPassword == confirmPassword) &&
             (identical(other.termsAcceptance, termsAcceptance) ||
-                other.termsAcceptance == termsAcceptance));
+                other.termsAcceptance == termsAcceptance) &&
+            (identical(other.profilePhoto, profilePhoto) ||
+                other.profilePhoto == profilePhoto));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, userName, fullName, phoneNumber,
-      password, confirmPassword, termsAcceptance);
+      password, confirmPassword, termsAcceptance, profilePhoto);
 
   /// Create a copy of Registration
   /// with the given fields replaced by the non-null parameter values.
@@ -231,7 +249,8 @@ abstract class _Registration extends Registration {
       required final PhoneNumber phoneNumber,
       required final Password password,
       required final ConfirmPassword confirmPassword,
-      required final TermsAcceptance termsAcceptance}) = _$RegistrationImpl;
+      required final TermsAcceptance termsAcceptance,
+      required final ProfilePhoto profilePhoto}) = _$RegistrationImpl;
   const _Registration._() : super._();
 
   @override
@@ -246,6 +265,8 @@ abstract class _Registration extends Registration {
   ConfirmPassword get confirmPassword;
   @override
   TermsAcceptance get termsAcceptance;
+  @override
+  ProfilePhoto get profilePhoto;
 
   /// Create a copy of Registration
   /// with the given fields replaced by the non-null parameter values.

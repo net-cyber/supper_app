@@ -1,14 +1,18 @@
+import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:super_app/core/constants/app_constants.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/presentation/widgets/app_text_field.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/core/theme/app_colors.dart';
+import 'package:super_app/core/utils/permission_handler_util.dart';
 import 'package:super_app/features/auth/application/registration/bloc/registration_bloc.dart';
 import 'package:super_app/features/auth/application/registration/bloc/registration_event.dart';
 import 'package:super_app/features/auth/application/registration/bloc/registration_state.dart';
@@ -59,6 +63,9 @@ class _RegistrationViewState extends State<RegistrationView> {
   final _confirmPasswordController = TextEditingController();
   final _referralCodeController = TextEditingController();
   
+  final _imagePicker = ImagePicker();
+  String? _selectedImagePath;
+  
   @override
   void initState() {
     super.initState();
@@ -80,6 +87,137 @@ class _RegistrationViewState extends State<RegistrationView> {
     _referralCodeController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  // Function to handle taking a photo with camera
+  Future<void> _takePhoto() async {
+    final hasPermission = await PermissionHandlerUtil.requestCameraPermission(context);
+    
+    if (!hasPermission) {
+      return;
+    }
+    
+    try {
+      final XFile? pickedImage = await _imagePicker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+      
+      // Check if the widget is still mounted before using BuildContext
+      if (!mounted) return;
+      
+      if (pickedImage != null) {
+        setState(() {
+          _selectedImagePath = pickedImage.path;
+        });
+        context.read<RegistrationBloc>().add(
+          ProfilePhotoChanged(pickedImage.path),
+        );
+      }
+    } catch (e) {
+      // Check if the widget is still mounted before using BuildContext
+      if (!mounted) return;
+      PermissionHandlerUtil.showErrorDialog(
+        context,
+        'Camera Error',
+        'Could not access camera. Please try again.',
+      );
+    }
+  }
+  
+  // Function to handle choosing from gallery
+  Future<void> _chooseFromGallery() async {
+    final hasPermission = await PermissionHandlerUtil.requestPhotoLibraryPermission(context);
+    
+    if (!hasPermission) {
+      return;
+    }
+    
+    try {
+      final XFile? pickedImage = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+      
+      // Check if the widget is still mounted before using BuildContext
+      if (!mounted) return;
+      
+      if (pickedImage != null) {
+        setState(() {
+          _selectedImagePath = pickedImage.path;
+        });
+        context.read<RegistrationBloc>().add(
+          ProfilePhotoChanged(pickedImage.path),
+        );
+      }
+    } catch (e) {
+      // Check if the widget is still mounted before using BuildContext
+      if (!mounted) return;
+      PermissionHandlerUtil.showErrorDialog(
+        context,
+        'Gallery Error',
+        'Could not access photo gallery. Please try again.',
+      );
+    }
+  }
+  
+  // Show image source selection dialog
+  void _showImageSourceSelectionDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text(
+            'Select Image Source',
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt_rounded),
+                title: Text('Take a Photo', style: GoogleFonts.outfit()),
+                onTap: () {
+                  Navigator.pop(context);
+                  _takePhoto();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library_rounded),
+                title: Text('Choose from Gallery', style: GoogleFonts.outfit()),
+                onTap: () {
+                  Navigator.pop(context);
+                  _chooseFromGallery();
+                },
+              ),
+              if (_selectedImagePath != null)
+                ListTile(
+                  leading: const Icon(Icons.delete_outline_rounded, color: Colors.red),
+                  title: Text('Remove Photo', style: GoogleFonts.outfit(color: Colors.red)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _selectedImagePath = null;
+                    });
+                    context.read<RegistrationBloc>().add(
+                      const ProfilePhotoChanged(null),
+                    );
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -244,7 +382,80 @@ class _RegistrationViewState extends State<RegistrationView> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 40.h),
+                            
+                            SizedBox(height: 30.h),
+                            
+                            // Profile Photo Selection
+                            Center(
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: _showImageSourceSelectionDialog,
+                                    child: Container(
+                                      width: 120.w,
+                                      height: 120.w,
+                                      decoration: BoxDecoration(
+                                        color: colorScheme.surfaceVariant.withOpacity(0.3),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: colorScheme.primary.withOpacity(0.5),
+                                          width: 2,
+                                        ),
+                                        image: _selectedImagePath != null
+                                            ? DecorationImage(
+                                                image: FileImage(File(_selectedImagePath!)),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                      ),
+                                      child: _selectedImagePath == null
+                                          ? Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.add_a_photo_outlined,
+                                                  size: 40.sp,
+                                                  color: colorScheme.primary.withOpacity(0.8),
+                                                ),
+                                                SizedBox(height: 8.h),
+                                                Text(
+                                                  'Add Photo',
+                                                  style: GoogleFonts.outfit(
+                                                    fontSize: 14.sp,
+                                                    color: colorScheme.primary,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Profile Photo',
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 14.sp,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  // Error message for profile photo if any
+                                  if (RegistrationFormValidator.validateProfilePhoto(state) != null)
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 4.h),
+                                      child: Text(
+                                        RegistrationFormValidator.validateProfilePhoto(state)!,
+                                        style: GoogleFonts.outfit(
+                                          fontSize: 12.sp,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(height: 30.h),
                             
                             // Form fields using AppTextField like login screen
                             AppTextField(

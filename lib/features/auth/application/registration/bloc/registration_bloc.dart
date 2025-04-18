@@ -19,6 +19,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         password: Password(''),
         confirmPassword: ConfirmPassword('', ''),
         termsAcceptance: TermsAcceptance(false),
+        profilePhoto: ProfilePhoto(null),
       )) {
     on<UserNameChanged>(_onUserNameChanged);
     on<FullNameChanged>(_onFullNameChanged);
@@ -26,6 +27,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     on<PasswordChanged>(_onPasswordChanged);
     on<ConfirmPasswordChanged>(_onConfirmPasswordChanged);
     on<TermsAcceptedChanged>(_onTermsAcceptedChanged);
+    on<ProfilePhotoChanged>(_onProfilePhotoChanged);
     on<ToggleShowPassword>(_onToggleShowPassword);
     on<ToggleShowConfirmPassword>(_onToggleShowConfirmPassword);
     on<RegistrationSubmitted>(_onRegistrationSubmitted);
@@ -56,7 +58,13 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     ),);
   }
 
-
+  void _onProfilePhotoChanged(ProfilePhotoChanged event, Emitter<RegistrationState> emit) {
+    emit(state.copyWith(
+      profilePhoto: ProfilePhoto(event.photoPath),
+      showErrorMessages: false,
+      isRegistrationError: false,
+    ),);
+  }
 
   void _onPasswordChanged(PasswordChanged event, Emitter<RegistrationState> emit) {
     final password = event.password.trim();
@@ -92,8 +100,6 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       ),
     );
   }
-
-
 
   void _onTermsAcceptedChanged(TermsAcceptedChanged event, Emitter<RegistrationState> emit) {
     emit(state.copyWith(
@@ -136,6 +142,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       password: state.password,
       confirmPassword: state.confirmPassword,
       termsAcceptance: state.termsAcceptance,
+      profilePhoto: state.profilePhoto,
     );
     
     final result = await _authRepository.register(registration);
@@ -163,21 +170,17 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     
     // Before final emit, check if the emitter is still active
     if (!emit.isDone) {
-      verificationResult.fold(
-        (failure) => emit(state.copyWith(
-          isLoading: false,
-          isRegistrationError: true,
-          errorMessage: 'Registration successful, but unable to send verification code: ${NetworkExceptions.getErrorMessage(failure)}',
-          registrationResponse: response,
-        ),),
-        (verificationResponse) => emit(state.copyWith(
-          isLoading: false,
-          isRegistrationError: false,
-          registrationResponse: response,
-          verificationSent: true,
-          verificationResponse: verificationResponse,
-        ),),
-      );
+      final verificationResponse = verificationResult.fold((l) => null, (r) => r);
+      emit(state.copyWith(
+        isLoading: false,
+        verificationSent: verificationResult.isRight(),
+        registrationResponse: response,
+        verificationResponse: verificationResponse,
+        isRegistrationError: verificationResult.isLeft(),
+        errorMessage: verificationResult.isLeft() 
+          ? NetworkExceptions.getErrorMessage(verificationResult.fold((l) => l, (r) => null)!)
+          : '',
+      ),);
     }
   }
 } 

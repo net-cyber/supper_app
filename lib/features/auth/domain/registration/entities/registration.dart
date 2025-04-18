@@ -12,6 +12,7 @@ class Registration with _$Registration {
     required Password password,
     required ConfirmPassword confirmPassword,
     required TermsAcceptance termsAcceptance,
+    required ProfilePhoto profilePhoto,
   }) = _Registration;
 
   const Registration._();
@@ -23,6 +24,7 @@ class Registration with _$Registration {
         password: Password(''),
         confirmPassword: ConfirmPassword('', ''),
         termsAcceptance: TermsAcceptance(false),
+        profilePhoto: ProfilePhoto(null),
       );
 
   bool isValid() {
@@ -31,6 +33,7 @@ class Registration with _$Registration {
         phoneNumber.isValid() &&
         password.isValid() &&
         confirmPassword.isValid() &&
-        termsAcceptance.isValid();
+        termsAcceptance.isValid() &&
+        (profilePhoto.value.getOrElse(() => null) == null || profilePhoto.isValid());
   }
 } 
