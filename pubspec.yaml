@@ -44,12 +44,13 @@ dependencies:
      # or a PDF viewer like
   flutter_pdfview: ^1.0.0
   permission_handler: ^12.0.0
-  pdf: ^3.11.3
+  pdf: ^3.10.7
   share_plus: ^10.1.4
   open_file: ^3.5.10
   result_type: ^1.0.0
   device_info_plus: ^9.1.2
   path: ^1.9.0
+  printing: ^5.11.1
 
 
 dev_dependencies:
@@ -62,7 +63,7 @@ dev_dependencies:
   freezed: ^2.5.7
   json_serializable: ^6.9.0
   build_runner: ^2.4.13
-  injectable_generator: ^2.6.2
+  injectable_generator: ^2.4.1
 
 flutter:
   uses-material-design: true
