@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/utils/local_storage.dart';
-import 'package:super_app/features/transf/domain/entities/account_validation.dart';
+import 'package:super_app/features/transf/domain/entities/account_validation/account_validation.dart';
 
 @injectable
 class AccountValidationRemoteDataSource {

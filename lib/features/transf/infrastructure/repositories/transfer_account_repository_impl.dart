@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
-import 'package:super_app/features/transf/domain/entities/account_verification.dart';
+import 'package:super_app/features/transf/domain/entities/account_verification/account_verification.dart';
 import 'package:super_app/features/transf/domain/repositories/transfer_account_repository.dart';
 import 'package:super_app/features/transf/infrastructure/datasources/transfer_account_remote_data_source_impl.dart';
 

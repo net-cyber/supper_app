@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
-import 'package:super_app/features/transf/domain/entities/account_validation.dart';
+import 'package:super_app/features/transf/domain/entities/account_validation/account_validation.dart';
 
 abstract class AccountValidationRepository {
   /// Validates if an account has sufficient balance for a transaction

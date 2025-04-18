@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
-import 'package:super_app/features/transf/domain/entities/transfer_response.dart';
+import 'package:super_app/features/transf/domain/entities/transfer_response/transfer_response.dart';
 
 /// Repository interface for transfer operations
 abstract class TransferRepository {

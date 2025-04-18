@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
 import 'package:super_app/core/utils/local_storage.dart';
-import 'package:super_app/features/transf/domain/entities/account_verification.dart';
+import 'package:super_app/features/transf/domain/entities/account_verification/account_verification.dart';
 
 @injectable
 class TransferAccountRemoteDataSource {

@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
-import 'package:super_app/features/transf/domain/entities/transfer_response.dart';
+import 'package:super_app/features/transf/domain/entities/transfer_response/transfer_response.dart';
 import 'package:super_app/features/transf/domain/repositories/transfer_repository.dart';
 import 'package:super_app/features/transf/infrastructure/datasources/transfer_remote_data_source_impl.dart';
 
