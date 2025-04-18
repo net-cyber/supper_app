@@ -62,4 +62,14 @@ class RegistrationFormValidator {
     }
     return null;
   }
+  
+  static String? validateProfilePhoto(RegistrationState state) {
+    if (state.showErrorMessages && !state.profilePhoto.isValid()) {
+      return state.profilePhoto.value.fold(
+        (failure) => failure.failedValue.toString(),
+        (_) => null,
+      );
+    }
+    return null;
+  }
 } 

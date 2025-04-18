@@ -26,6 +26,7 @@ mixin _$RegistrationEvent {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -41,6 +42,7 @@ mixin _$RegistrationEvent {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -56,6 +58,7 @@ mixin _$RegistrationEvent {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -73,6 +76,7 @@ mixin _$RegistrationEvent {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -90,6 +94,7 @@ mixin _$RegistrationEvent {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -106,6 +111,7 @@ mixin _$RegistrationEvent {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -214,6 +220,7 @@ class _$UserNameChangedImpl implements UserNameChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -232,6 +239,7 @@ class _$UserNameChangedImpl implements UserNameChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -250,6 +258,7 @@ class _$UserNameChangedImpl implements UserNameChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -273,6 +282,7 @@ class _$UserNameChangedImpl implements UserNameChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -293,6 +303,7 @@ class _$UserNameChangedImpl implements UserNameChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -312,6 +323,7 @@ class _$UserNameChangedImpl implements UserNameChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -415,6 +427,7 @@ class _$FullNameChangedImpl implements FullNameChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -433,6 +446,7 @@ class _$FullNameChangedImpl implements FullNameChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -451,6 +465,7 @@ class _$FullNameChangedImpl implements FullNameChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -474,6 +489,7 @@ class _$FullNameChangedImpl implements FullNameChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -494,6 +510,7 @@ class _$FullNameChangedImpl implements FullNameChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -513,6 +530,7 @@ class _$FullNameChangedImpl implements FullNameChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -616,6 +634,7 @@ class _$PhoneNumberChangedImpl implements PhoneNumberChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -634,6 +653,7 @@ class _$PhoneNumberChangedImpl implements PhoneNumberChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -652,6 +672,7 @@ class _$PhoneNumberChangedImpl implements PhoneNumberChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -675,6 +696,7 @@ class _$PhoneNumberChangedImpl implements PhoneNumberChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -695,6 +717,7 @@ class _$PhoneNumberChangedImpl implements PhoneNumberChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -714,6 +737,7 @@ class _$PhoneNumberChangedImpl implements PhoneNumberChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -816,6 +840,7 @@ class _$EmailChangedImpl implements EmailChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -834,6 +859,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -852,6 +878,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -875,6 +902,7 @@ class _$EmailChangedImpl implements EmailChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -895,6 +923,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -914,6 +943,7 @@ class _$EmailChangedImpl implements EmailChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1017,6 +1047,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -1035,6 +1066,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -1053,6 +1085,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -1076,6 +1109,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -1096,6 +1130,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1115,6 +1150,7 @@ class _$PasswordChangedImpl implements PasswordChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1220,6 +1256,7 @@ class _$ConfirmPasswordChangedImpl implements ConfirmPasswordChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -1238,6 +1275,7 @@ class _$ConfirmPasswordChangedImpl implements ConfirmPasswordChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -1256,6 +1294,7 @@ class _$ConfirmPasswordChangedImpl implements ConfirmPasswordChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -1279,6 +1318,7 @@ class _$ConfirmPasswordChangedImpl implements ConfirmPasswordChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -1299,6 +1339,7 @@ class _$ConfirmPasswordChangedImpl implements ConfirmPasswordChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1318,6 +1359,7 @@ class _$ConfirmPasswordChangedImpl implements ConfirmPasswordChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1422,6 +1464,7 @@ class _$ReferralCodeChangedImpl implements ReferralCodeChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -1440,6 +1483,7 @@ class _$ReferralCodeChangedImpl implements ReferralCodeChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -1458,6 +1502,7 @@ class _$ReferralCodeChangedImpl implements ReferralCodeChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -1481,6 +1526,7 @@ class _$ReferralCodeChangedImpl implements ReferralCodeChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -1501,6 +1547,7 @@ class _$ReferralCodeChangedImpl implements ReferralCodeChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1520,6 +1567,7 @@ class _$ReferralCodeChangedImpl implements ReferralCodeChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1625,6 +1673,7 @@ class _$TermsAcceptedChangedImpl implements TermsAcceptedChanged {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -1643,6 +1692,7 @@ class _$TermsAcceptedChangedImpl implements TermsAcceptedChanged {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -1661,6 +1711,7 @@ class _$TermsAcceptedChangedImpl implements TermsAcceptedChanged {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -1684,6 +1735,7 @@ class _$TermsAcceptedChangedImpl implements TermsAcceptedChanged {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -1704,6 +1756,7 @@ class _$TermsAcceptedChangedImpl implements TermsAcceptedChanged {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1723,6 +1776,7 @@ class _$TermsAcceptedChangedImpl implements TermsAcceptedChanged {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1747,6 +1801,214 @@ abstract class TermsAcceptedChanged implements RegistrationEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TermsAcceptedChangedImplCopyWith<_$TermsAcceptedChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ProfilePhotoChangedImplCopyWith<$Res> {
+  factory _$$ProfilePhotoChangedImplCopyWith(_$ProfilePhotoChangedImpl value,
+          $Res Function(_$ProfilePhotoChangedImpl) then) =
+      __$$ProfilePhotoChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String? photoPath});
+}
+
+/// @nodoc
+class __$$ProfilePhotoChangedImplCopyWithImpl<$Res>
+    extends _$RegistrationEventCopyWithImpl<$Res, _$ProfilePhotoChangedImpl>
+    implements _$$ProfilePhotoChangedImplCopyWith<$Res> {
+  __$$ProfilePhotoChangedImplCopyWithImpl(_$ProfilePhotoChangedImpl _value,
+      $Res Function(_$ProfilePhotoChangedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of RegistrationEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? photoPath = freezed,
+  }) {
+    return _then(_$ProfilePhotoChangedImpl(
+      freezed == photoPath
+          ? _value.photoPath
+          : photoPath // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ProfilePhotoChangedImpl implements ProfilePhotoChanged {
+  const _$ProfilePhotoChangedImpl(this.photoPath);
+
+  @override
+  final String? photoPath;
+
+  @override
+  String toString() {
+    return 'RegistrationEvent.profilePhotoChanged(photoPath: $photoPath)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ProfilePhotoChangedImpl &&
+            (identical(other.photoPath, photoPath) ||
+                other.photoPath == photoPath));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, photoPath);
+
+  /// Create a copy of RegistrationEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ProfilePhotoChangedImplCopyWith<_$ProfilePhotoChangedImpl> get copyWith =>
+      __$$ProfilePhotoChangedImplCopyWithImpl<_$ProfilePhotoChangedImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String userName) userNameChanged,
+    required TResult Function(String fullName) fullNameChanged,
+    required TResult Function(String phoneNumber) phoneNumberChanged,
+    required TResult Function(String email) emailChanged,
+    required TResult Function(String password) passwordChanged,
+    required TResult Function(String confirmPassword) confirmPasswordChanged,
+    required TResult Function(String referralCode) referralCodeChanged,
+    required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
+    required TResult Function() toggleShowPassword,
+    required TResult Function() toggleShowConfirmPassword,
+    required TResult Function() registrationSubmitted,
+  }) {
+    return profilePhotoChanged(photoPath);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String userName)? userNameChanged,
+    TResult? Function(String fullName)? fullNameChanged,
+    TResult? Function(String phoneNumber)? phoneNumberChanged,
+    TResult? Function(String email)? emailChanged,
+    TResult? Function(String password)? passwordChanged,
+    TResult? Function(String confirmPassword)? confirmPasswordChanged,
+    TResult? Function(String referralCode)? referralCodeChanged,
+    TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
+    TResult? Function()? toggleShowPassword,
+    TResult? Function()? toggleShowConfirmPassword,
+    TResult? Function()? registrationSubmitted,
+  }) {
+    return profilePhotoChanged?.call(photoPath);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String userName)? userNameChanged,
+    TResult Function(String fullName)? fullNameChanged,
+    TResult Function(String phoneNumber)? phoneNumberChanged,
+    TResult Function(String email)? emailChanged,
+    TResult Function(String password)? passwordChanged,
+    TResult Function(String confirmPassword)? confirmPasswordChanged,
+    TResult Function(String referralCode)? referralCodeChanged,
+    TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
+    TResult Function()? toggleShowPassword,
+    TResult Function()? toggleShowConfirmPassword,
+    TResult Function()? registrationSubmitted,
+    required TResult orElse(),
+  }) {
+    if (profilePhotoChanged != null) {
+      return profilePhotoChanged(photoPath);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(UserNameChanged value) userNameChanged,
+    required TResult Function(FullNameChanged value) fullNameChanged,
+    required TResult Function(PhoneNumberChanged value) phoneNumberChanged,
+    required TResult Function(EmailChanged value) emailChanged,
+    required TResult Function(PasswordChanged value) passwordChanged,
+    required TResult Function(ConfirmPasswordChanged value)
+        confirmPasswordChanged,
+    required TResult Function(ReferralCodeChanged value) referralCodeChanged,
+    required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
+    required TResult Function(ToggleShowPassword value) toggleShowPassword,
+    required TResult Function(ToggleShowConfirmPassword value)
+        toggleShowConfirmPassword,
+    required TResult Function(RegistrationSubmitted value)
+        registrationSubmitted,
+  }) {
+    return profilePhotoChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(UserNameChanged value)? userNameChanged,
+    TResult? Function(FullNameChanged value)? fullNameChanged,
+    TResult? Function(PhoneNumberChanged value)? phoneNumberChanged,
+    TResult? Function(EmailChanged value)? emailChanged,
+    TResult? Function(PasswordChanged value)? passwordChanged,
+    TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
+    TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
+    TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
+    TResult? Function(ToggleShowPassword value)? toggleShowPassword,
+    TResult? Function(ToggleShowConfirmPassword value)?
+        toggleShowConfirmPassword,
+    TResult? Function(RegistrationSubmitted value)? registrationSubmitted,
+  }) {
+    return profilePhotoChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(UserNameChanged value)? userNameChanged,
+    TResult Function(FullNameChanged value)? fullNameChanged,
+    TResult Function(PhoneNumberChanged value)? phoneNumberChanged,
+    TResult Function(EmailChanged value)? emailChanged,
+    TResult Function(PasswordChanged value)? passwordChanged,
+    TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
+    TResult Function(ReferralCodeChanged value)? referralCodeChanged,
+    TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
+    TResult Function(ToggleShowPassword value)? toggleShowPassword,
+    TResult Function(ToggleShowConfirmPassword value)?
+        toggleShowConfirmPassword,
+    TResult Function(RegistrationSubmitted value)? registrationSubmitted,
+    required TResult orElse(),
+  }) {
+    if (profilePhotoChanged != null) {
+      return profilePhotoChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ProfilePhotoChanged implements RegistrationEvent {
+  const factory ProfilePhotoChanged(final String? photoPath) =
+      _$ProfilePhotoChangedImpl;
+
+  String? get photoPath;
+
+  /// Create a copy of RegistrationEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ProfilePhotoChangedImplCopyWith<_$ProfilePhotoChangedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -1798,6 +2060,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -1816,6 +2079,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -1834,6 +2098,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -1857,6 +2122,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -1877,6 +2143,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1896,6 +2163,7 @@ class _$ToggleShowPasswordImpl implements ToggleShowPassword {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -1966,6 +2234,7 @@ class _$ToggleShowConfirmPasswordImpl implements ToggleShowConfirmPassword {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -1984,6 +2253,7 @@ class _$ToggleShowConfirmPasswordImpl implements ToggleShowConfirmPassword {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -2002,6 +2272,7 @@ class _$ToggleShowConfirmPasswordImpl implements ToggleShowConfirmPassword {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -2025,6 +2296,7 @@ class _$ToggleShowConfirmPasswordImpl implements ToggleShowConfirmPassword {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -2045,6 +2317,7 @@ class _$ToggleShowConfirmPasswordImpl implements ToggleShowConfirmPassword {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -2064,6 +2337,7 @@ class _$ToggleShowConfirmPasswordImpl implements ToggleShowConfirmPassword {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -2132,6 +2406,7 @@ class _$RegistrationSubmittedImpl implements RegistrationSubmitted {
     required TResult Function(String confirmPassword) confirmPasswordChanged,
     required TResult Function(String referralCode) referralCodeChanged,
     required TResult Function(bool accepted) termsAcceptedChanged,
+    required TResult Function(String? photoPath) profilePhotoChanged,
     required TResult Function() toggleShowPassword,
     required TResult Function() toggleShowConfirmPassword,
     required TResult Function() registrationSubmitted,
@@ -2150,6 +2425,7 @@ class _$RegistrationSubmittedImpl implements RegistrationSubmitted {
     TResult? Function(String confirmPassword)? confirmPasswordChanged,
     TResult? Function(String referralCode)? referralCodeChanged,
     TResult? Function(bool accepted)? termsAcceptedChanged,
+    TResult? Function(String? photoPath)? profilePhotoChanged,
     TResult? Function()? toggleShowPassword,
     TResult? Function()? toggleShowConfirmPassword,
     TResult? Function()? registrationSubmitted,
@@ -2168,6 +2444,7 @@ class _$RegistrationSubmittedImpl implements RegistrationSubmitted {
     TResult Function(String confirmPassword)? confirmPasswordChanged,
     TResult Function(String referralCode)? referralCodeChanged,
     TResult Function(bool accepted)? termsAcceptedChanged,
+    TResult Function(String? photoPath)? profilePhotoChanged,
     TResult Function()? toggleShowPassword,
     TResult Function()? toggleShowConfirmPassword,
     TResult Function()? registrationSubmitted,
@@ -2191,6 +2468,7 @@ class _$RegistrationSubmittedImpl implements RegistrationSubmitted {
         confirmPasswordChanged,
     required TResult Function(ReferralCodeChanged value) referralCodeChanged,
     required TResult Function(TermsAcceptedChanged value) termsAcceptedChanged,
+    required TResult Function(ProfilePhotoChanged value) profilePhotoChanged,
     required TResult Function(ToggleShowPassword value) toggleShowPassword,
     required TResult Function(ToggleShowConfirmPassword value)
         toggleShowConfirmPassword,
@@ -2211,6 +2489,7 @@ class _$RegistrationSubmittedImpl implements RegistrationSubmitted {
     TResult? Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult? Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult? Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult? Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult? Function(ToggleShowPassword value)? toggleShowPassword,
     TResult? Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,
@@ -2230,6 +2509,7 @@ class _$RegistrationSubmittedImpl implements RegistrationSubmitted {
     TResult Function(ConfirmPasswordChanged value)? confirmPasswordChanged,
     TResult Function(ReferralCodeChanged value)? referralCodeChanged,
     TResult Function(TermsAcceptedChanged value)? termsAcceptedChanged,
+    TResult Function(ProfilePhotoChanged value)? profilePhotoChanged,
     TResult Function(ToggleShowPassword value)? toggleShowPassword,
     TResult Function(ToggleShowConfirmPassword value)?
         toggleShowConfirmPassword,

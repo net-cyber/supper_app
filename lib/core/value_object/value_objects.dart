@@ -115,3 +115,15 @@ class TermsAcceptance extends AbstractValueObject<bool> {
   @override
   final Either<ValueFailure<bool>, bool> value;
 }
+
+class ProfilePhoto extends AbstractValueObject<String?> {
+  factory ProfilePhoto(String? input) {
+    return ProfilePhoto._(
+      validateProfilePhoto(input),
+    );
+  }
+
+  const ProfilePhoto._(this.value);
+  @override
+  final Either<ValueFailure<String?>, String?> value;
+}

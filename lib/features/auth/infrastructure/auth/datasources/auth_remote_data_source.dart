@@ -26,6 +26,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'international_phone_number':
             registration.phoneNumber.value.getOrElse(() => ''),
         'password': registration.password.value.getOrElse(() => ''),
+        'profile_photo': registration.profilePhoto.value.getOrElse(() => ''),
       };
 
       final response = await getIt<HttpService>().client().post(
