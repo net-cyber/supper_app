@@ -73,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
         } else if (!state.isLoading && state.isLoginError) {
           AppHelpers.showCheckFlash(
             context,
-            'Login failed. Please check your credentials and try again.',
+            state.errorMessage,
           );
         }
       },

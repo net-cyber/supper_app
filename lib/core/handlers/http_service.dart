@@ -5,7 +5,7 @@ import 'package:super_app/core/handlers/token_interceptor.dart';
 
 @lazySingleton
 class HttpService {
-  Dio client({bool requireAuth = false}) {
+  Dio client({bool requireAuth = false, bool isMultipart = false}) {
     return Dio(
       BaseOptions(
         baseUrl: AppConstants.baseUrl,
@@ -14,7 +14,7 @@ class HttpService {
         sendTimeout: const Duration(seconds: 60),
         headers: {
           'accept': 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': isMultipart ? 'multipart/form-data' : 'application/json',
         },
       ),
     )

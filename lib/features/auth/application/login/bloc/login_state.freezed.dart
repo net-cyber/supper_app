@@ -19,6 +19,7 @@ mixin _$LoginState {
   Username get username => throw _privateConstructorUsedError;
   Password get password => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
+  String get errorMessage => throw _privateConstructorUsedError;
   bool get isLoginError => throw _privateConstructorUsedError;
   bool get showErrorMessages => throw _privateConstructorUsedError;
   bool get showPassword => throw _privateConstructorUsedError;
@@ -40,6 +41,7 @@ abstract class $LoginStateCopyWith<$Res> {
       {Username username,
       Password password,
       bool isLoading,
+      String errorMessage,
       bool isLoginError,
       bool showErrorMessages,
       bool showPassword});
@@ -63,6 +65,7 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
     Object? username = null,
     Object? password = null,
     Object? isLoading = null,
+    Object? errorMessage = null,
     Object? isLoginError = null,
     Object? showErrorMessages = null,
     Object? showPassword = null,
@@ -80,6 +83,10 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      errorMessage: null == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
       isLoginError: null == isLoginError
           ? _value.isLoginError
           : isLoginError // ignore: cast_nullable_to_non_nullable
@@ -108,6 +115,7 @@ abstract class _$$LoginStateImplCopyWith<$Res>
       {Username username,
       Password password,
       bool isLoading,
+      String errorMessage,
       bool isLoginError,
       bool showErrorMessages,
       bool showPassword});
@@ -129,6 +137,7 @@ class __$$LoginStateImplCopyWithImpl<$Res>
     Object? username = null,
     Object? password = null,
     Object? isLoading = null,
+    Object? errorMessage = null,
     Object? isLoginError = null,
     Object? showErrorMessages = null,
     Object? showPassword = null,
@@ -146,6 +155,10 @@ class __$$LoginStateImplCopyWithImpl<$Res>
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      errorMessage: null == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
       isLoginError: null == isLoginError
           ? _value.isLoginError
           : isLoginError // ignore: cast_nullable_to_non_nullable
@@ -169,6 +182,7 @@ class _$LoginStateImpl extends _LoginState {
       {required this.username,
       required this.password,
       this.isLoading = false,
+      this.errorMessage = '',
       this.isLoginError = false,
       this.showErrorMessages = false,
       this.showPassword = false})
@@ -183,6 +197,9 @@ class _$LoginStateImpl extends _LoginState {
   final bool isLoading;
   @override
   @JsonKey()
+  final String errorMessage;
+  @override
+  @JsonKey()
   final bool isLoginError;
   @override
   @JsonKey()
@@ -193,7 +210,7 @@ class _$LoginStateImpl extends _LoginState {
 
   @override
   String toString() {
-    return 'LoginState(username: $username, password: $password, isLoading: $isLoading, isLoginError: $isLoginError, showErrorMessages: $showErrorMessages, showPassword: $showPassword)';
+    return 'LoginState(username: $username, password: $password, isLoading: $isLoading, errorMessage: $errorMessage, isLoginError: $isLoginError, showErrorMessages: $showErrorMessages, showPassword: $showPassword)';
   }
 
   @override
@@ -207,6 +224,8 @@ class _$LoginStateImpl extends _LoginState {
                 other.password == password) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
             (identical(other.isLoginError, isLoginError) ||
                 other.isLoginError == isLoginError) &&
             (identical(other.showErrorMessages, showErrorMessages) ||
@@ -217,7 +236,7 @@ class _$LoginStateImpl extends _LoginState {
 
   @override
   int get hashCode => Object.hash(runtimeType, username, password, isLoading,
-      isLoginError, showErrorMessages, showPassword);
+      errorMessage, isLoginError, showErrorMessages, showPassword);
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -233,6 +252,7 @@ abstract class _LoginState extends LoginState {
       {required final Username username,
       required final Password password,
       final bool isLoading,
+      final String errorMessage,
       final bool isLoginError,
       final bool showErrorMessages,
       final bool showPassword}) = _$LoginStateImpl;
@@ -244,6 +264,8 @@ abstract class _LoginState extends LoginState {
   Password get password;
   @override
   bool get isLoading;
+  @override
+  String get errorMessage;
   @override
   bool get isLoginError;
   @override

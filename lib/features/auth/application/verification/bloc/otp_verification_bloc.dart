@@ -59,22 +59,29 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
 
     final result = await _authRepository.verifyOtp(state.phoneNumber, state.otpCode);
     
-    result.fold(
-      (failure) {
-        emit(state.copyWith(
-          isVerifying: false,
-          verificationError: true,
-          errorMessage: NetworkExceptions.getErrorMessage(failure),
-        ),);
-      },
-      (response) {
-        
-        emit(state.copyWith(
-          isVerifying: false,
-          isVerified: response.phone_verified,
-        ),);
-      },
+    if (result.isLeft()) {
+      final failure = result.fold(
+        (l) => l,
+        (r) => null,
+      );
+
+      emit(state.copyWith(
+        isVerifying: false,
+        verificationError: true,
+        errorMessage: NetworkExceptions.getRawErrorMessage(failure),
+      ),);
+      return;
+    }
+
+    final response = result.fold(
+      (l) => null,
+      (r) => r,
     );
+
+    emit(state.copyWith(
+      isVerifying: false,
+      isVerified: response?.phone_verified ?? false,
+    ),);
   }
 
   Future<void> _onResendOtpRequested(ResendOtpRequested event, Emitter<OtpVerificationState> emit) async {
@@ -96,21 +103,29 @@ class OtpVerificationBloc extends Bloc<OtpVerificationEvent, OtpVerificationStat
 
     final result = await _authRepository.sendVerificationCode(state.phoneNumber);
     
-    result.fold(
-      (failure) {
-        emit(state.copyWith(
-          isResending: false,
-          resendError: true,
-          errorMessage: NetworkExceptions.getErrorMessage(failure),
-        ),);
-      },
-      (response) {
-        emit(state.copyWith(
-          isResending: false,
-          resendSuccess: true,
-          expiresAt: response.expires_at,
-        ),);
-      },
+    if (result.isLeft()) {
+      final failure = result.fold(
+        (l) => l,
+        (r) => null,
+      );
+
+      emit(state.copyWith(
+        isResending: false,
+        resendError: true,
+        errorMessage: NetworkExceptions.getRawErrorMessage(failure),
+      ),);
+      return;
+    }
+
+    final response = result.fold(
+      (l) => null,
+      (r) => r,
     );
+
+    emit(state.copyWith(
+      isResending: false,
+      resendSuccess: true,
+      expiresAt: response?.expires_at,
+    ),);
   }
 } 
