@@ -30,7 +30,33 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
     as _i1046;
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
-
+import '../../features/transf/application/transfer/bloc/transfer_bloc.dart'
+    as _i1017;
+import '../../features/transf/application/validation/bloc/account_validation_bloc.dart'
+    as _i346;
+import '../../features/transf/application/verification/bloc/account_verification_bloc.dart'
+    as _i265;
+import '../../features/transf/domain/repositories/account_validation_repository.dart'
+    as _i153;
+import '../../features/transf/domain/repositories/transfer_account_repository.dart'
+    as _i644;
+import '../../features/transf/domain/repositories/transfer_repository.dart'
+    as _i754;
+import '../../features/transf/infrastructure/datasources/account_validation_remote_data_source_impl.dart'
+    as _i670;
+import '../../features/transf/infrastructure/datasources/transfer_account_remote_data_source_impl.dart'
+    as _i213;
+import '../../features/transf/infrastructure/datasources/transfer_remote_data_source_impl.dart'
+    as _i548;
+import '../../features/transf/infrastructure/repositories/account_validation_repository_impl.dart'
+    as _i519;
+import '../../features/transf/infrastructure/repositories/transfer_account_repository_impl.dart'
+    as _i354;
+import '../../features/transf/infrastructure/repositories/transfer_repository_impl.dart'
+    as _i655;
+import '../auth/token_service.dart' as _i347;
+import '../config/api_config.dart' as _i51;
+import '../handlers/api_http_service.dart' as _i310;
 import '../handlers/http_service.dart' as _i350;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -44,7 +70,15 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.factory<_i670.AccountValidationRemoteDataSource>(
+        () => _i670.AccountValidationRemoteDataSource());
+    gh.factory<_i213.TransferAccountRemoteDataSource>(
+        () => _i213.TransferAccountRemoteDataSource());
+    gh.singleton<_i51.ApiConfig>(() => _i51.ApiConfig.production());
+    gh.lazySingleton<_i347.TokenService>(() => _i347.TokenService());
     gh.lazySingleton<_i350.HttpService>(() => _i350.HttpService());
+    gh.factory<_i548.TransferRemoteDataSource>(
+        () => _i548.TransferRemoteDataSourceImpl());
     gh.factory<_i1046.AuthRemoteDataSource>(
         () => _i1046.AuthRemoteDataSourceImpl());
     gh.factory<_i811.AccountsRemoteDataSource>(
@@ -52,17 +86,38 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i787.AuthRepository>(
         () => _i446.AuthRepositoryImpl(gh<_i1046.AuthRemoteDataSource>()));
     gh.factory<_i516.UserService>(() => _i516.UserServiceImpl());
+    gh.factory<_i153.AccountValidationRepository>(() =>
+        _i519.AccountValidationRepositoryImpl(
+            gh<_i670.AccountValidationRemoteDataSource>()));
+    gh.lazySingleton<_i310.ApiHttpService>(() => _i310.ApiHttpService(
+          gh<_i51.ApiConfig>(),
+          gh<_i347.TokenService>(),
+        ));
+    gh.factory<_i754.TransferRepository>(() =>
+        _i655.TransferRepositoryImpl(gh<_i548.TransferRemoteDataSource>()));
+    gh.factory<_i644.TransferAccountRepository>(() =>
+        _i354.TransferAccountRepositoryImpl(
+            gh<_i213.TransferAccountRemoteDataSource>()));
     gh.factory<_i706.AccountRespository>(() =>
         _i658.AccountRepositoryImpl(gh<_i811.AccountsRemoteDataSource>()));
-    gh.factory<_i247.OtpVerificationBloc>(
-        () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i623.LoginBloc>(
         () => _i623.LoginBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i859.RegistrationBloc>(
         () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
+    gh.factory<_i247.OtpVerificationBloc>(
+        () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
+    gh.factory<_i265.AccountVerificationBloc>(() =>
+        _i265.AccountVerificationBloc(gh<_i644.TransferAccountRepository>()));
     gh.factory<_i671.AccountsBloc>(
         () => _i671.AccountsBloc(gh<_i706.AccountRespository>()));
-
+    gh.factory<_i1017.TransferBloc>(() => _i1017.TransferBloc(
+          gh<_i754.TransferRepository>(),
+          gh<_i671.AccountsBloc>(),
+        ));
+    gh.factory<_i346.AccountValidationBloc>(() => _i346.AccountValidationBloc(
+          gh<_i153.AccountValidationRepository>(),
+          gh<_i671.AccountsBloc>(),
+        ));
     return this;
   }
 }

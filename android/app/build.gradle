@@ -33,6 +33,10 @@ android {
     compileSdkVersion 35  // Updated to 35 for permission_handler_android compatibility
     ndkVersion "25.1.8937393"  // Explicitly set NDK version
 
+    lintOptions {
+        disable 'ObsoleteLintCustomCheck'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17  // Updated to Java 17
         targetCompatibility JavaVersion.VERSION_17
