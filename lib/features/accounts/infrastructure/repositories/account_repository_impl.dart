@@ -25,8 +25,6 @@ class AccountRepositoryImpl implements AccountRespository {
       return right(accounts);
     } on DioException catch (e) {
       return left(NetworkExceptions.getDioException(e));
-    } catch (e) {
-      return left(NetworkExceptions.defaultError(e.toString()));
     }
   }
 }
