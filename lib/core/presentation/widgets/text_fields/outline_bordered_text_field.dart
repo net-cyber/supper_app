@@ -8,8 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 class OutlinedBorderTextField extends StatelessWidget {
 
   const   OutlinedBorderTextField({
-    super.key,
-    required this.label,
+    required this.label, super.key,
     this.suffixIcon,
     this.obscure,
     this.onChanged,

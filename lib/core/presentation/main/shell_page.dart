@@ -6,8 +6,7 @@ import 'package:hugeicons/hugeicons.dart';
 
 class ShellPage extends StatelessWidget {
   const ShellPage({
-    super.key,
-    required this.navigationShell,
+    required this.navigationShell, super.key,
   });
   final StatefulNavigationShell navigationShell;
 

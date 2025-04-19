@@ -38,8 +38,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       password: password,
       // Update confirmPassword with the new password value
       confirmPassword: ConfirmPassword(
-        state.confirmPassword.getOrCrash(), 
-        password.getOrCrash(),
+        state.confirmPassword.value.getOrElse(() => ''), 
+        password.value.getOrElse(() => ''),
       ),
     ),);
   }
@@ -48,7 +48,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(state.copyWith(
       confirmPassword: ConfirmPassword(
         event.confirmPassword.trim(), 
-        state.password.getOrCrash(),
+        state.password.value.getOrElse(() => ''),
       ),
     ),);
   }
@@ -91,7 +91,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         return;
       }
       
-      if (state.password.getOrCrash() != state.confirmPassword.getOrCrash()) {
+      if (state.password.value.getOrElse(() => '') != state.confirmPassword.value.getOrElse(() => '')) {
         emit(state.copyWith(showErrorMessages: true));
         return;
       }

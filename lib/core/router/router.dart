@@ -1,26 +1,33 @@
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/registration/registration_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
+import 'package:super_app/features/auth/presentation/pages/verification/otp_verification_screen.dart';
+import 'package:super_app/features/mini_app/presentation/screens/webView.dart';
 import 'package:super_app/features/mortgages/domain/entities/property.dart';
 import 'package:super_app/features/mortgages/presentation/screens/available_properties_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/property_detail_screen.dart';
-import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
-import 'package:super_app/features/auth/presentation/pages/signup/signup_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/splash/splash_screen.dart';
 import 'package:super_app/features/history/presentation/history_screen.dart';
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
-
-import '../../features/auth/presentation/pages/registration/registration_screen.dart';
-import '../../features/auth/presentation/pages/terms/terms_and_conditions_screen.dart';
-
-// Path constants
-const String homeScreenPath = '/home';
+import 'package:super_app/features/chat/pages/message/view.dart';
+import 'package:super_app/features/chat/pages/contact/view.dart';
+import 'package:super_app/features/chat/pages/profile/view.dart';
+import 'package:super_app/features/chat/pages/message/chat/view.dart';
+import 'package:super_app/features/chat/pages/message/photoview/view.dart';
+import 'package:super_app/features/chat/pages/message/voicecall/view.dart';
+import 'package:super_app/features/chat/pages/message/videocall/view.dart';
+import 'package:get/get.dart';
 
 // Mobile Topup Route Paths
 const String mobileTopupPath = '/mobileTopup';
@@ -71,16 +78,56 @@ final router = GoRouter(
       builder: (context, state) => const SplashPage(),
     ),
 
+    // Onboarding
+    GoRoute(
+      name: RouteName.onboarding,
+      path: '/${RouteName.onboarding}',
+      builder: (context, state) => const OnboardingPage(),
+    ),
+
+    // Registration
+    GoRoute(
+      name: RouteName.registrationScreen,
+      path: '/${RouteName.registrationScreen}',
+      builder: (context, state) => const RegistrationScreen(),
+    ),
+
     // Login
     GoRoute(
       name: RouteName.login,
       path: '/${RouteName.login}',
       builder: (context, state) => const LoginScreen(),
     ),
+
+    // OTP Verification
     GoRoute(
-      name: RouteName.signup,
-      path: '/${RouteName.signup}',
-      builder: (context, state) => SignupScreen(),
+      name: RouteName.otpVerification,
+      path: '/${RouteName.otpVerification}',
+      builder: (context, state) {
+        final Map<String, dynamic> extra = state.extra as Map<String, dynamic>;
+        return OTPVerificationScreen(
+          phoneNumber: extra['phoneNumber'] as String,
+          expiresAt: extra['expiresAt'] as DateTime?,
+        );
+      },
+    ),
+
+    // Terms and Conditions
+    GoRoute(
+      name: RouteName.termsAndConditionsScreen,
+      path: '/${RouteName.termsAndConditionsScreen}',
+      builder: (context, state) => const TermsAndConditionsScreen(),
+    ),
+    GoRoute(
+      name: RouteName.webView,
+      path: '/${RouteName.webView}',
+      builder: (context, state) {
+        final Map<String, dynamic> extra = state.extra as Map<String, dynamic>;
+        return MiniAppWebView(
+          title: extra['title'] as String,
+          url: extra['url'] as String,
+        );
+      },
     ),
     // Settings
     // GoRoute(
@@ -108,7 +155,10 @@ final router = GoRouter(
             GoRoute(
               name: RouteName.mainScreen,
               path: '/${RouteName.mainScreen}',
-              builder: (context, state) => const MainScreen(),
+              builder: (context, state) => BlocProvider(
+                create: (context) => getIt<AccountsBloc>(),
+                child: const MainScreen(),
+              ),
               routes: const [],
             ),
           ],
@@ -120,6 +170,11 @@ final router = GoRouter(
               name: RouteName.mortgageDashboard,
               path: '/${RouteName.mortgageDashboard}',
               builder: (context, state) => const MortgageDashboardScreen(),
+            ),
+            GoRoute(
+              name: RouteName.history,
+              path: '/${RouteName.history}',
+              builder: (context, state) => const HistoryScreen(),
             ),
           ],
         ),
@@ -173,6 +228,66 @@ final router = GoRouter(
         //     ),
         //   ],
         // ),
+        // Chat Branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: RouteName.message,
+              path: '/${RouteName.message}',
+              builder: (context, state) => MessagePage(),
+              routes: [
+                GoRoute(
+                  name: RouteName.chat,
+                  path: 'chat',
+                  builder: (context, state) {
+                    final Map<String, dynamic>? extra =
+                        state.extra as Map<String, dynamic>?;
+                    return ChatPage(arguments: extra);
+                  },
+                ),
+                GoRoute(
+                  name: RouteName.photoImgView,
+                  path: 'photo',
+                  builder: (context, state) => PhotoImgViewPage(),
+                ),
+                GoRoute(
+                  name: RouteName.voiceCall,
+                  path: 'voice-call',
+                  builder: (context, state) {
+                    final Map<String, dynamic>? extra =
+                        state.extra as Map<String, dynamic>?;
+                    Get.parameters = extra?.map(
+                            (key, value) => MapEntry(key, value?.toString())) ??
+                        {};
+                    return VoiceCallViewPage();
+                  },
+                ),
+                GoRoute(
+                  name: RouteName.videoCall,
+                  path: 'video-call',
+                  builder: (context, state) {
+                    final Map<String, dynamic>? extra =
+                        state.extra as Map<String, dynamic>?;
+                    Get.parameters = extra?.map(
+                            (key, value) => MapEntry(key, value?.toString())) ??
+                        {};
+                    return VideoCallPage();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        // Contact Branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: RouteName.contact,
+              path: '/${RouteName.contact}',
+              builder: (context, state) => ContactPage(),
+            ),
+          ],
+        ),
       ],
     ),
 
@@ -187,17 +302,78 @@ final router = GoRouter(
       path: '/${RouteName.availableProperties}',
       builder: (context, state) => const AvailablePropertiesScreen(),
     ),
-
-    GoRoute(
-      name: RouteName.registrationScreen,
-      path: '/${RouteName.registrationScreen}',
-      builder: (context, state) => const RegistrationScreen(),
-    ),
-
-    GoRoute(
-      name: RouteName.termsAndConditionsScreen,
-      path: '/${RouteName.termsAndConditionsScreen}',
-      builder: (context, state) => const TermsAndConditionsScreen(),
-    ),
   ],
 );
+
+// Add navigation helper methods
+void navigateToMessage(BuildContext context) {
+  context.goNamed(RouteName.message);
+}
+
+void navigateToChat(
+  BuildContext context, {
+  required String docId,
+  required String toToken,
+  required String toName,
+  required String toAvatar,
+  required String toOnline,
+}) {
+  context.goNamed(
+    RouteName.chat,
+    extra: {
+      "doc_id": docId,
+      "to_token": toToken,
+      "to_name": toName,
+      "to_avatar": toAvatar,
+      "to_online": toOnline,
+    },
+  );
+}
+
+void navigateToContact(BuildContext context) {
+  context.goNamed(RouteName.contact);
+}
+
+void navigateToPhotoView(BuildContext context) {
+  context.goNamed(RouteName.photoImgView);
+}
+
+void navigateToVoiceCall(
+  BuildContext context, {
+  required String docId,
+  required String toToken,
+  required String toName,
+  required String toAvatar,
+  required String callRole,
+}) {
+  context.goNamed(
+    RouteName.voiceCall,
+    extra: {
+      "doc_id": docId,
+      "to_token": toToken,
+      "to_name": toName,
+      "to_avatar": toAvatar,
+      "call_role": callRole,
+    },
+  );
+}
+
+void navigateToVideoCall(
+  BuildContext context, {
+  required String docId,
+  required String toToken,
+  required String toName,
+  required String toAvatar,
+  required String callRole,
+}) {
+  context.goNamed(
+    RouteName.videoCall,
+    extra: {
+      "doc_id": docId,
+      "to_token": toToken,
+      "to_name": toName,
+      "to_avatar": toAvatar,
+      "call_role": callRole,
+    },
+  );
+}

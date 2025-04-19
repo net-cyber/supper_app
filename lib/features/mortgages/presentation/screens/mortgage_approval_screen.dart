@@ -10,10 +10,6 @@ import 'package:super_app/features/mortgages/presentation/screens/mortgage_manag
 import 'package:timeline_tile/timeline_tile.dart';
 
 class MortgageApprovalScreen extends StatefulWidget {
-  final String applicationId;
-  final double approvedAmount;
-  final double interestRate;
-  final int loanTerm;
 
   const MortgageApprovalScreen({
     Key? key,
@@ -22,6 +18,10 @@ class MortgageApprovalScreen extends StatefulWidget {
     required this.interestRate,
     required this.loanTerm,
   }) : super(key: key);
+  final String applicationId;
+  final double approvedAmount;
+  final double interestRate;
+  final int loanTerm;
 
   @override
   State<MortgageApprovalScreen> createState() => _MortgageApprovalScreenState();
@@ -96,7 +96,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primaryColor,
               ),
               child: Column(
@@ -214,9 +214,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        _schedulePropertyInspection();
-                      },
+                      onPressed: _schedulePropertyInspection,
                       icon: Icon(
                         Icons.calendar_today_outlined,
                         color: Colors.white,
@@ -243,9 +241,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        _viewPaymentHistory();
-                      },
+                      onPressed: _viewPaymentHistory,
                       icon: Icon(
                         Icons.history_outlined,
                         color: AppColors.primaryColor,
@@ -261,7 +257,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
                       ),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 16.h),
-                        side: BorderSide(color: AppColors.primaryColor),
+                        side: const BorderSide(color: AppColors.primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
@@ -272,9 +268,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        _viewAmortizationSchedule();
-                      },
+                      onPressed: _viewAmortizationSchedule,
                       icon: Icon(
                         Icons.table_chart_outlined,
                         color: AppColors.primaryColor,
@@ -290,7 +284,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
                       ),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 16.h),
-                        side: BorderSide(color: AppColors.primaryColor),
+                        side: const BorderSide(color: AppColors.primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
@@ -301,9 +295,7 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        _downloadApprovalLetter();
-                      },
+                      onPressed: _downloadApprovalLetter,
                       icon: Icon(
                         Icons.download_outlined,
                         color: Colors.black87,
@@ -465,10 +457,10 @@ class _MortgageApprovalScreenState extends State<MortgageApprovalScreen> {
   double _calculateMonthlyPayment() {
     // P = L[c(1 + c)^n]/[(1 + c)^n - 1]
     // where L = loan amount, c = monthly interest rate, n = number of payments
-    double monthlyRate = widget.interestRate / 100 / 12;
-    int totalPayments = widget.loanTerm * 12;
+    var monthlyRate = widget.interestRate / 100 / 12;
+    var totalPayments = widget.loanTerm * 12;
     
-    double monthlyPayment = widget.approvedAmount * 
+    var monthlyPayment = widget.approvedAmount * 
         (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 
         (pow(1 + monthlyRate, totalPayments) - 1);
     

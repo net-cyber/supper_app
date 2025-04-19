@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../../domain/entities/property.dart';
+import 'package:super_app/features/mortgages/domain/entities/property.dart';
 
 class PropertyCard extends StatelessWidget {
-  final Property property;
-  final VoidCallback onTap;
-  final VoidCallback onFavoriteToggle;
-  final bool isFavorite;
 
   const PropertyCard({
     Key? key,
@@ -17,6 +13,10 @@ class PropertyCard extends StatelessWidget {
     required this.onFavoriteToggle,
     this.isFavorite = false,
   }) : super(key: key);
+  final Property property;
+  final VoidCallback onTap;
+  final VoidCallback onFavoriteToggle;
+  final bool isFavorite;
 
   @override
   Widget build(BuildContext context) {

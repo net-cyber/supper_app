@@ -7,10 +7,6 @@ import 'package:super_app/core/theme/app_colors.dart';
 import 'dart:math';
 
 class RefinanceCalculatorScreen extends StatefulWidget {
-  final double currentLoanBalance;
-  final double currentInterestRate;
-  final int remainingTerm;
-  final double monthlyPayment;
 
   const RefinanceCalculatorScreen({
     Key? key,
@@ -19,6 +15,10 @@ class RefinanceCalculatorScreen extends StatefulWidget {
     required this.remainingTerm,
     required this.monthlyPayment,
   }) : super(key: key);
+  final double currentLoanBalance;
+  final double currentInterestRate;
+  final int remainingTerm;
+  final double monthlyPayment;
 
   @override
   State<RefinanceCalculatorScreen> createState() => _RefinanceCalculatorScreenState();
@@ -34,14 +34,14 @@ class _RefinanceCalculatorScreenState extends State<RefinanceCalculatorScreen> {
   final _formKey = GlobalKey<FormState>();
   
   // Form values
-  double _newInterestRate = 0.0;
+  double _newInterestRate = 0;
   int _newTerm = 0;
-  double _closingCosts = 0.0;
+  double _closingCosts = 0;
   
   // Results
-  double _newMonthlyPayment = 0.0;
-  double _monthlySavings = 0.0;
-  double _totalSavings = 0.0;
+  double _newMonthlyPayment = 0;
+  double _monthlySavings = 0;
+  double _totalSavings = 0;
   int _breakEvenMonths = 0;
   bool _hasCalculated = false;
   
@@ -148,7 +148,7 @@ class _RefinanceCalculatorScreenState extends State<RefinanceCalculatorScreen> {
                       ),
                       Slider(
                         value: _newInterestRate,
-                        min: 5.0,
+                        min: 5,
                         max: widget.currentInterestRate,
                         divisions: ((widget.currentInterestRate - 5.0) * 4).round(),
                         label: _newInterestRate.toStringAsFixed(2),
@@ -324,7 +324,7 @@ class _RefinanceCalculatorScreenState extends State<RefinanceCalculatorScreen> {
                             Expanded(
                               child: Text(
                                 _breakEvenMonths < 36
-                                    ? 'This refinance option looks good! You\'ll break even in less than 3 years.'
+                                    ? "This refinance option looks good! You'll break even in less than 3 years."
                                     : 'Consider carefully. It will take over 3 years to recover your closing costs.',
                                 style: GoogleFonts.outfit(
                                   fontSize: 14.sp,
@@ -382,8 +382,8 @@ class _RefinanceCalculatorScreenState extends State<RefinanceCalculatorScreen> {
   void _calculateRefinance() {
     if (_formKey.currentState!.validate()) {
       // Calculate new monthly payment
-      double monthlyRate = _newInterestRate / 100 / 12;
-      int totalPayments = _newTerm * 12;
+      var monthlyRate = _newInterestRate / 100 / 12;
+      var totalPayments = _newTerm * 12;
       
       _newMonthlyPayment = widget.currentLoanBalance * 
           (monthlyRate * pow(1 + monthlyRate, totalPayments)) / 

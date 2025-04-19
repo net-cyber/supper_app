@@ -6,9 +6,6 @@ import 'package:super_app/core/theme/app_colors.dart';
 
 
 class PropertyValueScreen extends StatefulWidget {
-  final double purchasePrice;
-  final DateTime purchaseDate;
-  final double currentLoanBalance;
 
   const PropertyValueScreen({
     Key? key,
@@ -16,6 +13,9 @@ class PropertyValueScreen extends StatefulWidget {
     required this.purchaseDate,
     required this.currentLoanBalance,
   }) : super(key: key);
+  final double purchasePrice;
+  final DateTime purchaseDate;
+  final double currentLoanBalance;
 
   @override
   State<PropertyValueScreen> createState() => _PropertyValueScreenState();
@@ -48,8 +48,8 @@ class _PropertyValueScreenState extends State<PropertyValueScreen> {
     _currentValue = widget.purchasePrice * (1 + (0.004 * monthsSincePurchase));
     
     _valueHistory = [];
-    DateTime date = widget.purchaseDate;
-    double value = widget.purchasePrice;
+    var date = widget.purchaseDate;
+    var value = widget.purchasePrice;
     
     while (date.isBefore(now) || date.isAtSameMomentAs(now)) {
       _valueHistory.add({
@@ -68,8 +68,8 @@ class _PropertyValueScreenState extends State<PropertyValueScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double equity = _currentValue - widget.currentLoanBalance;
-    final double equityPercentage = equity / _currentValue * 100;
+    final equity = _currentValue - widget.currentLoanBalance;
+    final equityPercentage = equity / _currentValue * 100;
     
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -258,21 +258,21 @@ class _PropertyValueScreenState extends State<PropertyValueScreen> {
                     _buildNeighborhoodSale(
                       'Modern Apartment',
                       '2 bed, 2 bath',
-                      5200000.0,
+                      5200000,
                       DateTime.now().subtract(const Duration(days: 15)),
                     ),
                     SizedBox(height: 12.h),
                     _buildNeighborhoodSale(
                       'Luxury Condo',
                       '3 bed, 2 bath',
-                      6800000.0,
+                      6800000,
                       DateTime.now().subtract(const Duration(days: 30)),
                     ),
                     SizedBox(height: 12.h),
                     _buildNeighborhoodSale(
                       'Family Home',
                       '4 bed, 3 bath',
-                      8500000.0,
+                      8500000,
                       DateTime.now().subtract(const Duration(days: 45)),
                     ),
                   ],
@@ -508,7 +508,7 @@ class _PropertyValueScreenState extends State<PropertyValueScreen> {
               ),
             ),
             Text(
-              '${DateFormat('MMM d').format(saleDate)}',
+              DateFormat('MMM d').format(saleDate),
               style: GoogleFonts.outfit(
                 fontSize: 14.sp,
                 color: Colors.grey[600],

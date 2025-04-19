@@ -23,8 +23,7 @@ class TokenInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
       // Clear tokens
-      LocalStorage.instance.deleteAccessToken();
-      LocalStorage.instance.deleteRefreshToken();
+      LocalStorage.instance.clearUserSession();
       
       final context = NavigationService.currentContext;
       if (context != null) {

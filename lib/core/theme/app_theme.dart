@@ -7,7 +7,6 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: const ColorScheme.light(
-        brightness: Brightness.light,
         error: Color(0xFFBA1A1A),
         errorContainer: Color(0xFFFFDAD6),
         inversePrimary: Color(0xFFEAB308),
@@ -137,7 +136,6 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
-        brightness: Brightness.dark,
         error: Color(0xFFFFB4AB),
         errorContainer: Color(0xFF93000A),
         inversePrimary: Color(0xFF4A2A91),

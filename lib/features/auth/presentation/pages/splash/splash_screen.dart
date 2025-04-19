@@ -11,7 +11,7 @@ import 'package:super_app/features/auth/application/splash/bloc/splash_state.dar
 import 'package:super_app/core/constants/app_constants.dart';
 import 'package:super_app/core/presentation/widgets/loading.dart';
 
-import '../../../../../core/router/route_name.dart';
+import 'package:super_app/core/router/route_name.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -30,12 +30,13 @@ class SplashPage extends StatelessWidget {
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if (!state.isLoading && !state.isError) {
-            context.goNamed(RouteName.registrationScreen);
+            context.goNamed(state.routeName!);
           }
-
+          
           if (state.isError) {
             // Handle error state
             // Show error message or retry option
+            
           }
         },
         child: Scaffold(

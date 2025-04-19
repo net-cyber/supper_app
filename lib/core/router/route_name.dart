@@ -20,11 +20,36 @@ class RouteName {
   static const propertyDetail = 'propertyDetail';
   static const availableProperties = 'availableProperties';
   static const mortgageDashboard = 'mortgageDashboard';
+  static const onboarding = 'onboarding';
+
+  // Auth routes
   static const registrationScreen = 'registrationScreen';
+  static const otpVerification = 'otpVerification';
   static const termsAndConditionsScreen = 'termsAndConditionsScreen';
+
+  // Internal bank transfer routes
+  static const internalBankAccount = 'internalBankAccount';
+  static const internalBankAmount = 'internalBankAmount';
+  static const internalConfirmTransfer = 'internalConfirmTransfer';
+
+  // Wallet routes
+  static const walletSelection = 'walletSelection';
+  static const walletPhone = 'walletPhone';
+  static const walletAmount = 'walletAmount';
+  static const walletConfirmation = 'walletConfirmation';
   static const mobileTopup = 'mobileTopup';
   static const mobileTopupPhoneNumber = 'mobileTopupPhoneNumber';
   static const mobileTopupAmount = 'mobileTopupAmount';
   static const mobileTopupConfirmation = 'mobileTopupConfirmation';
   static const mobileTopupSuccess = 'mobileTopupSuccess';
+  static const webView = 'webView';
+
+  // Chat Feature Routes
+  static const message = 'message';
+  static const contact = 'contact';
+  static const chatProfile = 'chatProfile';
+  static const chat = 'chat';
+  static const photoImgView = 'photoImgView';
+  static const voiceCall = 'voiceCall';
+  static const videoCall = 'videoCall';
 }

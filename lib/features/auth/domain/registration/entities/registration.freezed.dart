@@ -19,10 +19,8 @@ mixin _$Registration {
   UserName get userName => throw _privateConstructorUsedError;
   FullName get fullName => throw _privateConstructorUsedError;
   PhoneNumber get phoneNumber => throw _privateConstructorUsedError;
-  EmailAddress get emailAddress => throw _privateConstructorUsedError;
   Password get password => throw _privateConstructorUsedError;
   ConfirmPassword get confirmPassword => throw _privateConstructorUsedError;
-  ReferralCode? get referralCode => throw _privateConstructorUsedError;
   TermsAcceptance get termsAcceptance => throw _privateConstructorUsedError;
 
   /// Create a copy of Registration
@@ -42,10 +40,8 @@ abstract class $RegistrationCopyWith<$Res> {
       {UserName userName,
       FullName fullName,
       PhoneNumber phoneNumber,
-      EmailAddress emailAddress,
       Password password,
       ConfirmPassword confirmPassword,
-      ReferralCode? referralCode,
       TermsAcceptance termsAcceptance});
 }
 
@@ -67,10 +63,8 @@ class _$RegistrationCopyWithImpl<$Res, $Val extends Registration>
     Object? userName = null,
     Object? fullName = null,
     Object? phoneNumber = null,
-    Object? emailAddress = null,
     Object? password = null,
     Object? confirmPassword = null,
-    Object? referralCode = freezed,
     Object? termsAcceptance = null,
   }) {
     return _then(_value.copyWith(
@@ -86,10 +80,6 @@ class _$RegistrationCopyWithImpl<$Res, $Val extends Registration>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as PhoneNumber,
-      emailAddress: null == emailAddress
-          ? _value.emailAddress
-          : emailAddress // ignore: cast_nullable_to_non_nullable
-              as EmailAddress,
       password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
@@ -98,10 +88,6 @@ class _$RegistrationCopyWithImpl<$Res, $Val extends Registration>
           ? _value.confirmPassword
           : confirmPassword // ignore: cast_nullable_to_non_nullable
               as ConfirmPassword,
-      referralCode: freezed == referralCode
-          ? _value.referralCode
-          : referralCode // ignore: cast_nullable_to_non_nullable
-              as ReferralCode?,
       termsAcceptance: null == termsAcceptance
           ? _value.termsAcceptance
           : termsAcceptance // ignore: cast_nullable_to_non_nullable
@@ -122,10 +108,8 @@ abstract class _$$RegistrationImplCopyWith<$Res>
       {UserName userName,
       FullName fullName,
       PhoneNumber phoneNumber,
-      EmailAddress emailAddress,
       Password password,
       ConfirmPassword confirmPassword,
-      ReferralCode? referralCode,
       TermsAcceptance termsAcceptance});
 }
 
@@ -145,10 +129,8 @@ class __$$RegistrationImplCopyWithImpl<$Res>
     Object? userName = null,
     Object? fullName = null,
     Object? phoneNumber = null,
-    Object? emailAddress = null,
     Object? password = null,
     Object? confirmPassword = null,
-    Object? referralCode = freezed,
     Object? termsAcceptance = null,
   }) {
     return _then(_$RegistrationImpl(
@@ -164,10 +146,6 @@ class __$$RegistrationImplCopyWithImpl<$Res>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as PhoneNumber,
-      emailAddress: null == emailAddress
-          ? _value.emailAddress
-          : emailAddress // ignore: cast_nullable_to_non_nullable
-              as EmailAddress,
       password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
@@ -176,10 +154,6 @@ class __$$RegistrationImplCopyWithImpl<$Res>
           ? _value.confirmPassword
           : confirmPassword // ignore: cast_nullable_to_non_nullable
               as ConfirmPassword,
-      referralCode: freezed == referralCode
-          ? _value.referralCode
-          : referralCode // ignore: cast_nullable_to_non_nullable
-              as ReferralCode?,
       termsAcceptance: null == termsAcceptance
           ? _value.termsAcceptance
           : termsAcceptance // ignore: cast_nullable_to_non_nullable
@@ -195,10 +169,8 @@ class _$RegistrationImpl extends _Registration {
       {required this.userName,
       required this.fullName,
       required this.phoneNumber,
-      required this.emailAddress,
       required this.password,
       required this.confirmPassword,
-      this.referralCode,
       required this.termsAcceptance})
       : super._();
 
@@ -209,19 +181,15 @@ class _$RegistrationImpl extends _Registration {
   @override
   final PhoneNumber phoneNumber;
   @override
-  final EmailAddress emailAddress;
-  @override
   final Password password;
   @override
   final ConfirmPassword confirmPassword;
-  @override
-  final ReferralCode? referralCode;
   @override
   final TermsAcceptance termsAcceptance;
 
   @override
   String toString() {
-    return 'Registration(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, emailAddress: $emailAddress, password: $password, confirmPassword: $confirmPassword, referralCode: $referralCode, termsAcceptance: $termsAcceptance)';
+    return 'Registration(userName: $userName, fullName: $fullName, phoneNumber: $phoneNumber, password: $password, confirmPassword: $confirmPassword, termsAcceptance: $termsAcceptance)';
   }
 
   @override
@@ -235,21 +203,17 @@ class _$RegistrationImpl extends _Registration {
                 other.fullName == fullName) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
-            (identical(other.emailAddress, emailAddress) ||
-                other.emailAddress == emailAddress) &&
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.confirmPassword, confirmPassword) ||
                 other.confirmPassword == confirmPassword) &&
-            (identical(other.referralCode, referralCode) ||
-                other.referralCode == referralCode) &&
             (identical(other.termsAcceptance, termsAcceptance) ||
                 other.termsAcceptance == termsAcceptance));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, userName, fullName, phoneNumber,
-      emailAddress, password, confirmPassword, referralCode, termsAcceptance);
+      password, confirmPassword, termsAcceptance);
 
   /// Create a copy of Registration
   /// with the given fields replaced by the non-null parameter values.
@@ -265,10 +229,8 @@ abstract class _Registration extends Registration {
       {required final UserName userName,
       required final FullName fullName,
       required final PhoneNumber phoneNumber,
-      required final EmailAddress emailAddress,
       required final Password password,
       required final ConfirmPassword confirmPassword,
-      final ReferralCode? referralCode,
       required final TermsAcceptance termsAcceptance}) = _$RegistrationImpl;
   const _Registration._() : super._();
 
@@ -279,13 +241,9 @@ abstract class _Registration extends Registration {
   @override
   PhoneNumber get phoneNumber;
   @override
-  EmailAddress get emailAddress;
-  @override
   Password get password;
   @override
   ConfirmPassword get confirmPassword;
-  @override
-  ReferralCode? get referralCode;
   @override
   TermsAcceptance get termsAcceptance;
 

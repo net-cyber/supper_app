@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "873900800521",
+    "project_id": "super-app-ea596",
+    "storage_bucket": "super-app-ea596.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873900800521:android:81ca4d9907f502fe3e96d8",
+        "android_client_info": {
+          "package_name": "com.superapp.org.super_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8hZGd_kjKPV6Nnjz1KIH2EdrPOPVWe9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,16 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class Property extends Equatable {
-  final String id;
-  final String title;
-  final double price;
-  final PropertyLocation location;
-  final PropertySpecifications specifications;
-  final List<String> images;
-  final List<String> tags;
-  final DateTime dateAdded;
-  final bool mortgageEligible;
-  final double monthlyPaymentEstimate;
 
   const Property({
     required this.id,
@@ -24,6 +14,16 @@ class Property extends Equatable {
     required this.mortgageEligible,
     required this.monthlyPaymentEstimate,
   });
+  final String id;
+  final String title;
+  final double price;
+  final PropertyLocation location;
+  final PropertySpecifications specifications;
+  final List<String> images;
+  final List<String> tags;
+  final DateTime dateAdded;
+  final bool mortgageEligible;
+  final double monthlyPaymentEstimate;
 
   @override
   List<Object?> get props => [
@@ -41,10 +41,6 @@ class Property extends Equatable {
 }
 
 class PropertyLocation extends Equatable {
-  final String neighborhood;
-  final String city;
-  final double? latitude;
-  final double? longitude;
 
   const PropertyLocation({
     required this.neighborhood,
@@ -52,16 +48,16 @@ class PropertyLocation extends Equatable {
     this.latitude,
     this.longitude,
   });
+  final String neighborhood;
+  final String city;
+  final double? latitude;
+  final double? longitude;
 
   @override
   List<Object?> get props => [neighborhood, city, latitude, longitude];
 }
 
 class PropertySpecifications extends Equatable {
-  final int bedrooms;
-  final int bathrooms;
-  final double size;
-  final String propertyType;
 
   const PropertySpecifications({
     required this.bedrooms,
@@ -69,6 +65,10 @@ class PropertySpecifications extends Equatable {
     required this.size,
     required this.propertyType,
   });
+  final int bedrooms;
+  final int bathrooms;
+  final double size;
+  final String propertyType;
 
   @override
   List<Object?> get props => [bedrooms, bathrooms, size, propertyType];

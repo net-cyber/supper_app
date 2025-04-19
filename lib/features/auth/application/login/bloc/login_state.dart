@@ -7,7 +7,9 @@ part 'login_state.freezed.dart';
 @freezed
 class LoginState with _$LoginState {
   const factory LoginState({
-    required EmailAddress email, required Password password, @Default(false) bool isLoading,
+    required Username username,
+    required Password password,
+    @Default(false) bool isLoading,
     @Default(false) bool isLoginError,
     @Default(false) bool showErrorMessages,
     @Default(false) bool showPassword,

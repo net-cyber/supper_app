@@ -21,6 +21,7 @@ abstract class AbstractValueObject<T> implements IValidatable {
 
   Either<ValueFailure<dynamic>, Unit> get failureOrUnit {
     return value.fold(
+
       left,
       (r) => right(unit),
     );
@@ -65,3 +66,4 @@ abstract class AbstractValueObject<T> implements IValidatable {
 
 //   const UniqueId._(this.value);
 // }
+

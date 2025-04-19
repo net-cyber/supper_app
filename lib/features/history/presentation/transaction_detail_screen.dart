@@ -7,13 +7,7 @@ import 'package:super_app/core/theme/app_colors.dart';
 class TransactionDetailScreen extends StatelessWidget {
 
   const TransactionDetailScreen({
-    super.key,
-    required this.transactionId,
-    required this.type,
-    required this.amount,
-    required this.status,
-    required this.recipient,
-    required this.date,
+    required this.transactionId, required this.type, required this.amount, required this.status, required this.recipient, required this.date, super.key,
   });
   final String transactionId;
   final String type;

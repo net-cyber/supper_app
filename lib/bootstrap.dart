@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -25,8 +26,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
+  WidgetsFlutterBinding.ensureInitialized();
 
   Bloc.observer = const AppBlocObserver();
+
+  // Initialize LocalStorage
+  await LocalStorage.ensureInitialized();
 
   // Add cross-flavor configuration here
   configureDependencies();

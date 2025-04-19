@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:super_app/features/chat/common/routes/names.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:super_app/core/constants/app_constants.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
+import 'package:super_app/features/accounts/domain/entities/account.dart';
+
+import 'package:super_app/features/auth/domain/user/user_service.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,7 +26,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool _isBalanceVisible = false;
-  int _currentPageIndex = 0;
+  bool _isGohBetochLoading = false;
+  int _currentAccountIndex = 0;
+  final PageController _pageController = PageController();
+  int _current = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +41,17 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           children: [
             _buildBalanceCard(),
-            SizedBox(height: 12.h),
+            SizedBox(height: 1.h),
             _buildPageIndicator(),
             SizedBox(height: 24.h),
             _buildQuickActions(),
             SizedBox(height: 32.h),
             _buildServiceCategories(),
             SizedBox(height: 32.h),
-            
+            _buildAdsSection(),
+            SizedBox(height: 32.h),
+            _buildMiniAppSection(),
+            SizedBox(height: 32.h),
           ],
         ),
       ),
@@ -48,13 +66,13 @@ class _MainScreenState extends State<MainScreen> {
       title: Row(
         children: [
           Image.asset(
-            AppConstants.gohbetochLogoHorizontal,
-            width: 28.w,
-            height: 28.h,
+            AppConstants.gohbetochLogoVertical,
+            width: 58.w,
+            height: 58.h,
           ),
           SizedBox(width: 12.w),
           Text(
-            'Goh Betoch Bank',
+            'GOH Supper App',
             style: GoogleFonts.outfit(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
@@ -83,31 +101,91 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildBalanceCard() {
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      builder: (context, state) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          height: 290.h,
+          child: Stack(
+            children: [
+              // PageView for horizontal scrolling of account cards
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentAccountIndex = index;
+                  });
+                },
+                itemCount: state.accounts.isEmpty ? 1 : state.accounts.length,
+                itemBuilder: (context, index) {
+                  // When accounts are loaded, display account data
+                  if (state.accounts.isNotEmpty) {
+                    final account = state.accounts[index];
+                    return _buildAccountCard(account, _currentAccountIndex);
+                  }
+                  // When loading or no accounts, display placeholder
+                  return _buildAccountCardPlaceholder(state);
+                },
+              ),
+
+              // Account page indicator (dots)
+              if (state.accounts.length > 1)
+                Positioned(
+                  bottom: 8.h,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      state.accounts.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: index == _currentAccountIndex ? 24.w : 8.w,
+                        height: 8.h,
+                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        decoration: BoxDecoration(
+                          color: index == _currentAccountIndex
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAccountCard(Account account, int currentAccountIndex) {
+    // Set color to match SOL card's black background
+    final Color cardBaseColor = currentAccountIndex % 2 == 1
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.secondary;
+    final userDetail = getIt<UserService>().getCurrentUser();
     return Container(
-      margin: EdgeInsets.all(16.w),
-      height: 230.h,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.85),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24.r),
+        color: cardBaseColor,
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          // Subtle pattern overlay
-          Positioned.fill(
+          // Background branding "SOL" as large faded text
+          Positioned(
+            right: 0,
+            top: 20.h,
+            bottom: 20.h,
             child: Opacity(
               opacity: 0.07,
               child: CustomPaint(
@@ -146,15 +224,17 @@ class _MainScreenState extends State<MainScreen> {
 
           // Card content
           Padding(
-            padding: EdgeInsets.all(24.w),
+            padding: EdgeInsets.all(20.w),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Bank logo/platinum indicator
+                // SOL Card branding and Virtual label
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.asset(
                           AppConstants.gohbetochLogoVertical,
@@ -171,12 +251,12 @@ class _MainScreenState extends State<MainScreen> {
                             borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: Text(
-                            'PLATINUM',
+                            account.currency,
                             style: GoogleFonts.outfit(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
-                              letterSpacing: 1.0,
+                              letterSpacing: 1,
                             ),
                           ),
                         ),
@@ -186,18 +266,58 @@ class _MainScreenState extends State<MainScreen> {
                 ),
 
                 const Spacer(),
+                // Card number
+                Column(
+                  children: [
+                    Text(
+                      'ACCOUNT BALANCE',
+                      style: GoogleFonts.outfit(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      _isBalanceVisible
+                          ? account.balance.toString()
+                          : '•••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
 
                 // Card number
-                Text(
-                  _isBalanceVisible
-                      ? '1288 7068 2260 2640'
-                      : '•••• •••• •••• ••••',
-                  style: GoogleFonts.spaceGrotesk(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    letterSpacing: 1.5,
-                  ),
+                Column(
+                  children: [
+                    Text(
+                      'ACCOUNT NUMBER',
+                      style: GoogleFonts.outfit(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      _isBalanceVisible
+                          ? account.id.toString()
+                          : '•••• •••• •••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: 16.h),
@@ -211,7 +331,7 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'CARD HOLDER',
+                            'ACCOUNT HOLDER',
                             style: GoogleFonts.outfit(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w500,
@@ -221,7 +341,9 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            _isBalanceVisible ? 'ADEN ERICKSON' : '••••••••••',
+                            _isBalanceVisible
+                                ? account.owner.toUpperCase()
+                                : '••••••••••',
                             style: GoogleFonts.spaceGrotesk(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
@@ -259,25 +381,40 @@ class _MainScreenState extends State<MainScreen> {
 
           // Tap to show/hide button
           Positioned(
-            top: 16.h,
-            right: 16.w,
+            top: 12.h,
+            right: 12.w,
             child: GestureDetector(
               onTap: () {
                 setState(() {
                   _isBalanceVisible = !_isBalanceVisible;
                 });
               },
-              child: Container(
-                padding: EdgeInsets.all(6.w),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  _isBalanceVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.white,
-                  size: 18.sp,
-                ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      _isBalanceVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.white,
+                      size: 16.sp,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    _isBalanceVisible ? 'Hide' : 'Show',
+                    style: GoogleFonts.outfit(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -286,24 +423,329 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildPageIndicator() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        3,
-        (index) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: index == _currentPageIndex ? 24.w : 8.w,
-          height: 8.h,
-          margin: EdgeInsets.symmetric(horizontal: 4.w),
-          decoration: BoxDecoration(
-            color: index == _currentPageIndex
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey[300],
-            borderRadius: BorderRadius.circular(4.r),
-          ),
+  Widget _buildAccountCardPlaceholder(AccountsState state) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.primary.withOpacity(0.85),
+          ],
         ),
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          // Background pattern
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.05,
+              child: CustomPaint(
+                painter: CardPatternPainter(),
+              ),
+            ),
+          ),
+
+          // Card content
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Bank logo/loading indicator
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          AppConstants.gohbetochLogoVertical,
+                          width: 24.w,
+                          height: 24.h,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 8.w),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 6.w, vertical: 2.h),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                          child: Text(
+                            'ACCOUNT',
+                            style: GoogleFonts.outfit(
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Balance indicator
+                    if (state.isLoading)
+                      SizedBox(
+                        width: 16.w,
+                        height: 16.h,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.w,
+                          color: Colors.white,
+                        ),
+                      )
+                    else if (state.hasError)
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        icon: Icon(
+                          Icons.refresh_rounded,
+                          color: Colors.white,
+                          size: 16.sp,
+                        ),
+                        onPressed: () {
+                          context.read<AccountsBloc>().add(
+                                const AccountsEvent.refreshAccounts(),
+                              );
+                        },
+                      )
+                  ],
+                ),
+
+                // Placeholder content - middle section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Card number placeholder
+                    Text(
+                      '•••• •••• •••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+
+                    SizedBox(height: 8.h),
+
+                    Text(
+                      'AVAILABLE BALANCE',
+                      style: GoogleFonts.outfit(
+                        fontSize: 8.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    Text(
+                      state.hasError ? 'Error loading' : '••••••',
+                      style: GoogleFonts.outfit(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Placeholder for account holder - bottom section
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'CARDHOLDER',
+                          style: GoogleFonts.outfit(
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.7),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        Text(
+                          '••••••••••',
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      builder: (context, state) {
+        // If no accounts, don't show any indicators
+        if (state.accounts.isEmpty) {
+          return SizedBox(height: 34.h);
+        }
+
+        // Get current account and next/previous account if available
+        final currentAccount = state.accounts[_currentAccountIndex];
+        final prevAccountIndex =
+            (_currentAccountIndex - 1).clamp(0, state.accounts.length - 1);
+        final nextAccountIndex =
+            (_currentAccountIndex + 1).clamp(0, state.accounts.length - 1);
+
+        // Get the alternate account (either prev or next, depending on which side is selected)
+        final alternateAccount = _currentAccountIndex % 2 == 0
+            ? state.accounts[nextAccountIndex]
+            : state.accounts[prevAccountIndex];
+
+        // Selected option (0 = left, 1 = right)
+        final bool isRightSelected = _currentAccountIndex % 2 == 1;
+
+        return Container(
+          height: 42.h,
+          margin: EdgeInsets.symmetric(vertical: 10.h),
+          child: Center(
+            child: Container(
+              width: 0.72.sw,
+              height: 36.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8E8E8),
+                borderRadius: BorderRadius.circular(18.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    offset: const Offset(0, 1),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.all(3.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  // Left button
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (isRightSelected && state.accounts.isNotEmpty) {
+                          // Switch to the account shown on left
+                          _pageController.animateToPage(
+                            prevAccountIndex,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutCubic,
+                          );
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: !isRightSelected
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(15.r),
+                          boxShadow: !isRightSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 1),
+                                    spreadRadius: 0,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            isRightSelected
+                                ? alternateAccount.currency
+                                : currentAccount.currency,
+                            style: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700],
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Right button
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (!isRightSelected && state.accounts.isNotEmpty) {
+                          // Switch to the account shown on right
+                          _pageController.animateToPage(
+                            nextAccountIndex,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutCubic,
+                          );
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: isRightSelected
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(15.r),
+                          boxShadow: isRightSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 1),
+                                    spreadRadius: 0,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            isRightSelected
+                                ? currentAccount.currency
+                                : alternateAccount.currency,
+                            style: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700],
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -313,13 +755,13 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.account_balance_rounded,
         'label': 'Send To\nGoh Betoch',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.sendCash,
+        'route': RouteName.internalBankAccount,
       },
       {
         'icon': Icons.swap_horiz_rounded,
         'label': 'Send To\nOther Bank',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.sendCash,
+        'route': RouteName.bankSelection,
       },
       {
         'icon': Icons.home_work_rounded,
@@ -331,13 +773,13 @@ class _MainScreenState extends State<MainScreen> {
         'icon': Icons.account_balance_wallet_rounded,
         'label': 'Send To\nWallet',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.sendCash,
+        'route': RouteName.walletSelection,
       },
       {
         'icon': Icons.account_balance_wallet_rounded,
-        'label': 'Mobile \nTop-up',
+        'label': 'Send To\nWallet',
         'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.mobileTopup,
+        'route': RouteName.message,
       },
     ];
 
@@ -347,10 +789,10 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: actions.map((action) {
           return _buildActionItem(
-            icon: action['icon'] as IconData,
-            label: action['label'] as String,
-            color: action['color'] as Color,
-            route: action['route'] as String,
+            icon: action['icon']! as IconData,
+            label: action['label']! as String,
+            color: action['color']! as Color,
+            route: action['route']! as String,
           );
         }).toList(),
       ),
@@ -363,9 +805,37 @@ class _MainScreenState extends State<MainScreen> {
     required Color color,
     required String route,
   }) {
+    final bool isGohBetoch = label.contains('Goh Betoch');
+    final bool isLoading = isGohBetoch && _isGohBetochLoading;
+
     return GestureDetector(
       onTap: () {
-        context.pushNamed(route);
+        // Prevent multiple taps during loading
+        if (_isGohBetochLoading) return;
+
+        // Special handling for Goh Betoch button
+        if (isGohBetoch) {
+          setState(() {
+            _isGohBetochLoading = true;
+          });
+
+          // Add a small delay to show loading state
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) {
+              context.pushNamed(route).then((_) {
+                // Reset loading state when navigation completes or user returns
+                if (mounted) {
+                  setState(() {
+                    _isGohBetochLoading = false;
+                  });
+                }
+              });
+            }
+          });
+        } else {
+          // Normal navigation for other buttons
+          context.pushNamed(route);
+        }
       },
       child: Column(
         children: [
@@ -392,16 +862,25 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             child: Center(
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 26.sp,
-              ),
+              child: isLoading
+                  ? SizedBox(
+                      width: 24.w,
+                      height: 24.h,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.w,
+                      ),
+                    )
+                  : Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 26.sp,
+                    ),
             ),
           ),
           SizedBox(height: 12.h),
           Text(
-            label,
+            isLoading ? 'Loading...' : label,
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
               fontSize: 12.sp,
@@ -495,7 +974,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {},
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary,
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -563,7 +1043,6 @@ class _MainScreenState extends State<MainScreen> {
                 color: Colors.black.withOpacity(0.04),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
-                spreadRadius: 0,
               ),
             ],
           ),
@@ -587,7 +1066,6 @@ class _MainScreenState extends State<MainScreen> {
                       color: color.withOpacity(0.25),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
-                      spreadRadius: 0,
                     ),
                   ],
                 ),
@@ -617,7 +1095,315 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  
+  Widget _buildMiniAppSection() {
+    final miniApps = [
+      {
+        'icon': Icons.directions_car,
+        'label': 'Transport',
+        'color': Color(0xFF007AFF),
+        'url': 'https://www.uber.com',
+      },
+      {
+        'icon': Icons.movie,
+        'label': 'Movies',
+        'color': Color(0xFF5CB85C),
+        'url': 'https://www.netflix.com',
+      },
+      {
+        'icon': Icons.directions_bus_filled,
+        'label': 'Bus',
+        'color': Color(0xFFFF9500),
+        'url': 'https://www.google.com/maps',
+      },
+      {
+        'icon': Icons.shopping_cart,
+        'label': 'Shopping',
+        'color': Color(0xFFFF2D55),
+        'url': 'https://www.amazon.com',
+      },
+      {
+        'icon': Icons.restaurant,
+        'label': 'Food',
+        'color': Color(0xFF5856D6),
+        'url': 'https://www.doordash.com',
+      },
+      {
+        'icon': Icons.sports_soccer,
+        'label': 'Sports',
+        'color': Color(0xFFFF3B30),
+        'url': 'https://www.espn.com',
+      },
+      {
+        'icon': Icons.local_hospital,
+        'label': 'Healthcare',
+        'color': Color(0xFF34C759),
+        'url': 'https://www.webmd.com',
+      },
+      {
+        'icon': Icons.local_grocery_store,
+        'label': 'Groceries',
+        'color': Color(0xFFAF52DE),
+        'url': 'https://www.instacart.com',
+      },
+    ];
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 8.w, bottom: 16.h),
+            child: Row(
+              children: [
+                Text(
+                  'Mini Apps',
+                  style: GoogleFonts.outfit(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'View All',
+                        style: GoogleFonts.outfit(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Icon(Icons.arrow_forward_rounded, size: 16.sp),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              childAspectRatio: 0.8,
+              crossAxisSpacing: 12.w,
+              mainAxisSpacing: 16.h,
+            ),
+            itemCount: miniApps.length,
+            itemBuilder: (context, index) {
+              return _buildMiniAppItem(
+                icon: miniApps[index]['icon'] as IconData,
+                label: miniApps[index]['label'] as String,
+                color: miniApps[index]['color'] as Color,
+                url: miniApps[index]['url'] as String,
+                imagePath: miniApps[index]['image'] as String?,
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMiniAppItem({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required String url,
+    String? imagePath,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          context.pushNamed(
+            RouteName.webView,
+            extra: {
+              'title': label,
+              'url': url,
+            },
+          );
+        },
+        borderRadius: BorderRadius.circular(16.r),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 48.w,
+                height: 48.h,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      color,
+                      color.withOpacity(0.8),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: imagePath != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10.r),
+                          child: Image.asset(
+                            imagePath,
+                            width: 32.w,
+                            height: 32.h,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : Icon(
+                          icon,
+                          color: Colors.white,
+                          size: 24.sp,
+                        ),
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.outfit(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdsSection() {
+    final List<String> adImages = [
+      'assets/add1.png',
+      'assets/add2.png',
+    ];
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 1584 / 396,
+                viewportFraction: 1.0,
+                autoPlayCurve: Curves.easeInOut,
+                autoPlayAnimationDuration: Duration(seconds: 2),
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                },
+              ),
+              items: adImages.map((imagePath) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16.r),
+                          child: Image.asset(
+                            imagePath,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.black.withOpacity(0.3),
+                                Colors.transparent,
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 8.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: adImages.map((url) {
+                int index = adImages.indexOf(url);
+                return _buildIndicator(index == _current);
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIndicator(bool isActive) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      margin: EdgeInsets.symmetric(horizontal: 4.w),
+      width: isActive ? 12.w : 8.w,
+      height: 8.h,
+      decoration: BoxDecoration(
+        color: isActive ? Theme.of(context).colorScheme.primary : Colors.grey,
+        borderRadius: BorderRadius.circular(4.r),
+      ),
+    );
+  }
 }
 
 class ChipPatternPainter extends CustomPainter {
@@ -629,7 +1415,7 @@ class ChipPatternPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     // Draw horizontal lines
-    for (int i = 0; i < 6; i++) {
+    for (var i = 0; i < 6; i++) {
       final y = i * size.height / 5;
       canvas.drawLine(
         Offset(0, y),
@@ -639,7 +1425,7 @@ class ChipPatternPainter extends CustomPainter {
     }
 
     // Draw vertical lines
-    for (int i = 0; i < 8; i++) {
+    for (var i = 0; i < 8; i++) {
       final x = i * size.width / 7;
       canvas.drawLine(
         Offset(x, 0),
@@ -692,7 +1478,7 @@ class CardPatternPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     // Draw subtle grid lines
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       // Horizontal lines
       canvas.drawLine(
         Offset(0, i * size.height / 9),

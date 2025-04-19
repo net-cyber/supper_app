@@ -10,38 +10,34 @@ import 'package:super_app/features/auth/domain/repositories/auth_repository.dart
 
 @injectable
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
-  final AuthRepository _authRepository;
 
   RegistrationBloc(this._authRepository) 
     : super(RegistrationState(
         userName: UserName(''),
         fullName: FullName(''),
         phoneNumber: PhoneNumber(''),
-        emailAddress: EmailAddress(''),
         password: Password(''),
         confirmPassword: ConfirmPassword('', ''),
-        referralCode: ReferralCode(''),
         termsAcceptance: TermsAcceptance(false),
       )) {
     on<UserNameChanged>(_onUserNameChanged);
     on<FullNameChanged>(_onFullNameChanged);
     on<PhoneNumberChanged>(_onPhoneNumberChanged);
-    on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<ConfirmPasswordChanged>(_onConfirmPasswordChanged);
-    on<ReferralCodeChanged>(_onReferralCodeChanged);
     on<TermsAcceptedChanged>(_onTermsAcceptedChanged);
     on<ToggleShowPassword>(_onToggleShowPassword);
     on<ToggleShowConfirmPassword>(_onToggleShowConfirmPassword);
     on<RegistrationSubmitted>(_onRegistrationSubmitted);
   }
+  final AuthRepository _authRepository;
 
   void _onUserNameChanged(UserNameChanged event, Emitter<RegistrationState> emit) {
     emit(state.copyWith(
       userName: UserName(event.userName.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onFullNameChanged(FullNameChanged event, Emitter<RegistrationState> emit) {
@@ -49,7 +45,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       fullName: FullName(event.fullName.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onPhoneNumberChanged(PhoneNumberChanged event, Emitter<RegistrationState> emit) {
@@ -57,65 +53,54 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       phoneNumber: PhoneNumber(event.phoneNumber.trim()),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
-  void _onEmailChanged(EmailChanged event, Emitter<RegistrationState> emit) {
-    emit(state.copyWith(
-      emailAddress: EmailAddress(event.email.trim()),
-      showErrorMessages: false,
-      isRegistrationError: false,
-    ));
-  }
+
 
   void _onPasswordChanged(PasswordChanged event, Emitter<RegistrationState> emit) {
-    final String password = event.password.trim();
+    final password = event.password.trim();
     final passwordObj = Password(password);
     
     // Calculate password strength
-    double strength = 0.0;
+    var strength = 0.0;
     if (password.length >= 8) strength += 0.25;
-    if (password.contains(RegExp(r'[A-Z]'))) strength += 0.25;
-    if (password.contains(RegExp(r'[0-9]'))) strength += 0.25;
+    if (password.contains(RegExp('[A-Z]'))) strength += 0.25;
+    if (password.contains(RegExp('[0-9]'))) strength += 0.25;
     if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) strength += 0.25;
     
     emit(state.copyWith(
       password: passwordObj,
       confirmPassword: ConfirmPassword(
-        state.confirmPassword.getOrCrash(), 
+        state.confirmPassword.value.getOrElse(() => ''), 
         password,
       ),
       passwordStrength: strength,
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onConfirmPasswordChanged(ConfirmPasswordChanged event, Emitter<RegistrationState> emit) {
     emit(state.copyWith(
       confirmPassword: ConfirmPassword(
         event.confirmPassword.trim(), 
-        state.password.getOrCrash(),
+        state.password.value.getOrElse(() => ''),
       ),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+      ),
+    );
   }
 
-  void _onReferralCodeChanged(ReferralCodeChanged event, Emitter<RegistrationState> emit) {
-    emit(state.copyWith(
-      referralCode: ReferralCode(event.referralCode.trim()),
-      showErrorMessages: false,
-      isRegistrationError: false,
-    ));
-  }
+
 
   void _onTermsAcceptedChanged(TermsAcceptedChanged event, Emitter<RegistrationState> emit) {
     emit(state.copyWith(
       termsAcceptance: TermsAcceptance(event.accepted),
       showErrorMessages: false,
       isRegistrationError: false,
-    ));
+    ),);
   }
 
   void _onToggleShowPassword(ToggleShowPassword event, Emitter<RegistrationState> emit) {
@@ -133,7 +118,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       emit(state.copyWith(
         isRegistrationError: true,
         errorMessage: 'No internet connection. Please check your network.',
-      ));
+      ),);
       return;
     }
     
@@ -148,25 +133,51 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       userName: state.userName,
       fullName: state.fullName,
       phoneNumber: state.phoneNumber,
-      emailAddress: state.emailAddress,
       password: state.password,
       confirmPassword: state.confirmPassword,
-      referralCode: state.referralCode,
       termsAcceptance: state.termsAcceptance,
     );
     
     final result = await _authRepository.register(registration);
     
-    result.fold(
-      (failure) => emit(state.copyWith(
-        isLoading: false,
-        isRegistrationError: true,
-        errorMessage: NetworkExceptions.getErrorMessage(failure),
-      )),
-      (response) => emit(state.copyWith(
-        isLoading: false,
-        isRegistrationError: false,
-      )),
-    );
+    // Handle the first result
+    if (result.isLeft()) {
+      final failure = result.fold(
+        (l) => l,
+        (r) => null,
+      );
+      if (!emit.isDone) {
+        emit(state.copyWith(
+          isLoading: false,
+          isRegistrationError: true,
+          errorMessage: NetworkExceptions.getErrorMessage(failure!),
+        ),);
+      }
+      return;
+    }
+    
+    // After successful registration, send verification code
+    final response = result.fold((l) => null, (r) => r);
+    final phoneNumber = registration.phoneNumber.value.getOrElse(() => '');
+    final verificationResult = await _authRepository.sendVerificationCode(phoneNumber);
+    
+    // Before final emit, check if the emitter is still active
+    if (!emit.isDone) {
+      verificationResult.fold(
+        (failure) => emit(state.copyWith(
+          isLoading: false,
+          isRegistrationError: true,
+          errorMessage: 'Registration successful, but unable to send verification code: ${NetworkExceptions.getErrorMessage(failure)}',
+          registrationResponse: response,
+        ),),
+        (verificationResponse) => emit(state.copyWith(
+          isLoading: false,
+          isRegistrationError: false,
+          registrationResponse: response,
+          verificationSent: true,
+          verificationResponse: verificationResponse,
+        ),),
+      );
+    }
   }
 } 
