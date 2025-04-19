@@ -11,6 +11,12 @@ import 'package:super_app/features/accounts/application/list/bloc/accounts_event
 import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
 import 'package:super_app/features/transf/application/external_transfer/bloc/external_transfer_bloc.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
+import 'package:super_app/features/transf/presentation/widget/success_dialog.dart';
+import 'package:super_app/features/transf/presentation/widget/receipt_widget.dart';
+import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 
 class ConfirmTransferScreen extends StatefulWidget {
   final Map<String, dynamic> transferData;
@@ -35,6 +41,11 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   bool _isDataLoading = false;
   String? _userFullName;
   Map<String, dynamic>? _senderAccount;
+  
+  // Add variables for receipt generation
+  String? _generatedReceiptPath;
+  String? _generatedReceiptName;
+  final GlobalKey _successDialogKey = GlobalKey();
 
   @override
   void initState() {
@@ -190,8 +201,21 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                 _transactionId = state.transferResponse?.id?.toString() ?? "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
               });
               
-              // Show success dialog
-              _showSuccessDialog(context, _transactionId!);
+              // Generate receipt automatically before showing success dialog
+              _generateReceiptAutomatically(state).then((_) {
+                // After receipt is generated, show success dialog
+                _showSuccessDialog(
+                  context,
+                  _transactionId!,
+                );
+              }).catchError((error) {
+                log('Error generating receipt automatically: $error');
+                // Still show success dialog even if receipt generation fails
+                _showSuccessDialog(
+                  context,
+                  _transactionId!,
+                );
+              });
             }
           },
         ),
@@ -520,178 +544,90 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
     );
   }
 
+  // Update the success dialog to use the shared success dialog widget
   void _showSuccessDialog(BuildContext context, String transactionId) {
-    final amount = (widget.transferData['amount'] as num).toDouble();
-    final fee = widget.transferData.containsKey('fee')
-        ? (widget.transferData['fee'] as num).toDouble()
-        : 0.0;
-
-    showDialog<void>(
+    showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        contentPadding: EdgeInsets.all(24.w),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Success animation
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 64.sp,
-              ),
-            ),
-            SizedBox(height: 24.h),
-
-            // External transfer badge
-            Container(
-              margin: EdgeInsets.only(bottom: 16.h),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: Colors.purple.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: Colors.purple.withOpacity(0.3),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.swap_horiz_rounded,
-                    color: Colors.purple,
-                    size: 14.sp,
-                  ),
-                  SizedBox(width: 4.w),
-                  Text(
-                    'External Bank Transfer',
-                    style: GoogleFonts.outfit(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.purple,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Text(
-              'Transfer Successful!',
-              style: GoogleFonts.outfit(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 12.h),
-
-            Text(
-              'Your transfer of ${amount.toStringAsFixed(2)} ETB to ${widget.transferData['accountHolderName'].toString()} has been processed successfully.',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                fontSize: 14.sp,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 8.h),
-
-            // Receipt number
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(vertical: 16.h),
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Receipt Number',
-                    style: GoogleFonts.outfit(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    transactionId,
-                    style: GoogleFonts.outfit(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 24.h),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28.r),
-                  ),
-                ),
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Theme.of(context).colorScheme.primary,
-                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                      ],
-                      stops: const [0.3, 1.0],
-                    ),
-                    borderRadius: BorderRadius.circular(28.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.25),
-                        blurRadius: 15,
-                        offset: const Offset(0, 6),
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 56.h,
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Done',
-                      style: GoogleFonts.outfit(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      builder: (context) => SuccessDialog(
+        transactionId: transactionId,
+        amount: (widget.transferData['amount'] as num).toDouble(),
+        recipientName: widget.transferData['accountHolderName'].toString(),
+        receiptPath: _generatedReceiptPath,
+        receiptName: _generatedReceiptName,
+        routeName: RouteName.mainScreen,
+        transactionType: 'External Bank Transfer',
+        currency: 'ETB',
+        primaryColor: Theme.of(context).colorScheme.primary,
+        successColor: Colors.purple,
       ),
     );
+  }
+
+  // Helper method to automatically generate the receipt after a successful transfer
+  Future<void> _generateReceiptAutomatically(ExternalTransferState state) async {
+    try {
+      if (!state.isTransferred || state.transferResponse == null) {
+        throw Exception('Cannot generate receipt: Transfer data not available');
+      }
+
+      // Get transfer data from the bloc state
+      final transferResponse = state.transferResponse!;
+      final transactionId = _transactionId ?? transferResponse.id.toString();
+
+      log('Automatically generating PDF receipt for transaction: $transactionId');
+
+      // Get current date and time for the receipt
+      final now = DateTime.now();
+      final formattedDate =
+          '${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}';
+      final formattedTime =
+          '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
+
+      // Generate the PDF using the shared ReceiptWidget
+      final pdf = await ReceiptWidget.generateReceipt(
+        transactionId: transactionId,
+        amount: transferResponse.amount,
+        fromAccountId: transferResponse.fromAccountId.toString(),
+        toAccountId: transferResponse.toAccountNumber,
+        fromName: _userFullName ?? 'Account Holder',
+        toName: widget.transferData['accountHolderName']?.toString() ?? 'Recipient',
+        fromBank: 'Gohe Betoch Bank',
+        toBank: transferResponse.toBankCode,
+        currency: 'ETB',
+        status: transferResponse.status,
+        timestamp: '$formattedDate | $formattedTime',
+        transactionRef: transferResponse.reference,
+        transactionType: 'External Bank Transfer',
+        primaryColor: Theme.of(context).colorScheme.primary,
+        secondaryColor: Theme.of(context).colorScheme.secondary,
+        accentColor: Colors.purple,
+        lightAccent: Colors.purple.shade100,
+        borderColor: Colors.grey.shade300,
+        backgroundColor: Colors.grey.shade100,
+      );
+
+      // Get the path to save the PDF
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = 'NekaPayTransfer_$transactionId.pdf';
+      final filePath = '${directory.path}/$fileName';
+
+      // Save the PDF
+      final file = File(filePath);
+      await file.writeAsBytes(await pdf.save());
+
+      // Store the generated receipt path for later use
+      _generatedReceiptPath = filePath;
+      _generatedReceiptName = fileName;
+
+      log('PDF receipt automatically generated and saved at: $filePath');
+    } catch (e) {
+      log('Error in automatic receipt generation: $e');
+      // Reset path variables in case of error
+      _generatedReceiptPath = null;
+      _generatedReceiptName = null;
+      // Re-throw to be caught by the caller
+      throw e;
+    }
   }
 }
