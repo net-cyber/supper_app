@@ -6,7 +6,21 @@ import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/transf/domain/entities/financial_institution/financial_institution.dart';
-import 'package:super_app/features/transf/infrastructure/datasources/financial_institution_remote_data_source.dart';
+
+abstract class FinancialInstitutionRemoteDataSource {
+  /// Fetches a paginated list of financial institutions
+  /// 
+  /// Parameters:
+  /// - [pageId]: The page number to fetch
+  /// - [pageSize]: The number of institutions to fetch per page
+  /// 
+  /// Returns:
+  /// - A [Future] with [Either] a [NetworkExceptions] on error or a [List<FinancialInstitution>] on success
+  Future<Either<NetworkExceptions, List<FinancialInstitution>>> getFinancialInstitutions({
+    required int pageId,
+    required int pageSize,
+  });
+}
 
 @Injectable(as: FinancialInstitutionRemoteDataSource)
 class FinancialInstitutionRemoteDataSourceImpl implements FinancialInstitutionRemoteDataSource {

@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/transf/domain/entities/financial_institution/financial_institution.dart';
 import 'package:super_app/features/transf/domain/repositories/financial_institution_repository.dart';
-import 'package:super_app/features/transf/infrastructure/datasources/financial_institution_remote_data_source.dart';
+import 'package:super_app/features/transf/infrastructure/datasources/financial_institution_remote_data_source_impl.dart';
 
 @Injectable(as: FinancialInstitutionRepository)
 class FinancialInstitutionRepositoryImpl implements FinancialInstitutionRepository {

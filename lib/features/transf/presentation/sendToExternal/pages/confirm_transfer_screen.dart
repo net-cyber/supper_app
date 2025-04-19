@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class ConfirmTransferScreen extends StatefulWidget {
@@ -23,21 +29,65 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   bool _isTransactionComplete = false;
   String? _transactionId;
   String? _errorMessage;
-
-  // Mock data for sender
-  final Map<String, String> _sender = {
-    'name': 'Bereket Tefera',
-    'accountNumber': '1234567890',
-    'bank': 'Goh Betoch Bank',
-  };
+  late final AccountsBloc _accountsBloc;
+  bool _isDataLoading = false;
+  String? _userFullName;
+  Map<String, dynamic>? _senderAccount;
 
   @override
   void initState() {
     super.initState();
+    _accountsBloc = getIt<AccountsBloc>();
+    
+    // Check if data was preloaded from previous screen
+    if (widget.transferData.containsKey('preloaded') && widget.transferData['preloaded'] == true) {
+      // Use preloaded user name if available
+      if (widget.transferData.containsKey('senderName')) {
+        _userFullName = widget.transferData['senderName'] as String?;
+      } else {
+        _loadUserData();
+      }
+    } else {
+      // Fall back to original loading behavior if data wasn't preloaded
+      _isDataLoading = true;
+      _loadUserData();
+
+      // Check if accounts data is loaded
+      if (_accountsBloc.state.accounts.isEmpty && !_accountsBloc.state.isLoading) {
+        _accountsBloc.add(const FetchAccounts());
+      } else if (_accountsBloc.state.accounts.isNotEmpty) {
+        _setSenderAccount();
+        setState(() {
+          _isDataLoading = false;
+        });
+      }
+    }
+
     if (widget.transferData.containsKey('reason') &&
         widget.transferData['reason'] != null &&
         widget.transferData['reason'].toString().isNotEmpty) {
       _reasonController.text = widget.transferData['reason'].toString();
+    }
+  }
+
+  void _loadUserData() {
+    final userData = LocalStorage.instance.getUserData();
+    if (userData != null) {
+      setState(() {
+        _userFullName = userData['full_name'] as String? ?? 'Account Holder';
+      });
+    }
+  }
+
+  void _setSenderAccount() {
+    if (_accountsBloc.state.accounts.isNotEmpty) {
+      final firstAccount = _accountsBloc.state.accounts.first;
+      setState(() {
+        _senderAccount = {
+          'accountNumber': firstAccount.id,
+          'bank': 'Gohe Betoch Bank'
+        };
+      });
     }
   }
 
@@ -55,225 +105,236 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
         : 0.0;
     final double totalAmount = amount + fee;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return BlocListener<AccountsBloc, AccountsState>(
+      bloc: _accountsBloc,
+      listener: (context, state) {
+        if (state.accounts.isNotEmpty) {
+          _setSenderAccount();
+          setState(() {
+            _isDataLoading = false;
+          });
+        }
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Confirm Transfer',
-          style: GoogleFonts.outfit(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            'Confirm Transfer',
+            style: GoogleFonts.outfit(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Review',
-              style: GoogleFonts.outfit(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+        body: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Review',
+                style: GoogleFonts.outfit(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              'Please verify all details before confirming the transfer',
-              style: GoogleFonts.outfit(
-                fontSize: 16.sp,
-                color: Colors.grey[600],
+              SizedBox(height: 8.h),
+              Text(
+                'Please verify all details before confirming the transfer',
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  color: Colors.grey[600],
+                ),
               ),
-            ),
-            SizedBox(height: 24.h),
+              SizedBox(height: 24.h),
 
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Transfer details card
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: Colors.grey[300]!),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Transfer details card
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: Colors.grey[300]!),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Header with transfer icon
+                            Container(
+                              width: 64.w,
+                              height: 64.h,
+                              decoration: BoxDecoration(
+                                color: Colors.purple.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.swap_horiz_rounded,
+                                color: Colors.purple,
+                                size: 32.sp,
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
+                              'Transfer Details',
+                              style: GoogleFonts.outfit(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              'Transaction ID: ${_transactionId ?? "Pending"}',
+                              style: GoogleFonts.outfit(
+                                fontSize: 12.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            SizedBox(height: 24.h),
+
+                            // From (Sender)
+                            _buildSectionLabel('From'),
+                            SizedBox(height: 8.h),
+                            _buildDetailRow('Name', _userFullName ?? 'Account Holder'),
+                            _buildDetailRow('Account Number', _senderAccount?['accountNumber']?.toString() ?? ''),
+                            _buildDetailRow('Bank', _senderAccount?['bank']?.toString() ?? ''),
+
+                            SizedBox(height: 24.h),
+                            Divider(height: 1, color: Colors.grey[300]),
+                            SizedBox(height: 24.h),
+
+                            // To (Receiver)
+                            _buildSectionLabel('To'),
+                            SizedBox(height: 8.h),
+                            _buildDetailRow('Name', widget.transferData['accountHolderName'].toString()),
+                            _buildDetailRow('Account Number', widget.transferData['accountNumber'].toString()),
+                            _buildDetailRow('Bank', widget.transferData['name'].toString()),
+
+                            SizedBox(height: 24.h),
+                            Divider(height: 1, color: Colors.grey[300]),
+                            SizedBox(height: 24.h),
+
+                            // Amount Details
+                            _buildSectionLabel('Amount'),
+                            SizedBox(height: 8.h),
+                            _buildDetailRow('Transfer Amount', '${amount.toStringAsFixed(2)} ETB'),
+                            _buildDetailRow('Service Charge', '${fee.toStringAsFixed(2)} ETB'),
+                            SizedBox(height: 16.h),
+                            _buildDetailRow(
+                              'Total Amount',
+                              '${totalAmount.toStringAsFixed(2)} ETB',
+                              valueStyle: GoogleFonts.outfit(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.purple,
+                              ),
+                            ),
+
+                            SizedBox(height: 24.h),
+                            Divider(height: 1, color: Colors.grey[300]),
+                            SizedBox(height: 24.h),
+
+                            // Date and Time
+                            _buildDetailRow('Date & Time', _formatDateTime(DateTime.now())),
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Header with transfer icon
-                          Container(
-                            width: 64.w,
-                            height: 64.h,
-                            decoration: BoxDecoration(
-                              color: Colors.purple.withOpacity(0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.swap_horiz_rounded,
-                              color: Colors.purple,
-                              size: 32.sp,
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'Transfer Details',
-                            style: GoogleFonts.outfit(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          Text(
-                            'Transaction ID: ${_transactionId ?? "Pending"}',
-                            style: GoogleFonts.outfit(
-                              fontSize: 12.sp,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          SizedBox(height: 24.h),
 
-                          // From (Sender)
-                          _buildSectionLabel('From'),
-                          SizedBox(height: 8.h),
-                          _buildDetailRow('Name', _sender['name']!),
-                          _buildDetailRow('Account Number', _sender['accountNumber']!),
-                          _buildDetailRow('Bank', _sender['bank']!),
+                      SizedBox(height: 24.h),
 
-                          SizedBox(height: 24.h),
-                          Divider(height: 1, color: Colors.grey[300]),
-                          SizedBox(height: 24.h),
-
-                          // To (Receiver)
-                          _buildSectionLabel('To'),
-                          SizedBox(height: 8.h),
-                          _buildDetailRow('Name', widget.transferData['accountHolderName'].toString()),
-                          _buildDetailRow('Account Number', widget.transferData['accountNumber'].toString()),
-                          _buildDetailRow('Bank', widget.transferData['name'].toString()),
-
-                          SizedBox(height: 24.h),
-                          Divider(height: 1, color: Colors.grey[300]),
-                          SizedBox(height: 24.h),
-
-                          // Amount Details
-                          _buildSectionLabel('Amount'),
-                          SizedBox(height: 8.h),
-                          _buildDetailRow('Transfer Amount', '${amount.toStringAsFixed(2)} ETB'),
-                          _buildDetailRow('Service Charge', '${fee.toStringAsFixed(2)} ETB'),
-                          SizedBox(height: 16.h),
-                          _buildDetailRow(
-                            'Total Amount',
-                            '${totalAmount.toStringAsFixed(2)} ETB',
-                            valueStyle: GoogleFonts.outfit(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                            ),
-                          ),
-
-                          SizedBox(height: 24.h),
-                          Divider(height: 1, color: Colors.grey[300]),
-                          SizedBox(height: 24.h),
-
-                          // Date and Time
-                          _buildDetailRow('Date & Time', _formatDateTime(DateTime.now())),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // Reason for transfer
-                    Text(
-                      'Reason for Transfer',
-                      style: GoogleFonts.outfit(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: Colors.grey[300]!),
-                      ),
-                      child: TextField(
-                        controller: _reasonController,
-                        maxLines: 1,
+                      // Reason for transfer
+                      Text(
+                        'Reason for Transfer',
                         style: GoogleFonts.outfit(
                           fontSize: 16.sp,
-                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
-                        decoration: InputDecoration(
-                          hintText: 'Enter reason for transfer (optional)',
-                          hintStyle: GoogleFonts.outfit(
-                            fontSize: 14.sp,
-                            color: Colors.grey[500],
+                      ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: Colors.grey[300]!),
+                        ),
+                        child: TextField(
+                          controller: _reasonController,
+                          maxLines: 1,
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
+                            color: Colors.black87,
                           ),
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8.h),
+                          decoration: InputDecoration(
+                            hintText: 'Enter reason for transfer (optional)',
+                            hintStyle: GoogleFonts.outfit(
+                              fontSize: 14.sp,
+                              color: Colors.grey[500],
+                            ),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(vertical: 8.h),
+                          ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: 16.h),
-                    Text(
-                      'By confirming this transfer, you agree to the terms and conditions.',
-                      style: GoogleFonts.outfit(
-                        fontSize: 12.sp,
-                        color: Colors.grey[600],
+                      SizedBox(height: 16.h),
+                      Text(
+                        'By confirming this transfer, you agree to the terms and conditions.',
+                        style: GoogleFonts.outfit(
+                          fontSize: 12.sp,
+                          color: Colors.grey[600],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16.h),
-                  ],
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // Confirm button
-            SizedBox(height: 16.h),
-            ContinueButton(
-              onPressed: () => _processTransfer(context),
-              isEnabled: !_isLoading,
-              color: Theme.of(context).colorScheme.primary,
-              text: _isLoading ? 'Processing...' : 'Confirm Transfer',
-            ),
-
-            // Show loading indicator if processing
-            if (_isLoading) ...[
+              // Confirm button
               SizedBox(height: 16.h),
-              Center(
-                child: LinearProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                ),
+              ContinueButton(
+                onPressed: () => _processTransfer(context),
+                isEnabled: !_isLoading,
+                color: Theme.of(context).colorScheme.primary,
+                text: _isLoading ? 'Processing...' : 'Confirm Transfer',
               ),
+
+              // Show loading indicator if processing
+              if (_isLoading) ...[
+                SizedBox(height: 16.h),
+                Center(
+                  child: LinearProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

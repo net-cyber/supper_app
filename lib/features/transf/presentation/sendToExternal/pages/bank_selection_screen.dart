@@ -146,22 +146,22 @@ class _BankSelectionScreenContentState
                   );
                 } else if (state.filteredInstitutions.isEmpty) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
                           Icons.account_balance_outlined,
-                          size: 48.sp,
-                          color: Colors.grey[400],
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
+                              size: 48.sp,
+                              color: Colors.grey[400],
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
                           'No banks found',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
+                              style: GoogleFonts.outfit(
+                                fontSize: 16.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                         if (state.searchQuery.isNotEmpty)
                           Padding(
                             padding: EdgeInsets.only(top: 8.h),
@@ -173,11 +173,11 @@ class _BankSelectionScreenContentState
                                   fontSize: 14.sp,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
+                                ),
                               ),
                             ),
-                          ),
-                      ],
-                    ),
+                          ],
+                        ),
                   );
                 }
                 
@@ -193,10 +193,10 @@ class _BankSelectionScreenContentState
                     crossAxisCount: 2, // Changed from 3 to 2 columns
                     childAspectRatio: 0.9, // Adjusted for better fit with 2 columns
                     crossAxisSpacing: 16.w, // Increased spacing between columns
-                    mainAxisSpacing: 16.h,
-                  ),
+                            mainAxisSpacing: 16.h,
+                          ),
                   itemCount: state.filteredInstitutions.length + loadingIndicator,
-                  itemBuilder: (context, index) {
+                          itemBuilder: (context, index) {
                     // Show loading indicator as the last item
                     if (index == state.filteredInstitutions.length && loadingIndicator == 1) {
                       return Center(
@@ -219,7 +219,7 @@ class _BankSelectionScreenContentState
                   },
                 );
               },
-            ),
+                      ),
           ),
         ],
       ),
