@@ -108,7 +108,7 @@ class AccountValidationBloc
             state.copyWith(
               isValidating: false,
               validationError: true,
-              errorMessage: NetworkExceptions.getErrorMessage(failure),
+              errorMessage: NetworkExceptions.getRawErrorMessage(failure),
             ),
           );
         },

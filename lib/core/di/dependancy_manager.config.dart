@@ -66,7 +66,6 @@ import '../../features/transf/infrastructure/repositories/transfer_repository_im
     as _i655;
 import '../auth/token_service.dart' as _i347;
 import '../config/api_config.dart' as _i51;
-import '../handlers/api_http_service.dart' as _i310;
 import '../handlers/http_service.dart' as _i350;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -80,10 +79,10 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
-    gh.factory<_i670.AccountValidationRemoteDataSource>(
-        () => _i670.AccountValidationRemoteDataSource());
     gh.factory<_i213.TransferAccountRemoteDataSource>(
         () => _i213.TransferAccountRemoteDataSource());
+    gh.factory<_i670.AccountValidationRemoteDataSource>(
+        () => _i670.AccountValidationRemoteDataSource());
     gh.singleton<_i51.ApiConfig>(() => _i51.ApiConfig.production());
     gh.lazySingleton<_i347.TokenService>(() => _i347.TokenService());
     gh.lazySingleton<_i350.HttpService>(() => _i350.HttpService());
@@ -101,10 +100,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i153.AccountValidationRepository>(() =>
         _i519.AccountValidationRepositoryImpl(
             gh<_i670.AccountValidationRemoteDataSource>()));
-    gh.lazySingleton<_i310.ApiHttpService>(() => _i310.ApiHttpService(
-          gh<_i51.ApiConfig>(),
-          gh<_i347.TokenService>(),
-        ));
     gh.factory<_i192.FinancialInstitutionRepository>(() =>
         _i987.FinancialInstitutionRepositoryImpl(
             gh<_i997.FinancialInstitutionRemoteDataSource>()));
@@ -115,12 +110,12 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i213.TransferAccountRemoteDataSource>()));
     gh.factory<_i706.AccountRespository>(() =>
         _i658.AccountRepositoryImpl(gh<_i811.AccountsRemoteDataSource>()));
+    gh.factory<_i247.OtpVerificationBloc>(
+        () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i623.LoginBloc>(
         () => _i623.LoginBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i859.RegistrationBloc>(
         () => _i859.RegistrationBloc(gh<_i787.AuthRepository>()));
-    gh.factory<_i247.OtpVerificationBloc>(
-        () => _i247.OtpVerificationBloc(gh<_i787.AuthRepository>()));
     gh.factory<_i811.FinancialInstitutionBloc>(() =>
         _i811.FinancialInstitutionBloc(
             gh<_i192.FinancialInstitutionRepository>()));

@@ -68,7 +68,7 @@ class AccountVerificationBloc
           state.copyWith(
             isVerifying: false,
             verificationError: true,
-            errorMessage: NetworkExceptions.getErrorMessage(failure),
+            errorMessage: NetworkExceptions.getRawErrorMessage(failure),
           ),
         );
       },

@@ -179,7 +179,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
             state.copyWith(
               isTransferring: false,
               transferError: true,
-              errorMessage: NetworkExceptions.getErrorMessage(failure),
+              errorMessage: NetworkExceptions.getRawErrorMessage(failure),
             ),
           );
         },

@@ -48,19 +48,25 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         backgroundColor: Colors.grey[50],
         appBar: _buildAppBar(),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              _buildBalanceCard(),
-              SizedBox(height: 1.h),
-              _buildPageIndicator(),
-              SizedBox(height: 24.h),
-              _buildQuickActions(),
-              SizedBox(height: 32.h),
-              _buildServiceCategories(),
-              SizedBox(height: 32.h),
-            ],
+        body: RefreshIndicator(
+          onRefresh: () async {
+            _refreshAccounts(context);
+          },
+          color: Theme.of(context).colorScheme.primary,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                _buildBalanceCard(),
+                SizedBox(height: 1.h),
+                _buildPageIndicator(),
+                SizedBox(height: 24.h),
+                _buildQuickActions(),
+                SizedBox(height: 32.h),
+                _buildServiceCategories(),
+                SizedBox(height: 32.h),
+              ],
+            ),
           ),
         ),
       ),
@@ -91,10 +97,24 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       actions: [
-        IconButton(
-          icon:
-              Icon(Icons.refresh_rounded, color: Colors.grey[800], size: 22.sp),
-          onPressed: () {},
+        BlocBuilder<AccountsBloc, AccountsState>(
+          builder: (context, state) {
+            return IconButton(
+              icon: state.isLoading
+                ? SizedBox(
+                    width: 20.w,
+                    height: 20.h,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.w,
+                      color: Colors.grey[800],
+                    ),
+                  )
+                : Icon(Icons.refresh_rounded, color: Colors.grey[800], size: 22.sp),
+              onPressed: () {
+                _refreshAccounts(context);
+              },
+            );
+          },
         ),
         IconButton(
           icon: Badge(
@@ -109,10 +129,28 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  void _refreshAccounts(BuildContext context) {
+    // Reset page controller to first page when refreshing
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(0);
+    }
+    setState(() {
+      _currentAccountIndex = 0;
+    });
+    context.read<AccountsBloc>().add(const AccountsEvent.refreshAccounts());
+  }
+
   Widget _buildBalanceCard() {
     return BlocBuilder<AccountsBloc, AccountsState>(
+      buildWhen: (previous, current) {
+        // Rebuild whenever loading status changes or account data changes
+        return previous.isLoading != current.isLoading || 
+               previous.accounts != current.accounts ||
+               previous.hasError != current.hasError;
+      },
       builder: (context, state) {
         return Container(
+          key: ValueKey('account-cards-${state.isLoading}-${state.accounts.length}'),
           margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           height: 290.h,
           child: Stack(
@@ -174,7 +212,6 @@ class _MainScreenState extends State<MainScreen> {
     final Color cardBaseColor = currentAccountIndex % 2 == 1
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.secondary;
-    final userDetail = getIt<UserService>().getCurrentUser();
     return Container(
       decoration: BoxDecoration(
         color: cardBaseColor,

@@ -115,7 +115,7 @@ class FinancialInstitutionBloc
             state.copyWith(
               isLoading: false,
               hasError: true,
-              errorMessage: NetworkExceptions.getErrorMessage(failure),
+              errorMessage: NetworkExceptions.getRawErrorMessage(failure),
             ),
           );
           // Stop auto-loading on error
