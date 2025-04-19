@@ -208,13 +208,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildAccountCard(Account account, int currentAccountIndex) {
-    // Set color to match SOL card's black background
-    final Color cardBaseColor = currentAccountIndex % 2 == 1
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.secondary;
     return Container(
       decoration: BoxDecoration(
-        color: cardBaseColor,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
@@ -227,47 +223,6 @@ class _MainScreenState extends State<MainScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Background branding "SOL" as large faded text
-          Positioned(
-            right: 0,
-            top: 20.h,
-            bottom: 20.h,
-            child: Opacity(
-              opacity: 0.07,
-              child: CustomPaint(
-                painter: CardPatternPainter(),
-              ),
-            ),
-          ),
-
-          // Decorative elements
-          Positioned(
-            top: -20,
-            right: -20,
-            child: Container(
-              width: 100.w,
-              height: 100.h,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.15),
-              ),
-            ),
-          ),
-
-          Positioned(
-            bottom: -30,
-            left: -30,
-            child: Container(
-              width: 120.w,
-              height: 120.h,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
-              ),
-            ),
-          ),
-
           // Card content
           Padding(
             padding: EdgeInsets.all(20.w),
@@ -275,89 +230,65 @@ class _MainScreenState extends State<MainScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SOL Card branding and Virtual label
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          AppConstants.gohbetochLogoVertical,
-                          width: 24.w,
-                          height: 24.h,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 12.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8.w, vertical: 4.h),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Text(
-                            account.currency,
-                            style: GoogleFonts.outfit(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                // GOH Card branding
+                Text(
+                  'GOH',
+                  style: GoogleFonts.outfit(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: 1,
+                  ),
                 ),
 
-                const Spacer(),
-                // Card number
-                Column(
+                SizedBox(height: 24.h),
+                
+                // ETB label
+                Row(
                   children: [
-                     Text(
-                            'ACCOUNT BALANCE',
-                            style: GoogleFonts.outfit(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.7),
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
+                    Text(
+                      account.currency + ' ',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                     Text(
                       _isBalanceVisible
                           ? account.balance.toString()
-                          : '•••• ••••',
-                      style: GoogleFonts.spaceGrotesk(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w500,
+                          : '••••••',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
-                        letterSpacing: 1.5,
                       ),
                     ),
                   ],
                 ),
 
-                // Card number
+                SizedBox(height: 24.h),
+
+                // Account number
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Text(
-                            'ACCOUNT NUMBER',
-                            style: GoogleFonts.outfit(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.7),
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
+                    Text(
+                      'ACCOUNT NUMBER',
+                      style: GoogleFonts.outfit(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
                     Text(
                       _isBalanceVisible
                           ? account.id.toString()
                           : '•••• •••• •••• ••••',
                       style: GoogleFonts.spaceGrotesk(
-                        fontSize: 20.sp,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                         letterSpacing: 1.5,
@@ -366,57 +297,31 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
 
-                SizedBox(height: 16.h),
+                SizedBox(height: 24.h),
 
-                // Cardholder name and expiry date
-                Row(
+                // Cardholder name
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'ACCOUNT HOLDER',
-                            style: GoogleFonts.outfit(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.7),
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            _isBalanceVisible
-                                ? account.owner.toUpperCase()
-                                : '••••••••••',
-                            style: GoogleFonts.spaceGrotesk(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      'CARD HOLDER NAME',
+                      style: GoogleFonts.outfit(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.5,
                       ),
                     ),
-
-                    // GOH logo (replacing VISA)
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                      decoration: BoxDecoration(
+                    SizedBox(height: 4.h),
+                    Text(
+                      _isBalanceVisible
+                          ? account.owner.toUpperCase()
+                          : '••••/••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(4.r),
-                      ),
-                      child: Text(
-                        'GOH',
-                        style: GoogleFonts.outfit(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.primary,
-                          fontStyle: FontStyle.italic,
-                        ),
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
@@ -425,10 +330,10 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
 
-          // Tap to show/hide button
+          // Show/Hide button
           Positioned(
-            top: 12.h,
-            right: 12.w,
+            top: 16.h,
+            right: 16.w,
             child: GestureDetector(
               onTap: () {
                 setState(() {
@@ -464,6 +369,20 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           ),
+
+          // Virtual label
+          Positioned(
+            bottom: 20.h,
+            right: 20.w,
+            child: Text(
+              'Virtual',
+              style: GoogleFonts.outfit(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -472,18 +391,11 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildAccountCardPlaceholder(AccountsState state) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.85),
-          ],
-        ),
+        color: Colors.black,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -493,153 +405,160 @@ class _MainScreenState extends State<MainScreen> {
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
-          // Background pattern
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.05,
-              child: CustomPaint(
-                painter: CardPatternPainter(),
-              ),
-            ),
-          ),
-
           // Card content
           Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Bank logo/loading indicator
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          AppConstants.gohbetochLogoVertical,
-                          width: 24.w,
-                          height: 24.h,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 8.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 6.w, vertical: 2.h),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Text(
-                            'ACCOUNT',
-                            style: GoogleFonts.outfit(
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                // GOH Card branding
+                Text(
+                  'GOH',
+                  style: GoogleFonts.outfit(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: 1,
+                  ),
+                ),
 
-                    // Balance indicator
-                    if (state.isLoading)
-                      SizedBox(
-                        width: 16.w,
-                        height: 16.h,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.w,
-                          color: Colors.white,
-                        ),
-                      )
-                    else if (state.hasError)
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                        icon: Icon(
-                          Icons.refresh_rounded,
-                          color: Colors.white,
-                          size: 16.sp,
-                        ),
-                        onPressed: () {
-                          context.read<AccountsBloc>().add(
-                                const AccountsEvent.refreshAccounts(),
-                              );
-                        },
-                      )
+                SizedBox(height: 24.h),
+                
+                // ETB label
+                Row(
+                  children: [
+                    Text(
+                      'ETB ',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      '••••••',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
 
-                // Placeholder content - middle section
+                SizedBox(height: 24.h),
+
+                // Account number placeholder
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Card number placeholder
                     Text(
-                      '•••• •••• •••• ••••',
-                      style: GoogleFonts.spaceGrotesk(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-
-                    SizedBox(height: 8.h),
-
-                    Text(
-                      'AVAILABLE BALANCE',
+                      'ACCOUNT NUMBER',
                       style: GoogleFonts.outfit(
-                        fontSize: 8.sp,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.white.withOpacity(0.7),
                         letterSpacing: 0.5,
                       ),
                     ),
+                    SizedBox(height: 4.h),
                     Text(
-                      state.hasError ? 'Error loading' : '••••••',
-                      style: GoogleFonts.outfit(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
+                      '•••• •••• •••• ••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white,
+                        letterSpacing: 1.5,
                       ),
                     ),
                   ],
                 ),
 
-                // Placeholder for account holder - bottom section
-                Row(
+                SizedBox(height: 24.h),
+
+                // Cardholder name placeholder
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'CARDHOLDER',
-                          style: GoogleFonts.outfit(
-                            fontSize: 8.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.7),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        Text(
-                          '••••••••••',
-                          style: GoogleFonts.spaceGrotesk(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'CARD HOLDER NAME',
+                      style: GoogleFonts.outfit(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      '••••/••••',
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
           ),
+
+          // Show button (disabled in placeholder)
+          Positioned(
+            top: 16.h,
+            right: 16.w,
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.visibility_off,
+                    color: Colors.white,
+                    size: 16.sp,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                Text(
+                  'Show',
+                  style: GoogleFonts.outfit(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Virtual label
+          Positioned(
+            bottom: 20.h,
+            right: 20.w,
+            child: Text(
+              'Virtual',
+              style: GoogleFonts.outfit(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+
+          // Loading indicator if needed
+          if (state.isLoading)
+            Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            ),
         ],
       ),
     );
@@ -1207,3 +1126,4 @@ class CardPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
