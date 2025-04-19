@@ -9,37 +9,10 @@ import 'package:super_app/features/transf/domain/entities/account_verification/a
 class TransferAccountRemoteDataSource {
   Future<AccountVerification> verifyAccount(int accountId) async {
     try {
-      // Get the access token
-      final accessToken = await LocalStorage.instance.getAccessToken();
+      final response = await getIt<HttpService>().client(requireAuth: true).get(
+        '/accounts/verification/$accountId',
+      );
 
-      // Check if token is null or empty
-      if (accessToken == null || accessToken.isEmpty) {
-        throw DioException(
-          requestOptions:
-              RequestOptions(path: '/accounts/verification/$accountId'),
-          error: 'No valid access token',
-          type: DioExceptionType.badResponse,
-          response: Response(
-            requestOptions:
-                RequestOptions(path: '/accounts/verification/$accountId'),
-            statusCode: 401,
-            data: {'message': 'Unauthorized: No valid token'},
-          ),
-        );
-      }
-
-      // Prepare headers with authorization
-      final Map<String, dynamic> headers = {
-        'Authorization': 'Bearer $accessToken',
-      };
-
-      // Make API request
-      final response = await getIt<HttpService>().client().get(
-            '/accounts/verification/$accountId',
-            options: Options(headers: headers),
-          );
-
-      // Check if response data is null
       if (response.data == null) {
         throw Exception('Server returned null response');
       }

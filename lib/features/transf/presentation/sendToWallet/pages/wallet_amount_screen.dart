@@ -24,6 +24,7 @@ class WalletAmountScreen extends StatefulWidget {
 class _WalletAmountScreenState extends State<WalletAmountScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _isCalculatingFee = false;
   double? _calculatedFee;
@@ -72,24 +73,23 @@ class _WalletAmountScreenState extends State<WalletAmountScreen> {
       });
 
       // Navigate to confirmation
-      _continueToConfirmation();
+      _handleContinue();
     });
   }
 
-  void _continueToConfirmation() {
-    // Prepare data for confirmation screen
-    final transferData = {
-      'provider': widget.walletProvider,
-      'phoneNumber': widget.phoneNumber,
-      'accountHolder':
-          widget.validatedWallet?['accountHolderName'] ?? 'Unknown',
-      'amount': double.tryParse(_amountController.text) ?? 0.0,
-      'fee': _calculatedFee ?? 0.0,
-      'reason': _reasonController.text,
-    };
-
-    // Navigate to confirmation screen
-    context.pushNamed(RouteName.walletConfirmation, extra: transferData);
+  void _handleContinue() {
+    if (_formKey.currentState!.validate()) {
+      // Navigate to the wallet confirmation screen with all the transaction details
+      context.pushNamed(
+        RouteName.walletConfirmation,
+        extra: {
+          'walletProvider': widget.walletProvider,
+          'phoneNumber': widget.phoneNumber,
+          'amount': _amountController.text,
+          'note': _reasonController.text,
+        },
+      );
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
+import 'package:super_app/core/handlers/http_service.dart';
 import 'package:super_app/features/transf/domain/entities/account_validation/account_validation.dart';
 
 @injectable
@@ -8,43 +9,14 @@ class AccountValidationRemoteDataSource {
   Future<AccountValidation> validateAccount(
       double amount, int currentAccountId) async {
     try {
-      final accessToken = await LocalStorage.instance.getAccessToken();
-
-      if (accessToken == null || accessToken.isEmpty) {
-        throw DioException(
-          requestOptions: RequestOptions(path: '/accounts/validate'),
-          error: 'No valid access token',
-          type: DioExceptionType.badResponse,
-          response: Response(
-            requestOptions: RequestOptions(path: '/accounts/validate'),
-            statusCode: 401,
-            data: {'message': 'Unauthorized: No valid token'},
-          ),
-        );
-      }
-
-      final Map<String, dynamic> headers = {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json',
-      };
-
       final Map<String, dynamic> body = {
         'amount': amount.toInt(),
         'account_id': currentAccountId,
       };
 
-      final dio = Dio(BaseOptions(
-        baseUrl: 'https://nekapay-a88c51536db4.herokuapp.com',
-        headers: headers,
-      ));
-
-      final response = await dio.request(
+      final response = await getIt<HttpService>().client(requireAuth: true).get(
         '/accounts/validate',
         data: body,
-        options: Options(
-          method: 'GET',
-          headers: headers,
-        ),
       );
 
       if (response.data == null) {

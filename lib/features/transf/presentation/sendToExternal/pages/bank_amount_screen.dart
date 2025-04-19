@@ -50,7 +50,6 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
     if (hasInput != _hasInput) {
       setState(() {
         _hasInput = hasInput;
-        // Reset fee calculation when amount changes
         _isFeeCalculated = false;
         _calculatedFee = null;
       });
@@ -59,23 +58,13 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
 
   void _onReasonChanged() {
     // No need to do anything special when reason changes
-    // Just track the changes in the text controller
   }
 
   void _calculateFee() {
-    // Validate input first
     if (_amountController.text.isEmpty) {
       setState(() {
         _errorMessage = 'Please enter an amount';
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_errorMessage!),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.red[700],
-        ),
-      );
       return;
     }
 
@@ -84,18 +73,9 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
       setState(() {
         _errorMessage = 'Please enter a valid amount';
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_errorMessage!),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.red[700],
-        ),
-      );
       return;
     }
 
-    // Simulate fee calculation
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -105,26 +85,9 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
     Future.delayed(const Duration(milliseconds: 800), () {
       if (!mounted) return;
 
-      // Calculate fee based on bank and amount
+      // Simple fee calculation
       final amountValue = double.parse(_amountController.text);
-      double calculatedFee;
-      
-      // Different fee structures for different banks
-      final bankCode = widget.transferData['code'] as String;
-      switch (bankCode) {
-        case 'CBE':
-          // CBE: 0.5% of amount or min 10 ETB, max 50 ETB
-          calculatedFee = (amountValue * 0.005).clamp(10.0, 50.0);
-          break;
-        case 'DASHEN':
-        case 'AWASH':
-          // Dashen & Awash: 0.75% of amount or min 12 ETB, max 75 ETB
-          calculatedFee = (amountValue * 0.0075).clamp(12.0, 75.0);
-          break;
-        default:
-          // Other banks: 1% of amount or min 15 ETB, max 100 ETB
-          calculatedFee = (amountValue * 0.01).clamp(15.0, 100.0);
-      }
+      final calculatedFee = (amountValue * 0.01).clamp(10.0, 100.0);
 
       setState(() {
         _isLoading = false;
@@ -141,16 +104,13 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
     }
 
     if (_hasInput && _calculatedFee != null) {
-      // Add amount to transfer data and navigate to confirmation screen
       final completeTransferData = {
         ...widget.transferData,
         'amount': double.tryParse(_amountController.text) ?? 0.0,
         'fee': _calculatedFee ?? 0.0,
         'reason': _reasonController.text,
-        'timestamp': DateTime.now().toIso8601String(),
       };
 
-      // Navigate to confirmation screen
       context.pushNamed(RouteName.confirmTransfer, extra: completeTransferData);
     }
   }
@@ -159,7 +119,6 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
   Widget build(BuildContext context) {
     final bankName = widget.transferData['name'] as String;
     final accountHolderName = widget.transferData['accountHolderName'] as String;
-    final accountType = widget.transferData['accountType'] as String? ?? 'Account';
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -191,8 +150,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                    color:
-                        Theme.of(context).colorScheme.primary.withOpacity(0.3)),
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,17 +174,12 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                     ],
                   ),
                   SizedBox(height: 16.h),
-                  _buildDetailRow(
-                      'Bank', bankName),
+                  _buildDetailRow('Bank', bankName),
                   SizedBox(height: 8.h),
                   _buildDetailRow('Account Number',
                       widget.transferData['accountNumber'].toString()),
                   SizedBox(height: 8.h),
-                  _buildDetailRow('Account Holder',
-                      accountHolderName),
-                  SizedBox(height: 8.h),
-                  _buildDetailRow('Account Type',
-                      accountType),
+                  _buildDetailRow('Account Holder', accountHolderName),
                 ],
               ),
             ),
@@ -291,7 +244,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                       SizedBox(height: 8.h),
                       Row(
                         children: [
-                          SizedBox(width: 26.w), // To align with the text above
+                          SizedBox(width: 26.w),
                           Expanded(
                             child: Text(
                               'Total amount: ETB ${(double.parse(_amountController.text) + _calculatedFee!).toStringAsFixed(2)}',
@@ -308,49 +261,6 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                 ),
               ),
             ],
-
-            SizedBox(height: 24.h),
-
-            // Reason input section
-            Text(
-              'Reason (Optional)',
-              style: GoogleFonts.outfit(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: Colors.grey[300]!,
-                ),
-              ),
-              child: TextField(
-                controller: _reasonController,
-                style: GoogleFonts.outfit(
-                  fontSize: 16.sp,
-                  color: Colors.black87,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Enter reason for transfer',
-                  hintStyle: GoogleFonts.outfit(
-                    fontSize: 16.sp,
-                    color: Colors.grey[500],
-                  ),
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 16.h,
-                  ),
-                  border: InputBorder.none,
-                ),
-                maxLines: 2,
-                minLines: 1,
-              ),
-            ),
 
             const Spacer(),
 

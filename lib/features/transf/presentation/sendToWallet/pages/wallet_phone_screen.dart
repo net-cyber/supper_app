@@ -22,12 +22,13 @@ class _WalletPhoneScreenState extends State<WalletPhoneScreen> {
   bool _isValidating = false;
   Map<String, dynamic>? _validatedWallet;
   String? _errorMessage;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     // Pre-fill with default country code
-    _phoneController.text = "+251 ";
+    _phoneController.text = "9";
   }
 
   @override
@@ -86,13 +87,49 @@ class _WalletPhoneScreenState extends State<WalletPhoneScreen> {
     });
   }
 
-  void _navigateToAmountScreen() {
-    // Navigate to amount screen with validated data
-    context.pushNamed(RouteName.walletAmount, extra: {
-      'walletProvider': widget.walletProvider,
-      'phoneNumber': _phoneController.text,
-      'validatedWallet': _validatedWallet,
-    });
+  void _handleContinue() {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (_isValidating) return;
+
+      setState(() {
+        _errorMessage = null;
+        _isValidating = true;
+      });
+
+      // Simulate validation with a delay
+      Future.delayed(const Duration(seconds: 1), () {
+        if (!mounted) return;
+
+        // Safely access the wallet provider fields
+        final id = widget.walletProvider?['id'] as String? ?? '';
+        final name = widget.walletProvider?['name'] as String? ?? 'Unknown Wallet';
+        final code = widget.walletProvider?['code'] as String? ?? '';
+        final type = widget.walletProvider?['type'] as String? ?? 'wallet';
+        final logo = widget.walletProvider?['logo'] as String? ?? 'assets/images/wallets/default.png';
+
+        setState(() {
+          _isValidating = false;
+          _validatedWallet = {
+            'id': id,
+            'name': name,
+            'code': code,
+            'type': type,
+            'logo': logo,
+            'phoneNumber': '+251${_phoneController.text}',
+            'holderName': 'John Doe', // Mock data
+          };
+        });
+
+        context.pushNamed(
+          RouteName.walletAmount,
+          extra: {
+            'walletProvider': widget.walletProvider,
+            'phoneNumber': _phoneController.text,
+            'validatedWallet': _validatedWallet,
+          },
+        );
+      });
+    }
   }
 
   @override
@@ -214,7 +251,7 @@ class _WalletPhoneScreenState extends State<WalletPhoneScreen> {
                       // User information section (visible only after verification)
                       if (_validatedWallet != null) ...[
                         GestureDetector(
-                          onTap: _navigateToAmountScreen,
+                          onTap: _handleContinue,
                           child: Container(
                             width: double.infinity,
                             padding: EdgeInsets.all(16.w),

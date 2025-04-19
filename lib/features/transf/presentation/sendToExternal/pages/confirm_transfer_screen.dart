@@ -24,7 +24,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   String? _transactionId;
   String? _errorMessage;
 
-  // Mock data for sender (in a real app, this would come from user profile/auth)
+  // Mock data for sender
   final Map<String, String> _sender = {
     'name': 'Bereket Tefera',
     'accountNumber': '1234567890',
@@ -34,8 +34,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Initialize reason if it exists in transfer data
     if (widget.transferData.containsKey('reason') &&
         widget.transferData['reason'] != null &&
         widget.transferData['reason'].toString().isNotEmpty) {
@@ -51,7 +49,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate total amount with service charge
     final double amount = (widget.transferData['amount'] as num).toDouble();
     final double fee = widget.transferData.containsKey('fee')
         ? (widget.transferData['fee'] as num).toDouble()
@@ -104,7 +101,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Single receipt-like card with all transfer details
+                    // Transfer details card
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(20.w),
@@ -123,7 +120,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Header with bank logos or transfer icon
+                          // Header with transfer icon
                           Container(
                             width: 64.w,
                             height: 64.h,
@@ -160,8 +157,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                           _buildSectionLabel('From'),
                           SizedBox(height: 8.h),
                           _buildDetailRow('Name', _sender['name']!),
-                          _buildDetailRow(
-                              'Account Number', _sender['accountNumber']!),
+                          _buildDetailRow('Account Number', _sender['accountNumber']!),
                           _buildDetailRow('Bank', _sender['bank']!),
 
                           SizedBox(height: 24.h),
@@ -171,14 +167,9 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                           // To (Receiver)
                           _buildSectionLabel('To'),
                           SizedBox(height: 8.h),
-                          _buildDetailRow(
-                              'Name',
-                              widget.transferData['accountHolderName']
-                                  .toString()),
-                          _buildDetailRow('Account Number',
-                              widget.transferData['accountNumber'].toString()),
-                          _buildDetailRow(
-                              'Bank', widget.transferData['name'].toString()),
+                          _buildDetailRow('Name', widget.transferData['accountHolderName'].toString()),
+                          _buildDetailRow('Account Number', widget.transferData['accountNumber'].toString()),
+                          _buildDetailRow('Bank', widget.transferData['name'].toString()),
 
                           SizedBox(height: 24.h),
                           Divider(height: 1, color: Colors.grey[300]),
@@ -187,10 +178,8 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                           // Amount Details
                           _buildSectionLabel('Amount'),
                           SizedBox(height: 8.h),
-                          _buildDetailRow('Transfer Amount',
-                              '${amount.toStringAsFixed(2)} ETB'),
-                          _buildDetailRow('Service Charge',
-                              '${fee.toStringAsFixed(2)} ETB'),
+                          _buildDetailRow('Transfer Amount', '${amount.toStringAsFixed(2)} ETB'),
+                          _buildDetailRow('Service Charge', '${fee.toStringAsFixed(2)} ETB'),
                           SizedBox(height: 16.h),
                           _buildDetailRow(
                             'Total Amount',
@@ -207,10 +196,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                           SizedBox(height: 24.h),
 
                           // Date and Time
-                          _buildDetailRow(
-                            'Date & Time',
-                            _formatDateTime(DateTime.now()),
-                          ),
+                          _buildDetailRow('Date & Time', _formatDateTime(DateTime.now())),
                         ],
                       ),
                     ),
@@ -283,8 +269,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
               Center(
                 child: LinearProgressIndicator(
                   color: Theme.of(context).colorScheme.primary,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 ),
               ),
             ],
@@ -340,17 +325,14 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    final date =
-        '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
-    final time =
-        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    final date = '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
+    final time = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
     return '$date at $time';
   }
 
   void _processTransfer(BuildContext context) {
     if (_isLoading || _isTransactionComplete) return;
 
-    // Set loading state
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -361,8 +343,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
       if (!mounted) return;
 
       // Generate transaction ID
-      final randomId =
-          "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
+      final randomId = "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
 
       setState(() {
         _isLoading = false;
@@ -376,13 +357,11 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   }
 
   void _showSuccessDialog(BuildContext context, String transactionId) {
-    // Get amount from transfer data
     final amount = (widget.transferData['amount'] as num).toDouble();
     final fee = widget.transferData.containsKey('fee')
         ? (widget.transferData['fee'] as num).toDouble()
         : 0.0;
 
-    // Show success dialog
     showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -497,7 +476,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Close dialog and navigate back to home screen
                   Navigator.of(context).pop();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
@@ -523,10 +501,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                     borderRadius: BorderRadius.circular(28.r),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.25),
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.25),
                         blurRadius: 15,
                         offset: const Offset(0, 6),
                         spreadRadius: 0,

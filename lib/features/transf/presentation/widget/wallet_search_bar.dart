@@ -5,25 +5,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'dart:developer';
 
-class BankSearchBar extends StatefulWidget {
+class WalletSearchBar extends StatefulWidget {
   final Function(String) onSearch;
   final String hintText;
   final double height;
   final EdgeInsets? margin;
 
-  const BankSearchBar({
+  const WalletSearchBar({
     Key? key,
     required this.onSearch,
-    this.hintText = 'Search bank',
+    this.hintText = 'Search wallet',
     this.height = 50,
     this.margin,
   }) : super(key: key);
 
   @override
-  State<BankSearchBar> createState() => _BankSearchBarState();
+  State<WalletSearchBar> createState() => _WalletSearchBarState();
 }
 
-class _BankSearchBarState extends State<BankSearchBar> {
+class _WalletSearchBarState extends State<WalletSearchBar> {
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
 
@@ -44,7 +44,7 @@ class _BankSearchBarState extends State<BankSearchBar> {
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      log('Bank search query: ${_controller.text}');
+      log('Search query: ${_controller.text}');
       widget.onSearch(_controller.text);
     });
   }
@@ -104,13 +104,13 @@ class _BankSearchBarState extends State<BankSearchBar> {
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
         ),
-        // Allow characters for bank names and codes
+        // Allow more characters for searching different types of wallets
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s\-._]')),
         ],
         textInputAction: TextInputAction.search,
         onSubmitted: (value) {
-          log('Bank search submitted: $value');
+          log('Search submitted: $value');
           widget.onSearch(value);
         },
       ),

@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:developer';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:super_app/features/transf/application/financial_institution/bloc/financial_institution_bloc.dart';
+import 'package:super_app/features/transf/domain/entities/financial_institution/financial_institution.dart';
 import 'package:super_app/features/transf/presentation/widget/bank_search_bar.dart';
-import 'package:super_app/features/transf/presentation/widget/bank_item.dart';
 
 class BankSelectionScreen extends StatelessWidget {
   const BankSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const _BankSelectionScreenContent();
+    return BlocProvider(
+      create: (context) {
+        final bloc = getIt<FinancialInstitutionBloc>();
+        // Fetch with bank-specific page size and immediately filter for banks only
+        bloc.add(const FetchInstitutions(pageSize: FinancialInstitutionBloc.bankPageSize));
+        bloc.add(const FilterByType(type: FinancialInstitutionType.bank));
+        return bloc;
+      },
+      child: const _BankSelectionScreenContent(),
+    );
   }
 }
 
@@ -25,202 +38,58 @@ class _BankSelectionScreenContent extends StatefulWidget {
 
 class _BankSelectionScreenContentState
     extends State<_BankSelectionScreenContent> {
-  final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> allBanks = [];
-  List<Map<String, dynamic>> filteredBanks = [];
-  bool _isLoading = true;
-  String? _errorMessage;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterBanks);
-    _loadBanks();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_filterBanks);
-    _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void _loadBanks() {
-    // Simulating API call to load banks
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-        allBanks = _getMockBanks();
-        filteredBanks = List.from(allBanks);
-      });
-    });
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final state = context.read<FinancialInstitutionBloc>().state;
+    
+    // Load more when user scrolls to 80% of the list
+    if (currentScroll >= maxScroll * 0.8 &&
+        state.hasMorePages && 
+        !state.isLoading) {
+      log('Auto-loading more banks as user is approaching the end');
+      context.read<FinancialInstitutionBloc>().add(const LoadMoreInstitutions());
+    }
   }
 
-  List<Map<String, dynamic>> _getMockBanks() {
-    return [
-      {
-        'id': '1',
-        'name': 'Commercial Bank of Ethiopia',
-        'code': 'CBE',
-        'logo': 'assets/images/banks/cbe.png',
-        'color': Colors.blue[700]?.value,
-        'swift': 'CBETETAA',
-        'routing': '010010',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.combanketh.et'
-      },
-      {
-        'id': '2',
-        'name': 'Dashen Bank',
-        'code': 'DASHEN',
-        'logo': 'assets/images/banks/dashen.png',
-        'color': Colors.green[700]?.value,
-        'swift': 'DASHETH',
-        'routing': '020020',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.dashenbanksc.com'
-      },
-      {
-        'id': '3',
-        'name': 'Awash Bank',
-        'code': 'AWASH',
-        'logo': 'assets/images/banks/awash.png',
-        'color': Colors.orange[700]?.value,
-        'swift': 'AWASHETH',
-        'routing': '030030',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.awashbank.com'
-      },
-      {
-        'id': '4',
-        'name': 'Abyssinia Bank',
-        'code': 'ABYSSINIA',
-        'logo': 'assets/images/banks/abyssinia.png',
-        'color': Colors.purple[700]?.value,
-        'swift': 'ABYSETH',
-        'routing': '040040',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.bankofabyssinia.com'
-      },
-      {
-        'id': '5',
-        'name': 'Wegagen Bank',
-        'code': 'WEGAGEN',
-        'logo': 'assets/images/banks/wegagen.png',
-        'color': Colors.red[700]?.value,
-        'swift': 'WEGAETH',
-        'routing': '050050',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.wegagen.com'
-      },
-      {
-        'id': '6',
-        'name': 'United Bank',
-        'code': 'UNITED',
-        'logo': 'assets/images/banks/united.png',
-        'color': Colors.teal[700]?.value,
-        'swift': 'UNTDETH',
-        'routing': '060060',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.unitedbank.com.et'
-      },
-      {
-        'id': '7',
-        'name': 'NIB Bank',
-        'code': 'NIB',
-        'logo': 'assets/images/banks/nib.png',
-        'color': Colors.amber[700]?.value,
-        'swift': 'NIBIETH',
-        'routing': '070070',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.nibbank.com'
-      },
-      {
-        'id': '8',
-        'name': 'Zemen Bank',
-        'code': 'ZEMEN',
-        'logo': 'assets/images/banks/zemen.png',
-        'color': Colors.indigo[700]?.value,
-        'swift': 'ZEMENET',
-        'routing': '080080',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.zemenbank.com'
-      },
-      {
-        'id': '9',
-        'name': 'Oromia Cooperative Bank',
-        'code': 'OROMIA',
-        'logo': 'assets/images/banks/oromia.png',
-        'color': Colors.brown[700]?.value,
-        'swift': 'OROIETH',
-        'routing': '090090',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.coopbankoromia.com.et'
-      },
-      {
-        'id': '10',
-        'name': 'Bunna Bank',
-        'code': 'BUNNA',
-        'logo': 'assets/images/banks/bunna.png',
-        'color': Colors.brown[500]?.value,
-        'swift': 'BUNAETH',
-        'routing': '100100',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.bunnabank.com.et'
-      },
-      {
-        'id': '11',
-        'name': 'Lion International Bank',
-        'code': 'LION',
-        'logo': 'assets/images/banks/lion.png',
-        'color': Colors.amber[800]?.value,
-        'swift': 'LIONETH',
-        'routing': '110110',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.anbesabank.com'
-      },
-      {
-        'id': '12',
-        'name': 'Enat Bank',
-        'code': 'ENAT',
-        'logo': 'assets/images/banks/enat.png',
-        'color': Colors.pink[700]?.value,
-        'swift': 'ENATETAA',
-        'routing': '120120',
-        'address': 'Addis Ababa, Ethiopia',
-        'website': 'www.enatbanksc.com'
-      },
-    ];
+  void _onSearchChanged(String query) {
+    context.read<FinancialInstitutionBloc>().add(
+          SearchQueryChanged(query: query),
+        );
   }
 
-  void _filterBanks() {
-    final query = _searchController.text.toLowerCase();
-
-    setState(() {
-      if (query.isEmpty) {
-        filteredBanks = List.from(allBanks);
-      } else {
-        filteredBanks = allBanks
-            .where((bank) =>
-                (bank['name'] as String).toLowerCase().contains(query) ||
-                (bank['code'] as String).toLowerCase().contains(query))
-            .toList();
-      }
-    });
-  }
-
-  void _selectBank(Map<String, dynamic> bank) {
-    // Add timestamp for analytics tracking
-    final selectedBank = {
-      ...bank,
+  void _selectBank(FinancialInstitution bank) {
+    // Create the bank data in the format expected by the next screen
+    final bankData = {
+      'id': bank.id,
+      'name': bank.name,
+      'code': bank.code,
+      'type': bank.type,
+      'logo': bank.logoUrl ?? 'assets/images/banks/default.png',
+      'color': Colors.blue[700]?.value, // Default color
       'selectedAt': DateTime.now().toIso8601String(),
       'isSelected': true,
     };
     
     // Navigate to the next screen
-    context.pushNamed(RouteName.bankAccount, extra: selectedBank);
+    context.pushNamed(RouteName.bankAccount, extra: bankData);
   }
 
   @override
@@ -235,7 +104,7 @@ class _BankSelectionScreenContentState
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Transfer to other bank',
+          'Select Bank',
           style: GoogleFonts.outfit(
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
@@ -244,70 +113,22 @@ class _BankSelectionScreenContentState
         ),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Search input
-          BankSearchBar(controller: _searchController),
-
-          // Title with bank count
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Select a bank',
-                  style: GoogleFonts.outfit(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-                if (!_isLoading)
-                  Text(
-                    '${filteredBanks.length} banks available',
-                    style: GoogleFonts.outfit(
-                      fontSize: 14.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-              ],
+            child: BankSearchBar(
+              onSearch: _onSearchChanged,
+              hintText: 'Search bank...',
             ),
           ),
-
-          // Error message if any
-          if (_errorMessage != null)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: Colors.red[50],
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(color: Colors.red[100]!),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.error_outline, color: Colors.red, size: 20.sp),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        _errorMessage!,
-                        style: GoogleFonts.outfit(
-                          fontSize: 14.sp,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-          // Bank grid or loading indicator
+          
+          // Banks Grid
           Expanded(
-            child: _isLoading
-                ? Center(
+            child: BlocBuilder<FinancialInstitutionBloc, FinancialInstitutionState>(
+              builder: (context, state) {
+                if (state.isLoading && state.filteredInstitutions.isEmpty) {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -322,31 +143,30 @@ class _BankSelectionScreenContentState
                         ),
                       ],
                     ),
-                  )
-                : filteredBanks.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off_rounded,
-                              size: 48.sp,
-                              color: Colors.grey[400],
-                            ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              'No banks found matching "${_searchController.text}"',
-                              style: GoogleFonts.outfit(
-                                fontSize: 16.sp,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            TextButton(
-                              onPressed: () {
-                                _searchController.clear();
-                                _filterBanks();
-                              },
+                  );
+                } else if (state.filteredInstitutions.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.account_balance_outlined,
+                          size: 48.sp,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'No banks found',
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        if (state.searchQuery.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(top: 8.h),
+                            child: TextButton(
+                              onPressed: () => _onSearchChanged(''),
                               child: Text(
                                 'Clear search',
                                 style: GoogleFonts.outfit(
@@ -355,31 +175,173 @@ class _BankSelectionScreenContentState
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 0.8,
-                            crossAxisSpacing: 16.w,
-                            mainAxisSpacing: 16.h,
                           ),
-                          itemCount: filteredBanks.length,
-                          itemBuilder: (context, index) {
-                            final bank = filteredBanks[index];
-                            return BankItem(
-                              bank: bank,
-                              onTap: () => _selectBank(bank),
-                            );
-                          },
-                        ),
-                      ),
+                      ],
+                    ),
+                  );
+                }
+                
+                // Calculate number of rows needed (based on 2 items per row)
+                final int totalItems = state.filteredInstitutions.length;
+                final int loadingIndicator = state.isLoading && state.hasMorePages ? 1 : 0;
+                final int displayRows = ((totalItems + loadingIndicator + 1) / 2).ceil(); // +1 ensures we have enough rows
+                
+                return GridView.builder(
+                  controller: _scrollController,
+                  padding: EdgeInsets.all(16.w),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // Changed from 3 to 2 columns
+                    childAspectRatio: 0.9, // Adjusted for better fit with 2 columns
+                    crossAxisSpacing: 16.w, // Increased spacing between columns
+                    mainAxisSpacing: 16.h,
+                  ),
+                  itemCount: state.filteredInstitutions.length + loadingIndicator,
+                  itemBuilder: (context, index) {
+                    // Show loading indicator as the last item
+                    if (index == state.filteredInstitutions.length && loadingIndicator == 1) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    
+                    final bank = state.filteredInstitutions[index];
+                    
+                    // Determine if logoUrl is already a network URL or needs assets path
+                    final String logoPath = bank.logoUrl != null && 
+                          (bank.logoUrl!.startsWith('http://') || 
+                            bank.logoUrl!.startsWith('https://'))
+                        ? bank.logoUrl!
+                        : bank.logoUrl != null && bank.logoUrl!.isNotEmpty
+                            ? bank.logoUrl!
+                            : 'assets/images/banks/${bank.code.toLowerCase()}.png';
+                    
+                    return _buildBankItem(bank, logoPath);
+                  },
+                );
+              },
+            ),
           ),
         ],
+      ),
+    );
+  }
+  
+  Widget _buildBankItem(FinancialInstitution bank, String logoPath) {
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: InkWell(
+        onTap: () => _selectBank(bank),
+        borderRadius: BorderRadius.circular(12.r),
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Bank logo
+              Container(
+                width: 80.w,
+                height: 80.h,
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: _buildLogoImage(logoPath, bank.name),
+                ),
+              ),
+              
+              SizedBox(height: 16.h),
+              
+              // Bank name
+              Text(
+                bank.name,
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildLogoImage(String logoPath, String name) {
+    // Check if logo is a URL (starts with http:// or https://)
+    final isNetworkImage = logoPath.startsWith('http://') || logoPath.startsWith('https://');
+    final isAssetImage = logoPath.startsWith('assets/');
+    
+    if (isNetworkImage) {
+      return Image.network(
+        logoPath,
+        width: 40.w,
+        height: 40.h,
+        fit: BoxFit.contain,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return SizedBox(
+            width: 40.w,
+            height: 40.h,
+            child: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded / 
+                      loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          log('Failed to load bank logo from network: $logoPath. Error: $error');
+          return _buildInitials(name);
+        },
+      );
+    } else if (isAssetImage) {
+      return Image.asset(
+        logoPath,
+        width: 40.w,
+        height: 40.h,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          log('Failed to load bank logo from assets: $logoPath. Error: $error');
+          return _buildInitials(name);
+        },
+      );
+    } else {
+      return _buildInitials(name);
+    }
+  }
+  
+  Widget _buildInitials(String name) {
+    String initials = '';
+    final nameParts = name.trim().split(' ');
+    if (nameParts.length > 1 && nameParts[0].isNotEmpty && nameParts[1].isNotEmpty) {
+      initials = '${nameParts[0][0]}${nameParts[1][0]}';
+    } else if (nameParts.isNotEmpty && nameParts[0].isNotEmpty) {
+      initials = nameParts[0].length > 1 
+          ? nameParts[0].substring(0, 2) 
+          : nameParts[0][0];
+    } else {
+      initials = 'B';
+    }
+    
+    return Text(
+      initials.toUpperCase(),
+      style: GoogleFonts.outfit(
+        fontSize: 20.sp,
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
   }
