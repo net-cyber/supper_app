@@ -22,6 +22,14 @@ import 'package:super_app/core/presentation/main/shell_page.dart';
 import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_bank_account_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_bank_amount_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToInternal/pages/internal_confirm_transfer_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_selection_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_account_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/bank_amount_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToExternal/pages/confirm_transfer_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_selection_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_phone_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_amount_screen.dart';
+import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_confirmation_screen.dart';
 
 final router = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
@@ -208,6 +216,77 @@ final router = GoRouter(
       builder: (context, state) => InternalConfirmTransferScreen(
         transferData: state.extra as Map<String, dynamic>,
       ),
+    ),
+
+    // External bank transfer routes
+    GoRoute(
+      name: RouteName.bankSelection,
+      path: '/${RouteName.bankSelection}',
+      builder: (context, state) => const BankSelectionScreen(),
+    ),
+    GoRoute(
+      name: RouteName.bankAccount,
+      path: '/${RouteName.bankAccount}',
+      builder: (context, state) => BankAccountScreen(
+        bank: state.extra as Map<String, dynamic>,
+      ),
+    ),
+    GoRoute(
+      name: RouteName.bankAmount,
+      path: '/${RouteName.bankAmount}',
+      builder: (context, state) => BankAmountScreen(
+        transferData: state.extra as Map<String, dynamic>,
+      ),
+    ),
+    GoRoute(
+      name: RouteName.confirmTransfer,
+      path: '/${RouteName.confirmTransfer}',
+      builder: (context, state) => ConfirmTransferScreen(
+        transferData: state.extra as Map<String, dynamic>,
+      ),
+    ),
+
+    // Wallet transfer routes
+    GoRoute(
+      name: RouteName.walletSelection,
+      path: '/${RouteName.walletSelection}',
+      builder: (context, state) => const WalletSelectionScreen(),
+    ),
+    GoRoute(
+      name: RouteName.walletPhone,
+      path: '/${RouteName.walletPhone}',
+      builder: (context, state) => WalletPhoneScreen(
+        walletProvider: state.extra as Map<String, dynamic>,
+      ),
+    ),
+    GoRoute(
+      name: RouteName.walletAmount,
+      path: '/${RouteName.walletAmount}',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return WalletAmountScreen(
+          walletProvider: extra?['walletProvider'] as Map<String, dynamic>?,
+          phoneNumber: (extra?['phoneNumber'] as String?) ?? '',
+          validatedWallet: extra?['validatedWallet'] as Map<String, dynamic>?,
+        );
+      },
+    ),
+    GoRoute(
+      name: RouteName.walletConfirmation,
+      path: '/${RouteName.walletConfirmation}',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        if (extra == null) {
+          return const Scaffold(
+            body: Center(
+              child: Text('Invalid transfer data'),
+            ),
+          );
+        }
+        return WalletConfirmationScreen(
+          transferData: extra,
+        );
+      },
     ),
   ],
 );

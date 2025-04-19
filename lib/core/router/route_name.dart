@@ -33,8 +33,8 @@ class RouteName {
   static const internalConfirmTransfer = 'internalConfirmTransfer';
 
   // Wallet routes
-  static const walletSelection = 'walletSelection';
-  static const walletPhone = 'walletPhone';
-  static const walletAmount = 'walletAmount';
-  static const walletConfirmation = 'walletConfirmation';
+  static const walletSelection = 'wallet-selection';
+  static const walletPhone = 'wallet-phone';
+  static const walletAmount = 'wallet-amount';
+  static const walletConfirmation = 'wallet-confirmation';
 }

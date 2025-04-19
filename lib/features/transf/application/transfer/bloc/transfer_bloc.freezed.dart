@@ -437,6 +437,8 @@ abstract class $TransferStateCopyWith<$Res> {
       String? transactionRef,
       String? timestamp,
       TransferResponse? transferResponse});
+
+  $TransferResponseCopyWith<$Res>? get transferResponse;
 }
 
 /// @nodoc
@@ -523,6 +525,20 @@ class _$TransferStateCopyWithImpl<$Res, $Val extends TransferState>
               as TransferResponse?,
     ) as $Val);
   }
+
+  /// Create a copy of TransferState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TransferResponseCopyWith<$Res>? get transferResponse {
+    if (_value.transferResponse == null) {
+      return null;
+    }
+
+    return $TransferResponseCopyWith<$Res>(_value.transferResponse!, (value) {
+      return _then(_value.copyWith(transferResponse: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -547,6 +563,9 @@ abstract class _$$TransferStateImplCopyWith<$Res>
       String? transactionRef,
       String? timestamp,
       TransferResponse? transferResponse});
+
+  @override
+  $TransferResponseCopyWith<$Res>? get transferResponse;
 }
 
 /// @nodoc
@@ -710,8 +729,8 @@ class _$TransferStateImpl implements _TransferState {
                 other.transactionRef == transactionRef) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            const DeepCollectionEquality()
-                .equals(other.transferResponse, transferResponse));
+            (identical(other.transferResponse, transferResponse) ||
+                other.transferResponse == transferResponse));
   }
 
   @override
@@ -729,7 +748,7 @@ class _$TransferStateImpl implements _TransferState {
       status,
       transactionRef,
       timestamp,
-      const DeepCollectionEquality().hash(transferResponse));
+      transferResponse);
 
   /// Create a copy of TransferState
   /// with the given fields replaced by the non-null parameter values.
