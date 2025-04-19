@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
@@ -22,6 +23,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<RegistrationResponse> register(Registration registration) async {
     try {
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print('fcm token is !!$fcmToken');
       // Get the profile photo path if available
       final profilePhotoPath = registration.profilePhoto.value.getOrElse(() => null);
       
@@ -32,7 +35,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'international_phone_number': registration.phoneNumber.value.getOrElse(() => ''),
         'password': registration.password.value.getOrElse(() => ''),
         // Add FCM token if needed - assuming a default value for now
-        'fcmtoken': 'default_fcm_token', 
+        'fcmtoken': fcmToken, 
       });
       
       // Add logo/profile photo if path is available
