@@ -122,7 +122,7 @@ class _WalletSelectionScreenContentState
                   SizedBox(height: 16.h),
                   Text(
                     'Loading wallets...',
-                    style: GoogleFonts.outfit(
+                      style: GoogleFonts.outfit(
                       fontSize: 16.sp,
                       color: Colors.grey[600],
                     ),
@@ -143,11 +143,11 @@ class _WalletSelectionScreenContentState
                   SizedBox(height: 16.h),
                   Text(
                     'No wallets available',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      color: Colors.grey[600],
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
+                            color: Colors.grey[600],
+                          ),
                     ),
-                  ),
                 ],
               ),
             );
@@ -164,10 +164,10 @@ class _WalletSelectionScreenContentState
                   child: Padding(
                     padding: EdgeInsets.all(16.h),
                     child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              
+            ),
+    );
+  }
+
               final wallet = state.filteredInstitutions[index];
               
               // Determine if logoUrl is already a network URL or needs assets path
@@ -186,50 +186,50 @@ class _WalletSelectionScreenContentState
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
-                  child: InkWell(
+        child: InkWell(
                     onTap: () => _selectWallet(wallet),
                     borderRadius: BorderRadius.circular(8.r),
-                    child: Padding(
+          child: Padding(
                       padding: EdgeInsets.all(16.h),
-                      child: Row(
-                        children: [
+            child: Row(
+              children: [
                           // Wallet logo
-                          Container(
-                            width: 60.w,
-                            height: 60.w,
-                            decoration: BoxDecoration(
-                              color: Colors.blue[50],
-                              shape: BoxShape.circle,
-                            ),
+                Container(
+                  width: 60.w,
+                  height: 60.w,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    shape: BoxShape.circle,
+                  ),
                             child: Center(
                               child: _buildLogoImage(logoPath, wallet.name),
                             ),
-                          ),
+                ),
                           
-                          SizedBox(width: 16.w),
+                SizedBox(width: 16.w),
                           
                           // Wallet name
-                          Expanded(
-                            child: Text(
+                Expanded(
+                  child: Text(
                               wallet.name,
-                              style: GoogleFonts.outfit(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w500,
+                    style: GoogleFonts.outfit(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w500,
                                 color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          
-                          // Chevron icon
-                          Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey[600],
-                            size: 24.sp,
-                          ),
-                        ],
-                      ),
                     ),
                   ),
+                ),
+                          
+                          // Chevron icon
+                Icon(
+                  Icons.chevron_right,
+                            color: Colors.grey[600],
+                  size: 24.sp,
+                ),
+              ],
+            ),
+          ),
+        ),
                 ),
               );
             },
@@ -238,7 +238,7 @@ class _WalletSelectionScreenContentState
       ),
     );
   }
-  
+
   Widget _buildLogoImage(String logoPath, String name) {
     // Check if logo is a URL (starts with http:// or https://)
     final isNetworkImage = logoPath.startsWith('http://') || logoPath.startsWith('https://');
@@ -249,7 +249,7 @@ class _WalletSelectionScreenContentState
         logoPath,
         width: 30.w,
         height: 30.h,
-        fit: BoxFit.contain,
+            fit: BoxFit.contain,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
           return SizedBox(
@@ -303,9 +303,9 @@ class _WalletSelectionScreenContentState
     
     return Text(
       initials.toUpperCase(),
-      style: GoogleFonts.outfit(
+        style: GoogleFonts.outfit(
         fontSize: 18.sp,
-        fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.primary,
       ),
     );

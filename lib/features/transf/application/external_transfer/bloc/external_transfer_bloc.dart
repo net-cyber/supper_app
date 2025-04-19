@@ -6,34 +6,37 @@ import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
-import 'package:super_app/features/transf/domain/entities/internal_transfer_response/transfer_response.dart';
-import 'package:super_app/features/transf/domain/repositories/transfer_repository.dart';
+import 'package:super_app/features/transf/domain/entities/external_transfer/external_transfer.dart';
+import 'package:super_app/features/transf/domain/entities/external_transfer/external_transfer_request.dart';
+import 'package:super_app/features/transf/domain/repositories/external_transfer_repository.dart';
 
-part 'transfer_event.dart';
-part 'transfer_state.dart';
-part 'transfer_bloc.freezed.dart';
+part 'external_transfer_event.dart';
+part 'external_transfer_state.dart';
+part 'external_transfer_bloc.freezed.dart';
 
 @injectable
-class TransferBloc extends Bloc<TransferEvent, TransferState> {
-  TransferBloc(
-    this._transferRepository,
+class ExternalTransferBloc extends Bloc<ExternalTransferEvent, ExternalTransferState> {
+  ExternalTransferBloc(
+    this._externalTransferRepository,
     this._accountsBloc,
-  ) : super(TransferState.initial()) {
+  ) : super(ExternalTransferState.initial()) {
     on<TransferDetailsChanged>(_onTransferDetailsChanged);
     on<CreateTransferSubmitted>(_onCreateTransferSubmitted);
   }
 
-  final TransferRepository _transferRepository;
+  final ExternalTransferRepository _externalTransferRepository;
   final AccountsBloc _accountsBloc;
 
   void _onTransferDetailsChanged(
-      TransferDetailsChanged event, Emitter<TransferState> emit) {
+      TransferDetailsChanged event, Emitter<ExternalTransferState> emit) {
     emit(
       state.copyWith(
         fromAccountId: event.fromAccountId,
-        toAccountId: event.toAccountId,
+        toBankCode: event.toBankCode,
+        toAccountNumber: event.toAccountNumber,
         amount: event.amount,
         currency: event.currency,
+        description: event.description,
         transferError: false,
         errorMessage: '',
         isTransferred: false,
@@ -43,12 +46,12 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   }
 
   Future<void> _onCreateTransferSubmitted(
-      CreateTransferSubmitted event, Emitter<TransferState> emit) async {
-    log('TransferBloc: Starting create transfer submission');
+      CreateTransferSubmitted event, Emitter<ExternalTransferState> emit) async {
+    log('ExternalTransferBloc: Starting create transfer submission');
 
     // Validate input
     if (state.fromAccountId <= 0) {
-      log('TransferBloc: Invalid source account ID: ${state.fromAccountId}');
+      log('ExternalTransferBloc: Invalid source account ID: ${state.fromAccountId}');
       emit(
         state.copyWith(
           transferError: true,
@@ -58,19 +61,30 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       return;
     }
 
-    if (state.toAccountId <= 0) {
-      log('TransferBloc: Invalid destination account ID: ${state.toAccountId}');
+    if (state.toBankCode.isEmpty) {
+      log('ExternalTransferBloc: Invalid bank code');
       emit(
         state.copyWith(
           transferError: true,
-          errorMessage: 'Invalid destination account',
+          errorMessage: 'Bank code is required',
+        ),
+      );
+      return;
+    }
+
+    if (state.toAccountNumber.isEmpty) {
+      log('ExternalTransferBloc: Invalid account number');
+      emit(
+        state.copyWith(
+          transferError: true,
+          errorMessage: 'Account number is required',
         ),
       );
       return;
     }
 
     if (state.amount <= 0) {
-      log('TransferBloc: Invalid amount: ${state.amount}');
+      log('ExternalTransferBloc: Invalid amount: ${state.amount}');
       emit(
         state.copyWith(
           transferError: true,
@@ -81,7 +95,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     }
 
     if (state.currency.isEmpty) {
-      log('TransferBloc: Empty currency, defaulting to ETB');
+      log('ExternalTransferBloc: Empty currency, defaulting to ETB');
       emit(
         state.copyWith(
           transferError: true,
@@ -93,15 +107,15 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     }
 
     // Set transferring state
-    log('TransferBloc: Setting transferring state to true');
+    log('ExternalTransferBloc: Setting transferring state to true');
     emit(state.copyWith(isTransferring: true));
 
     // Check internet connection
     final hasConnectivity = await AppConnectivity.connectivity();
-    log('TransferBloc: Internet connectivity check: $hasConnectivity');
+    log('ExternalTransferBloc: Internet connectivity check: $hasConnectivity');
 
     if (!hasConnectivity) {
-      log('TransferBloc: No internet connection');
+      log('ExternalTransferBloc: No internet connection');
       emit(
         state.copyWith(
           isTransferring: false,
@@ -112,18 +126,17 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       return;
     }
 
-    // Use provided account IDs or get from AccountsBloc if needed
+    // Use provided account ID or get from AccountsBloc if needed
     int fromAccountId = state.fromAccountId;
-    int toAccountId = state.toAccountId;
-    log('TransferBloc: Initial account IDs - from: $fromAccountId, to: $toAccountId');
+    log('ExternalTransferBloc: Initial account ID - from: $fromAccountId');
 
     // If account ID is not provided, get the ETB account from AccountsBloc
     if (fromAccountId <= 0 && state.currency.toUpperCase() == 'ETB') {
-      log('TransferBloc: Source account ID is 0, trying to get from AccountsBloc');
+      log('ExternalTransferBloc: Source account ID is 0, trying to get from AccountsBloc');
       final accountsState = _accountsBloc.state;
 
       if (accountsState.accounts.isEmpty) {
-        log('TransferBloc: No accounts available in AccountsBloc');
+        log('ExternalTransferBloc: No accounts available in AccountsBloc');
         emit(
           state.copyWith(
             isTransferring: false,
@@ -134,7 +147,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         return;
       }
 
-      log('TransferBloc: AccountsBloc has ${accountsState.accounts.length} accounts');
+      log('ExternalTransferBloc: AccountsBloc has ${accountsState.accounts.length} accounts');
 
       try {
         final etbAccount = accountsState.accounts.firstWhere(
@@ -145,9 +158,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         );
 
         fromAccountId = etbAccount.id;
-        log('TransferBloc: Found source account - id: ${etbAccount.id}, currency: ${etbAccount.currency}');
+        log('ExternalTransferBloc: Found source account - id: ${etbAccount.id}, currency: ${etbAccount.currency}');
       } catch (e) {
-        log('TransferBloc: Error finding ETB account: $e');
+        log('ExternalTransferBloc: Error finding ETB account: $e');
         emit(
           state.copyWith(
             isTransferring: false,
@@ -159,22 +172,26 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       }
     }
 
-    log('TransferBloc: Final transfer parameters - fromAccountId: $fromAccountId, toAccountId: $toAccountId, amount: ${state.amount}, currency: ${state.currency}');
+    log('ExternalTransferBloc: Final transfer parameters - fromAccountId: $fromAccountId, toBankCode: ${state.toBankCode}, toAccountNumber: ${state.toAccountNumber}, amount: ${state.amount}, currency: ${state.currency}');
 
     try {
-      log('TransferBloc: Calling transfer repository');
-      final result = await _transferRepository.createTransfer(
+      log('ExternalTransferBloc: Calling transfer repository');
+      final request = ExternalTransferRequest(
         fromAccountId: fromAccountId,
-        toAccountId: toAccountId,
+        toBankCode: state.toBankCode,
+        toAccountNumber: state.toAccountNumber,
         amount: state.amount,
         currency: state.currency,
+        description: state.description,
       );
 
-      log('TransferBloc: Got result from transfer repository');
+      final result = await _externalTransferRepository.makeExternalTransfer(request);
+
+      log('ExternalTransferBloc: Got result from transfer repository');
 
       result.fold(
         (failure) {
-          log('TransferBloc: Transfer failed: ${failure.toString()}');
+          log('ExternalTransferBloc: Transfer failed: ${failure.toString()}');
           emit(
             state.copyWith(
               isTransferring: false,
@@ -184,22 +201,18 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
           );
         },
         (transferResponse) {
-          log('TransferBloc: Transfer successful, ID: ${transferResponse.transferId}');
+          log('ExternalTransferBloc: Transfer successful, ID: ${transferResponse.id}');
           emit(
             state.copyWith(
               isTransferring: false,
               isTransferred: true,
               transferResponse: transferResponse,
-              transferId: transferResponse.transferId,
-              status: transferResponse.status,
-              transactionRef: transferResponse.transactionRef,
-              timestamp: transferResponse.timestamp,
             ),
           );
         },
       );
     } catch (e) {
-      log('TransferBloc: Unexpected error during transfer: $e');
+      log('ExternalTransferBloc: Unexpected error during transfer: $e');
       emit(
         state.copyWith(
           isTransferring: false,
@@ -209,4 +222,4 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       );
     }
   }
-}
+} 

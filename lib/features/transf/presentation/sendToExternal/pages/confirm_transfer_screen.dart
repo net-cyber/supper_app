@@ -9,6 +9,7 @@ import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
+import 'package:super_app/features/transf/application/external_transfer/bloc/external_transfer_bloc.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
 class ConfirmTransferScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   String? _transactionId;
   String? _errorMessage;
   late final AccountsBloc _accountsBloc;
+  late final ExternalTransferBloc _transferBloc;
   bool _isDataLoading = false;
   String? _userFullName;
   Map<String, dynamic>? _senderAccount;
@@ -38,13 +40,15 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   void initState() {
     super.initState();
     _accountsBloc = getIt<AccountsBloc>();
+    _transferBloc = getIt<ExternalTransferBloc>();
     
     // Check if data was preloaded from previous screen
     if (widget.transferData.containsKey('preloaded') && widget.transferData['preloaded'] == true) {
-      // Use preloaded user name if available
-      if (widget.transferData.containsKey('senderName')) {
-        _userFullName = widget.transferData['senderName'] as String?;
-      } else {
+      // Use preloaded data
+      _userFullName = widget.transferData['senderName'] as String?;
+      _senderAccount = widget.transferData['senderAccount'] as Map<String, dynamic>?;
+      
+      if (_userFullName == null || _senderAccount == null) {
         _loadUserData();
       }
     } else {
@@ -105,16 +109,93 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
         : 0.0;
     final double totalAmount = amount + fee;
 
-    return BlocListener<AccountsBloc, AccountsState>(
-      bloc: _accountsBloc,
-      listener: (context, state) {
-        if (state.accounts.isNotEmpty) {
-          _setSenderAccount();
-          setState(() {
-            _isDataLoading = false;
-          });
-        }
-      },
+    // Show loading indicator if data is not ready
+    if (_isDataLoading || _userFullName == null || _senderAccount == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            'Confirm Transfer',
+            style: GoogleFonts.outfit(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'Loading transfer details...',
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AccountsBloc, AccountsState>(
+          bloc: _accountsBloc,
+          listener: (context, state) {
+            if (state.accounts.isNotEmpty) {
+              _setSenderAccount();
+              setState(() {
+                _isDataLoading = false;
+              });
+            }
+          },
+        ),
+        BlocListener<ExternalTransferBloc, ExternalTransferState>(
+          bloc: _transferBloc,
+          listener: (context, state) {
+            setState(() {
+              _isLoading = state.isTransferring;
+            });
+
+            if (state.transferError) {
+              setState(() {
+                _errorMessage = state.errorMessage;
+              });
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+
+            if (state.isTransferred && state.transferResponse != null) {
+              setState(() {
+                _isTransactionComplete = true;
+                _transactionId = state.transferResponse?.id?.toString() ?? "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
+              });
+              
+              // Show success dialog
+              _showSuccessDialog(context, _transactionId!);
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -399,22 +480,44 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
       _errorMessage = null;
     });
 
-    // Simulate network delay
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-
-      // Generate transaction ID
-      final randomId = "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
-
+    final senderAccountId = int.tryParse(_senderAccount?['id']?.toString() ?? '') ?? 
+                            int.tryParse(_senderAccount?['accountNumber']?.toString() ?? '') ?? 0;
+                            
+    if (senderAccountId <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid sender account'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
       setState(() {
         _isLoading = false;
-        _isTransactionComplete = true;
-        _transactionId = randomId;
       });
+      return;
+    }
 
-      // Show success dialog
-      _showSuccessDialog(context, randomId);
-    });
+    final bankCode = widget.transferData['code']?.toString() ?? '';
+    final toAccountNumber = widget.transferData['accountNumber']?.toString() ?? '';
+    final double amount = (widget.transferData['amount'] as num).toDouble();
+    final description = _reasonController.text;
+    
+    // Update transfer details in the bloc
+    _transferBloc.add(
+      ExternalTransferEvent.transferDetailsChanged(
+        fromAccountId: senderAccountId,
+        toBankCode: bankCode,
+        toAccountNumber: toAccountNumber,
+        amount: amount,
+        currency: 'ETB',
+        description: description,
+      ),
+    );
+    
+    // Submit the transfer
+    _transferBloc.add(
+      const ExternalTransferEvent.createTransferSubmitted(),
+    );
   }
 
   void _showSuccessDialog(BuildContext context, String transactionId) {

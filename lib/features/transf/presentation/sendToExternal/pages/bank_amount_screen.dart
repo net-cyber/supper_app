@@ -29,9 +29,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
   final TextEditingController _amountController = TextEditingController();
   bool _hasInput = false;
   bool _isLoading = false;
-  bool _isFeeCalculated = false;
   String? _errorMessage;
-  double? _calculatedFee;
   
   late final AccountValidationBloc _validationBloc;
   late final AccountsBloc _accountsBloc;
@@ -71,8 +69,6 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
     if (hasInput != _hasInput) {
       setState(() {
         _hasInput = hasInput;
-        _isFeeCalculated = false;
-        _calculatedFee = null;
       });
     }
   }
@@ -97,7 +93,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
     }
   }
 
-  void _validateAndCalculateFee() {
+  void _validateAndNavigate() {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
     final accountsState = _accountsBloc.state;
@@ -171,31 +167,45 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
 
   void _navigateToConfirmationScreen() {
     final accountsState = _accountsBloc.state;
+    if (accountsState.accounts.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please wait while we load your accounts'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final senderAccount = accountsState.accounts.firstWhere(
+      (account) =>
+          account.currency.toLowerCase() == 'etb' ||
+          account.currency.toLowerCase() == 'birr',
+      orElse: () => accountsState.accounts.first,
+    );
+    
+    final userData = LocalStorage.instance.getUserData();
+    if (userData == null || !userData.containsKey('full_name')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to load user data. Please try again.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     final completeTransferData = {
       ...widget.transferData,
       'amount': double.parse(_amountController.text),
-      'fee': _calculatedFee ?? 0.0,
-    };
-
-    if (accountsState.accounts.isNotEmpty) {
-      final senderAccount = accountsState.accounts.firstWhere(
-        (account) =>
-            account.currency.toLowerCase() == 'etb' ||
-            account.currency.toLowerCase() == 'birr',
-        orElse: () => accountsState.accounts.first,
-      );
-      
-      completeTransferData['senderAccount'] = {
+      'senderAccount': {
         'id': senderAccount.id,
         'balance': senderAccount.balance,
         'currency': senderAccount.currency,
-      };
-      
-      final userData = LocalStorage.instance.getUserData();
-      if (userData != null && userData.containsKey('full_name')) {
-        completeTransferData['senderName'] = userData['full_name'];
-      }
-    }
+      },
+      'senderName': userData['full_name'],
+      'preloaded': true,
+    };
 
     context.pushNamed(RouteName.confirmTransfer, extra: completeTransferData);
   }
@@ -292,13 +302,6 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
               }
 
               if (state.isValidated && state.isSufficient) {
-                // Calculate fee after balance validation
-                final amount = double.parse(_amountController.text);
-                final calculatedFee = (amount * 0.01).clamp(10.0, 100.0);
-                setState(() {
-                  _isFeeCalculated = true;
-                  _calculatedFee = calculatedFee;
-                });
                 _navigateToConfirmationScreen();
               }
             },
@@ -308,7 +311,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
           builder: (context) {
             final validationState = context.watch<AccountValidationBloc>().state;
             final isButtonLoading = validationState.isValidating || _isValidationLoading || _isLoading;
-            
+    
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
@@ -396,67 +399,11 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                     SizedBox(height: 16.h),
                     _buildAmountInput(),
 
-                    // Fee information - show when calculated
-                    if (_isFeeCalculated && _calculatedFee != null) ...[
-                      SizedBox(height: 16.h),
-                      Container(
-                        padding: EdgeInsets.all(12.w),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: Colors.green.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.info_outline,
-                                  color: Colors.green[700],
-                                  size: 18.sp,
-                                ),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: Text(
-                                    'Transfer fee: ETB ${_calculatedFee!.toStringAsFixed(2)}',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.green[700],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (double.tryParse(_amountController.text) != null) ...[
-                              SizedBox(height: 8.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 26.w),
-                                  Expanded(
-                                    child: Text(
-                                      'Total amount: ETB ${(double.parse(_amountController.text) + _calculatedFee!).toStringAsFixed(2)}',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 14.sp,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-
                     const Spacer(),
 
                     // Continue button
                     ContinueButton(
-                      onPressed: _validateAndCalculateFee,
+                      onPressed: _validateAndNavigate,
                       isEnabled: _hasInput,
                       isLoading: isButtonLoading,
                       text: 'Continue',
@@ -466,7 +413,7 @@ class _BankAmountScreenState extends State<BankAmountScreen> {
                 ),
               ),
             );
-          }
+          },
         ),
       ),
     );

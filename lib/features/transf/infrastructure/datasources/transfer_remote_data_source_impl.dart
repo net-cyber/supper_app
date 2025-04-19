@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
-import 'package:super_app/features/transf/domain/entities/transfer_response/transfer_response.dart';
+import 'package:super_app/features/transf/domain/entities/internal_transfer_response/transfer_response.dart';
 
 abstract class TransferRemoteDataSource {
   /// Creates a transfer between accounts

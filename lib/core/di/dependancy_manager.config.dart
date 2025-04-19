@@ -32,6 +32,8 @@ import '../../features/auth/infrastructure/auth/repositories/auth_repository_imp
     as _i446;
 import '../../features/transf/application/bank_account_validation/bloc/bank_account_validation_bloc.dart'
     as _i649;
+import '../../features/transf/application/external_transfer/bloc/external_transfer_bloc.dart'
+    as _i1032;
 import '../../features/transf/application/financial_institution/bloc/financial_institution_bloc.dart'
     as _i811;
 import '../../features/transf/application/transfer/bloc/transfer_bloc.dart'
@@ -44,6 +46,8 @@ import '../../features/transf/domain/repositories/account_validation_repository.
     as _i153;
 import '../../features/transf/domain/repositories/bank_account_validation_repository.dart'
     as _i924;
+import '../../features/transf/domain/repositories/external_transfer_repository.dart'
+    as _i863;
 import '../../features/transf/domain/repositories/financial_institution_repository.dart'
     as _i192;
 import '../../features/transf/domain/repositories/transfer_account_repository.dart'
@@ -54,6 +58,8 @@ import '../../features/transf/infrastructure/datasources/account_validation_remo
     as _i670;
 import '../../features/transf/infrastructure/datasources/bank_account_validation_remote_data_source_impl.dart'
     as _i15;
+import '../../features/transf/infrastructure/datasources/external_transfer_remote_data_source_impl.dart'
+    as _i552;
 import '../../features/transf/infrastructure/datasources/financial_institution_remote_data_source_impl.dart'
     as _i537;
 import '../../features/transf/infrastructure/datasources/transfer_account_remote_data_source_impl.dart'
@@ -64,6 +70,8 @@ import '../../features/transf/infrastructure/repositories/account_validation_rep
     as _i519;
 import '../../features/transf/infrastructure/repositories/bank_account_validation_repository_impl.dart'
     as _i284;
+import '../../features/transf/infrastructure/repositories/external_transfer_repository_impl.dart'
+    as _i159;
 import '../../features/transf/infrastructure/repositories/financial_institution_repository_impl.dart'
     as _i987;
 import '../../features/transf/infrastructure/repositories/transfer_account_repository_impl.dart'
@@ -92,6 +100,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i350.HttpService>(() => _i350.HttpService());
     gh.factory<_i548.TransferRemoteDataSource>(
         () => _i548.TransferRemoteDataSourceImpl());
+    gh.factory<_i552.ExternalTransferRemoteDataSource>(
+        () => _i552.ExternalTransferRemoteDataSourceImpl());
     gh.factory<_i1046.AuthRemoteDataSource>(
         () => _i1046.AuthRemoteDataSourceImpl());
     gh.factory<_i537.FinancialInstitutionRemoteDataSource>(
@@ -119,6 +129,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i644.TransferAccountRepository>(() =>
         _i354.TransferAccountRepositoryImpl(
             gh<_i213.TransferAccountRemoteDataSource>()));
+    gh.factory<_i863.ExternalTransferRepository>(() =>
+        _i159.ExternalTransferRepositoryImpl(
+            gh<_i552.ExternalTransferRemoteDataSource>()));
     gh.factory<_i706.AccountRespository>(() =>
         _i658.AccountRepositoryImpl(gh<_i811.AccountsRemoteDataSource>()));
     gh.factory<_i623.LoginBloc>(
@@ -134,6 +147,10 @@ extension GetItInjectableX on _i174.GetIt {
         _i265.AccountVerificationBloc(gh<_i644.TransferAccountRepository>()));
     gh.factory<_i671.AccountsBloc>(
         () => _i671.AccountsBloc(gh<_i706.AccountRespository>()));
+    gh.factory<_i1032.ExternalTransferBloc>(() => _i1032.ExternalTransferBloc(
+          gh<_i863.ExternalTransferRepository>(),
+          gh<_i671.AccountsBloc>(),
+        ));
     gh.factory<_i649.BankAccountValidationBloc>(() =>
         _i649.BankAccountValidationBloc(
             gh<_i924.BankAccountValidationRepository>()));
