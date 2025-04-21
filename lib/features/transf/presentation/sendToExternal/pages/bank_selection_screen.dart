@@ -242,11 +242,26 @@ class _BankSelectionScreenContentState
             children: [
               // Bank logo
               Container(
-                width: 80.w,
-                height: 80.h,
+                width: 100.w,
+                height: 100.h,
                 decoration: BoxDecoration(
-                  color: Colors.blue[50],
+                  gradient: LinearGradient(
+                    colors: [Colors.blue[50]!, Colors.white],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                  border: Border.all(
+                    color: Colors.grey[200]!,
+                    width: 1,
+                  ),
                 ),
                 child: Center(
                   child: _buildLogoImage(logoPath, bank.name),
@@ -259,7 +274,7 @@ class _BankSelectionScreenContentState
               Text(
                 bank.name,
                 style: GoogleFonts.outfit(
-                  fontSize: 16.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
@@ -282,14 +297,14 @@ class _BankSelectionScreenContentState
     if (isNetworkImage) {
       return Image.network(
         logoPath,
-        width: 40.w,
-        height: 40.h,
+        width: 60.w,
+        height: 60.h,
         fit: BoxFit.contain,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
           return SizedBox(
-            width: 40.w,
-            height: 40.h,
+            width: 60.w,
+            height: 60.h,
             child: Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2,
@@ -310,8 +325,8 @@ class _BankSelectionScreenContentState
     } else if (isAssetImage) {
       return Image.asset(
         logoPath,
-        width: 40.w,
-        height: 40.h,
+        width: 60.w,
+        height: 60.h,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           log('Failed to load bank logo from assets: $logoPath. Error: $error');
@@ -336,12 +351,29 @@ class _BankSelectionScreenContentState
       initials = 'B';
     }
     
-    return Text(
-      initials.toUpperCase(),
-      style: GoogleFonts.outfit(
-        fontSize: 20.sp,
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.primary,
+    return Container(
+      width: 50.w,
+      height: 50.h,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            Theme.of(context).colorScheme.primary,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Text(
+          initials.toUpperCase(),
+          style: GoogleFonts.outfit(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

@@ -9,6 +9,87 @@ import 'package:super_app/features/transf/application/bank_account_validation/bl
 import 'package:super_app/features/transf/presentation/widget/account_input_field.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
+// Helper function to show SnackBar at the top
+void showTopSnackBar(
+  BuildContext context, {
+  required String message,
+  Color backgroundColor = Colors.red,
+  Duration duration = const Duration(seconds: 4),
+  SnackBarAction? action,
+}) {
+  // Dismiss any previous overlays first
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  
+  // Use OverlayEntry for fixed position notification
+  final overlayState = Overlay.of(context);
+  OverlayEntry? overlayEntry;
+  
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: MediaQuery.of(context).viewPadding.top + 10,
+      left: 20.w,
+      right: 20.w,
+      child: Material(
+        elevation: 6.0,
+        borderRadius: BorderRadius.circular(8.r),
+        color: backgroundColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              if (action != null)
+                InkWell(
+                  onTap: () {
+                    overlayEntry?.remove();
+                    action.onPressed.call();
+                  },
+                  child: Text(
+                    action.label,
+                    style: TextStyle(
+                      color: action.textColor ?? Colors.white,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                )
+              else
+                InkWell(
+                  onTap: () => overlayEntry?.remove(),
+                  child: Text(
+                    'Dismiss',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+  
+  // Insert the overlay and remove after duration
+  overlayState.insert(overlayEntry);
+  
+  // Auto-remove after duration
+  Future.delayed(duration, () {
+    if (overlayEntry?.mounted ?? false) {
+      overlayEntry?.remove();
+    }
+  });
+}
+
 class BankAccountScreen extends StatelessWidget {
   final Map<String, dynamic> bank;
 
@@ -40,11 +121,13 @@ class _BankAccountScreenContent extends StatefulWidget {
 class _BankAccountScreenContentState extends State<_BankAccountScreenContent> {
   final TextEditingController _accountNumberController = TextEditingController();
   bool _hasInput = false;
+  String _previousText = '';
 
   @override
   void initState() {
     super.initState();
     _accountNumberController.addListener(_onInputChanged);
+    _previousText = _accountNumberController.text;
   }
 
   @override
@@ -57,23 +140,27 @@ class _BankAccountScreenContentState extends State<_BankAccountScreenContent> {
   void _onInputChanged() {
     final text = _accountNumberController.text;
     final hasInput = text.isNotEmpty;
+    
+    // Check if there's an actual text change
+    final textChanged = text != _previousText;
+    _previousText = text;
 
     if (hasInput != _hasInput) {
       setState(() {
         _hasInput = hasInput;
       });
-      
-      // Reset validation when input changes
-      if (_hasInput) {
-        context.read<BankAccountValidationBloc>().add(
-          const ResetBankAccountValidation(),
-        );
-      }
+    }
+    
+    // Only reset validation when text actually changes
+    if (textChanged) {
+      context.read<BankAccountValidationBloc>().add(
+        const ResetBankAccountValidation(),
+      );
     }
   }
 
   void _verifyAccount() {
-    final bankCode = widget.bank['code'] as String;
+      final bankCode = widget.bank['code'] as String;
     final accountNumber = _accountNumberController.text;
     
     // Dispatch the validation event with bank code and account number
@@ -114,7 +201,6 @@ class _BankAccountScreenContentState extends State<_BankAccountScreenContent> {
   @override
   Widget build(BuildContext context) {
     final bankName = widget.bank['name'] as String;
-    final bankCode = widget.bank['code'] as String;
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -128,7 +214,7 @@ class _BankAccountScreenContentState extends State<_BankAccountScreenContent> {
         title: Text(
           'Transfer to $bankName',
           style: GoogleFonts.outfit(
-            fontSize: 20.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -138,117 +224,47 @@ class _BankAccountScreenContentState extends State<_BankAccountScreenContent> {
         listener: (context, state) {
           // Handle API errors if needed
           if (state.hasError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage ?? 'Failed to validate account'),
-                backgroundColor: Colors.red,
-              ),
+            showTopSnackBar(
+              context,
+              message: state.errorMessage ?? 'Failed to validate account',
             );
           }
         },
         builder: (context, state) {
           return Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Bank info header
-                Container(
-                  padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey[200]!),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 48.w,
-                        height: 48.w,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: Colors.grey[300]!),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: widget.bank['logoUrl'] != null
-                              ? Image.network(
-                                  widget.bank['logoUrl'] as String,
-                                  width: 32.w,
-                                  height: 32.w,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Text(
-                                      bankCode,
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Text(
-                                  bankCode,
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: Text(
-                          bankName,
-                          style: GoogleFonts.outfit(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                SizedBox(height: 24.h),
-                
-                Text(
-                  'Enter Account Number',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Enter $bankName account number',
-                  style: GoogleFonts.outfit(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Enter Account Number',
+              style: GoogleFonts.outfit(
                     fontSize: 16.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+                  'Enter recipient account number',
+              style: GoogleFonts.outfit(
+                    fontSize: 14.sp,
+                color: Colors.grey[600],
+              ),
+            ),
                 SizedBox(height: 24.h),
 
-                AccountInputField(
-                  label: 'Account Number',
-                  controller: _accountNumberController,
-                  hintText: 'Enter account number',
-                  errorMessage: state.hasError ? state.errorMessage : null,
-                ),
+            AccountInputField(
+              label: 'Account Number',
+              controller: _accountNumberController,
+              hintText: 'Enter account number',
+              errorMessage: null,
+              enabled: !state.isLoading,
+            ),
 
-                SizedBox(height: 24.h),
+            SizedBox(height: 24.h),
 
-                // Account information section (visible only after verification)
+            // Account information section (visible only after verification)
                 if (state.isValid && state.validationResult != null) ...[
                   Material(
                     color: Colors.transparent,
@@ -256,146 +272,117 @@ class _BankAccountScreenContentState extends State<_BankAccountScreenContent> {
                       onTap: () => _navigateToAmountScreen(state.validationResult!),
                       borderRadius: BorderRadius.circular(12.r),
                       child: Ink(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+                  width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Row(
+                    children: [
+                      // Profile circle with initials
+                      Container(
+                              width: 50.w,
+                              height: 50.w,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                            width: 1.5,
+                          shape: BoxShape.circle,
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                        ),
+                        child: Center(
+                          child: Text(
+                                  _getInitials(state.validationResult!.accountName),
+                            style: GoogleFonts.outfit(
+                                    fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            // Profile circle with initials
-                            Container(
-                              width: 60.w,
-                              height: 60.w,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  _getInitials(state.validationResult!.accountName),
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 16.w),
+                      ),
+                      SizedBox(width: 16.w),
 
                             // Name and account details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
                                     state.validationResult!.accountName.toUpperCase(),
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4.h),
-                                  Text(
+                              style: GoogleFonts.outfit(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
                                     'Account: ${_accountNumberController.text}',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 14.sp,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
+                              style: GoogleFonts.outfit(
+                                fontSize: 14.sp,
+                                color: Colors.black54,
+                              ),
+                            ),
                                   if (state.validationResult!.accountType?.isNotEmpty ?? false) ...[
-                                    SizedBox(height: 4.h),
-                                    Text(
+                            SizedBox(height: 4.h),
+                            Text(
                                       state.validationResult!.accountType!,
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 12.sp,
-                                        color: Theme.of(context).colorScheme.primary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
+                              style: GoogleFonts.outfit(
+                                fontSize: 12.sp,
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                                   SizedBox(height: 6.h),
                                   Row(
-                                    children: [
-                                      Text(
+                        children: [
+                          Text(
                                         'Tap to continue',
-                                        style: GoogleFonts.outfit(
+                            style: GoogleFonts.outfit(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
-                                          color: Theme.of(context).colorScheme.primary,
-                                        ),
-                                      ),
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                                       SizedBox(width: 4.w),
                                       Icon(
                                         Icons.touch_app,
                                         size: 16.sp,
                                         color: Theme.of(context).colorScheme.primary,
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
 
                             // Forward arrow
                             Icon(
                               Icons.arrow_forward_ios,
                               size: 20.sp,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                ],
+                ),
+              ),
+            ],
 
                 const Spacer(),
 
-                // Loading indicator when validating account
-                if (state.isLoading) ...[
-                  Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Verifying account...',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-
-                // Continue button - only shown when account info is not visible
-                if (!state.isValid && !state.isLoading) ...[
-                  ContinueButton(
+                // Continue button - only show when account is not validated or is being validated
+                if (!state.isValid || state.isLoading) ...[
+              ContinueButton(
                     onPressed: _verifyAccount,
-                    isEnabled: _hasInput,
-                    isLoading: false,
-                    text: 'Continue',
-                  ),
-                ],
-                SizedBox(height: 16.h),
-              ],
-            ),
+                    isEnabled: _hasInput && !state.isLoading,
+                    isLoading: state.isLoading,
+                    text: state.isLoading ? 'Processing...' : 'Continue',
+              ),
+            ],
+            SizedBox(height: 16.h),
+          ],
+        ),
           );
         },
       ),

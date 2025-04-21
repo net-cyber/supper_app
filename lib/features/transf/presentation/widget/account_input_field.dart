@@ -9,6 +9,7 @@ class AccountInputField extends StatelessWidget {
   final TextEditingController controller;
   final bool isNumeric;
   final String? errorMessage;
+  final bool enabled;
 
   const AccountInputField({
     super.key,
@@ -17,6 +18,7 @@ class AccountInputField extends StatelessWidget {
     required this.hintText,
     this.isNumeric = true,
     this.errorMessage,
+    this.enabled = true,
   });
 
   @override
@@ -37,15 +39,16 @@ class AccountInputField extends StatelessWidget {
         SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: enabled ? Colors.grey[200] : Colors.grey[100],
             borderRadius: BorderRadius.circular(12.r),
             border: hasError ? Border.all(color: Colors.red, width: 1.5) : null,
           ),
           child: TextField(
             controller: controller,
+            enabled: enabled,
             style: GoogleFonts.outfit(
               fontSize: 16.sp,
-              color: Colors.black87,
+              color: enabled ? Colors.black87 : Colors.grey[600],
             ),
             keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
             inputFormatters:

@@ -18,7 +18,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 
-class ConfirmTransferScreen extends StatefulWidget {
+class ConfirmTransferScreen extends StatelessWidget {
   final Map<String, dynamic> transferData;
 
   const ConfirmTransferScreen({
@@ -27,22 +27,41 @@ class ConfirmTransferScreen extends StatefulWidget {
   });
 
   @override
-  State<ConfirmTransferScreen> createState() => _ConfirmTransferScreenState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<ExternalTransferBloc>()),
+        BlocProvider(create: (context) => getIt<AccountsBloc>()),
+      ],
+      child: _ConfirmTransferScreenContent(transferData: transferData),
+    );
+  }
 }
 
-class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
+class _ConfirmTransferScreenContent extends StatefulWidget {
+  final Map<String, dynamic> transferData;
+
+  const _ConfirmTransferScreenContent({
+    required this.transferData,
+  });
+
+  @override
+  State<_ConfirmTransferScreenContent> createState() =>
+      _ConfirmTransferScreenContentState();
+}
+
+class _ConfirmTransferScreenContentState
+    extends State<_ConfirmTransferScreenContent> {
   final TextEditingController _reasonController = TextEditingController();
   bool _isLoading = false;
   bool _isTransactionComplete = false;
   String? _transactionId;
   String? _errorMessage;
-  late final AccountsBloc _accountsBloc;
-  late final ExternalTransferBloc _transferBloc;
   bool _isDataLoading = false;
   String? _userFullName;
   Map<String, dynamic>? _senderAccount;
-  
-  // Add variables for receipt generation
+
+  // Variables for receipt generation
   String? _generatedReceiptPath;
   String? _generatedReceiptName;
   final GlobalKey _successDialogKey = GlobalKey();
@@ -50,17 +69,32 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   @override
   void initState() {
     super.initState();
-    _accountsBloc = getIt<AccountsBloc>();
-    _transferBloc = getIt<ExternalTransferBloc>();
-    
+
     // Check if data was preloaded from previous screen
-    if (widget.transferData.containsKey('preloaded') && widget.transferData['preloaded'] == true) {
+    if (widget.transferData.containsKey('preloaded') &&
+        widget.transferData['preloaded'] == true) {
       // Use preloaded data
-      _userFullName = widget.transferData['senderName'] as String?;
-      _senderAccount = widget.transferData['senderAccount'] as Map<String, dynamic>?;
-      
+      _userFullName =
+          widget.transferData['senderName'] as String? ?? 'Account Holder';
+      _senderAccount =
+          widget.transferData['senderAccount'] as Map<String, dynamic>?;
+
+      // We don't generate a placeholder transaction ID anymore
+      // to ensure "Pending" shows up correctly
+
+      // If for some reason preloaded data is incomplete, fall back to loading
       if (_userFullName == null || _senderAccount == null) {
+        _isDataLoading = true;
         _loadUserData();
+        final accountsBloc = context.read<AccountsBloc>();
+        if (accountsBloc.state.accounts.isEmpty) {
+          accountsBloc.add(const FetchAccounts());
+        } else {
+          _setSenderAccount();
+          setState(() {
+            _isDataLoading = false;
+          });
+        }
       }
     } else {
       // Fall back to original loading behavior if data wasn't preloaded
@@ -68,9 +102,11 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
       _loadUserData();
 
       // Check if accounts data is loaded
-      if (_accountsBloc.state.accounts.isEmpty && !_accountsBloc.state.isLoading) {
-        _accountsBloc.add(const FetchAccounts());
-      } else if (_accountsBloc.state.accounts.isNotEmpty) {
+      final accountsBloc = context.read<AccountsBloc>();
+      if (accountsBloc.state.accounts.isEmpty &&
+          !accountsBloc.state.isLoading) {
+        accountsBloc.add(const FetchAccounts());
+      } else if (accountsBloc.state.accounts.isNotEmpty) {
         _setSenderAccount();
         setState(() {
           _isDataLoading = false;
@@ -95,8 +131,9 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   }
 
   void _setSenderAccount() {
-    if (_accountsBloc.state.accounts.isNotEmpty) {
-      final firstAccount = _accountsBloc.state.accounts.first;
+    final accountsBloc = context.read<AccountsBloc>();
+    if (accountsBloc.state.accounts.isNotEmpty) {
+      final firstAccount = accountsBloc.state.accounts.first;
       setState(() {
         _senderAccount = {
           'accountNumber': firstAccount.id,
@@ -134,7 +171,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
           title: Text(
             'Confirm Transfer',
             style: GoogleFonts.outfit(
-              fontSize: 20.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
@@ -164,7 +201,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
     return MultiBlocListener(
       listeners: [
         BlocListener<AccountsBloc, AccountsState>(
-          bloc: _accountsBloc,
           listener: (context, state) {
             if (state.accounts.isNotEmpty) {
               _setSenderAccount();
@@ -175,7 +211,6 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
           },
         ),
         BlocListener<ExternalTransferBloc, ExternalTransferState>(
-          bloc: _transferBloc,
           listener: (context, state) {
             setState(() {
               _isLoading = state.isTransferring;
@@ -185,7 +220,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
               setState(() {
                 _errorMessage = state.errorMessage;
               });
-              
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.errorMessage),
@@ -198,9 +233,10 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             if (state.isTransferred && state.transferResponse != null) {
               setState(() {
                 _isTransactionComplete = true;
-                _transactionId = state.transferResponse?.id?.toString() ?? "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
+                _transactionId = state.transferResponse?.id?.toString() ??
+                    "ETX${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
               });
-              
+
               // Generate receipt automatically before showing success dialog
               _generateReceiptAutomatically(state).then((_) {
                 // After receipt is generated, show success dialog
@@ -230,9 +266,9 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            'Confirm Transfer',
+            'Confirm External Transfer',
             style: GoogleFonts.outfit(
-              fontSize: 20.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
@@ -244,10 +280,10 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Review',
+                'Review Transfer',
                 style: GoogleFonts.outfit(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
               ),
@@ -255,7 +291,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
               Text(
                 'Please verify all details before confirming the transfer',
                 style: GoogleFonts.outfit(
-                  fontSize: 16.sp,
+                  fontSize: 14.sp,
                   color: Colors.grey[600],
                 ),
               ),
@@ -290,12 +326,12 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                               width: 64.w,
                               height: 64.h,
                               decoration: BoxDecoration(
-                                color: Colors.purple.withOpacity(0.1),
+                                color: Colors.blue.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 Icons.swap_horiz_rounded,
-                                color: Colors.purple,
+                                color: Theme.of(context).colorScheme.primary,
                                 size: 32.sp,
                               ),
                             ),
@@ -303,27 +339,67 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                             Text(
                               'Transfer Details',
                               style: GoogleFonts.outfit(
-                                fontSize: 18.sp,
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 6.h),
-                            Text(
-                              'Transaction ID: ${_transactionId ?? "Pending"}',
-                              style: GoogleFonts.outfit(
-                                fontSize: 12.sp,
-                                color: Colors.grey[600],
+                            // Goh Betoch Bank badge
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 16.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w, vertical: 6.h),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20.r),
+                                border: Border.all(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.verified_rounded,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    size: 16.sp,
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'Goh Betoch Bank External',
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
+
                             SizedBox(height: 24.h),
 
                             // From (Sender)
                             _buildSectionLabel('From'),
                             SizedBox(height: 8.h),
-                            _buildDetailRow('Name', _userFullName ?? 'Account Holder'),
-                            _buildDetailRow('Account Number', _senderAccount?['accountNumber']?.toString() ?? ''),
-                            _buildDetailRow('Bank', _senderAccount?['bank']?.toString() ?? ''),
+                            _buildDetailRow(
+                                'Name', _userFullName ?? 'Account Holder'),
+                            _buildDetailRow(
+                                'Account Number',
+                                _senderAccount?['id']?.toString() ??
+                                    _senderAccount?['accountNumber']
+                                        ?.toString() ??
+                                    ''),
+                            _buildDetailRow('Bank', 'Gohe Betoch Bank'),
 
                             SizedBox(height: 24.h),
                             Divider(height: 1, color: Colors.grey[300]),
@@ -332,9 +408,16 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                             // To (Receiver)
                             _buildSectionLabel('To'),
                             SizedBox(height: 8.h),
-                            _buildDetailRow('Name', widget.transferData['accountHolderName'].toString()),
-                            _buildDetailRow('Account Number', widget.transferData['accountNumber'].toString()),
-                            _buildDetailRow('Bank', widget.transferData['name'].toString()),
+                            _buildDetailRow(
+                                'Name',
+                                widget.transferData['accountHolderName']
+                                    .toString()),
+                            _buildDetailRow(
+                                'Account Number',
+                                widget.transferData['accountNumber']
+                                    .toString()),
+                            _buildDetailRow(
+                                'Bank', widget.transferData['name'].toString()),
 
                             SizedBox(height: 24.h),
                             Divider(height: 1, color: Colors.grey[300]),
@@ -343,16 +426,18 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                             // Amount Details
                             _buildSectionLabel('Amount'),
                             SizedBox(height: 8.h),
-                            _buildDetailRow('Transfer Amount', '${amount.toStringAsFixed(2)} ETB'),
-                            _buildDetailRow('Service Charge', '${fee.toStringAsFixed(2)} ETB'),
+                            _buildDetailRow('Transfer Amount',
+                                '${amount.toStringAsFixed(2)} ETB'),
+                            _buildDetailRow('Service Charge',
+                                '${fee.toStringAsFixed(2)} ETB'),
                             SizedBox(height: 16.h),
                             _buildDetailRow(
                               'Total Amount',
                               '${totalAmount.toStringAsFixed(2)} ETB',
                               valueStyle: GoogleFonts.outfit(
-                                fontSize: 18.sp,
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.purple,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
 
@@ -361,7 +446,8 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                             SizedBox(height: 24.h),
 
                             // Date and Time
-                            _buildDetailRow('Date & Time', _formatDateTime(DateTime.now())),
+                            _buildDetailRow(
+                                'Date & Time', _formatDateTime(DateTime.now())),
                           ],
                         ),
                       ),
@@ -372,18 +458,16 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                       Text(
                         'Reason for Transfer',
                         style: GoogleFonts.outfit(
-                          fontSize: 16.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 8.h),
                       Container(
-                        padding: EdgeInsets.all(16.w),
                         decoration: BoxDecoration(
-                          color: Colors.grey[100],
+                          color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(color: Colors.grey[300]!),
                         ),
                         child: TextField(
                           controller: _reasonController,
@@ -395,49 +479,41 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
                           decoration: InputDecoration(
                             hintText: 'Enter reason for transfer (optional)',
                             hintStyle: GoogleFonts.outfit(
-                              fontSize: 14.sp,
+                              fontSize: 16.sp,
                               color: Colors.grey[500],
                             ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 16.h,
+                            ),
                             border: InputBorder.none,
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 8.h),
                           ),
                         ),
                       ),
 
-                      SizedBox(height: 16.h),
-                      Text(
-                        'By confirming this transfer, you agree to the terms and conditions.',
-                        style: GoogleFonts.outfit(
-                          fontSize: 12.sp,
-                          color: Colors.grey[600],
-                        ),
-                      ),
                       SizedBox(height: 16.h),
                     ],
                   ),
                 ),
               ),
 
+              SizedBox(height: 24.h),
+
               // Confirm button
               SizedBox(height: 16.h),
-              ContinueButton(
-                onPressed: () => _processTransfer(context),
-                isEnabled: !_isLoading,
-                color: Theme.of(context).colorScheme.primary,
-                text: _isLoading ? 'Processing...' : 'Confirm Transfer',
-              ),
-
-              // Show loading indicator if processing
-              if (_isLoading) ...[
-                SizedBox(height: 16.h),
-                Center(
-                  child: LinearProgressIndicator(
+              BlocBuilder<ExternalTransferBloc, ExternalTransferState>(
+                builder: (context, state) {
+                  return ContinueButton(
+                    onPressed: () => _processTransfer(context),
+                    isEnabled: !state.isTransferring && !state.isTransferred,
+                    isLoading: state.isTransferring || _isLoading,
                     color: Theme.of(context).colorScheme.primary,
-                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                  ),
-                ),
-              ],
+                    text: state.isTransferring
+                        ? 'Processing...'
+                        : 'Confirm Transfer',
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -481,7 +557,7 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
             style: valueStyle ??
                 GoogleFonts.outfit(
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
           ),
@@ -491,8 +567,10 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    final date = '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
-    final time = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    final date =
+        '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
+    final time =
+        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
     return '$date at $time';
   }
 
@@ -504,30 +582,51 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
       _errorMessage = null;
     });
 
-    final senderAccountId = int.tryParse(_senderAccount?['id']?.toString() ?? '') ?? 
-                            int.tryParse(_senderAccount?['accountNumber']?.toString() ?? '') ?? 0;
-                            
-    if (senderAccountId <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid sender account'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
+    int senderAccountId;
+
+    // Check if we have preloaded account data
+    if (_senderAccount != null && _senderAccount!.containsKey('id')) {
+      // Use preloaded account ID
+      senderAccountId = _senderAccount!['id'] as int;
+    } else {
+      // Fall back to getting account from state
+      final accountsBloc = context.read<AccountsBloc>();
+      final accountsState = accountsBloc.state;
+
+      if (accountsState.accounts.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No accounts available. Please try again.'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Get the first available account or ETB account
+      final senderAccount = accountsState.accounts.firstWhere(
+        (account) =>
+            account.currency.toLowerCase() == 'etb' ||
+            account.currency.toLowerCase() == 'birr',
+        orElse: () => accountsState.accounts.first,
       );
-      setState(() {
-        _isLoading = false;
-      });
-      return;
+
+      senderAccountId = senderAccount.id;
     }
 
     final bankCode = widget.transferData['code']?.toString() ?? '';
-    final toAccountNumber = widget.transferData['accountNumber']?.toString() ?? '';
+    final toAccountNumber =
+        widget.transferData['accountNumber']?.toString() ?? '';
     final double amount = (widget.transferData['amount'] as num).toDouble();
     final description = _reasonController.text;
-    
+
     // Update transfer details in the bloc
-    _transferBloc.add(
+    final transferBloc = context.read<ExternalTransferBloc>();
+    transferBloc.add(
       ExternalTransferEvent.transferDetailsChanged(
         fromAccountId: senderAccountId,
         toBankCode: bankCode,
@@ -537,9 +636,9 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
         description: description,
       ),
     );
-    
+
     // Submit the transfer
-    _transferBloc.add(
+    transferBloc.add(
       const ExternalTransferEvent.createTransferSubmitted(),
     );
   }
@@ -559,13 +658,14 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
         transactionType: 'External Bank Transfer',
         currency: 'ETB',
         primaryColor: Theme.of(context).colorScheme.primary,
-        successColor: Colors.purple,
+        successColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
 
   // Helper method to automatically generate the receipt after a successful transfer
-  Future<void> _generateReceiptAutomatically(ExternalTransferState state) async {
+  Future<void> _generateReceiptAutomatically(
+      ExternalTransferState state) async {
     try {
       if (!state.isTransferred || state.transferResponse == null) {
         throw Exception('Cannot generate receipt: Transfer data not available');
@@ -591,7 +691,8 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
         fromAccountId: transferResponse.fromAccountId.toString(),
         toAccountId: transferResponse.toAccountNumber,
         fromName: _userFullName ?? 'Account Holder',
-        toName: widget.transferData['accountHolderName']?.toString() ?? 'Recipient',
+        toName:
+            widget.transferData['accountHolderName']?.toString() ?? 'Recipient',
         fromBank: 'Gohe Betoch Bank',
         toBank: transferResponse.toBankCode,
         currency: 'ETB',
@@ -601,8 +702,8 @@ class _ConfirmTransferScreenState extends State<ConfirmTransferScreen> {
         transactionType: 'External Bank Transfer',
         primaryColor: Theme.of(context).colorScheme.primary,
         secondaryColor: Theme.of(context).colorScheme.secondary,
-        accentColor: Colors.purple,
-        lightAccent: Colors.purple.shade100,
+        accentColor: Theme.of(context).colorScheme.primary,
+        lightAccent: Theme.of(context).colorScheme.primary.withOpacity(0.1),
         borderColor: Colors.grey.shade300,
         backgroundColor: Colors.grey.shade100,
       );

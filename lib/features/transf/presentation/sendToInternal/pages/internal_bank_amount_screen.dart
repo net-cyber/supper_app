@@ -13,7 +13,88 @@ import 'package:super_app/features/accounts/application/list/bloc/accounts_state
 import 'package:super_app/features/transf/application/validation/bloc/account_validation_bloc.dart';
 import 'package:super_app/features/transf/presentation/widget/continue_button.dart';
 
-class InternalBankAmountScreen extends StatefulWidget {
+// Helper function to show SnackBar at the top
+void showTopSnackBar(
+  BuildContext context, {
+  required String message,
+  Color backgroundColor = Colors.red,
+  Duration duration = const Duration(seconds: 4),
+  SnackBarAction? action,
+}) {
+  // Dismiss any previous overlays first
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  
+  // Use OverlayEntry for fixed position notification
+  final overlayState = Overlay.of(context);
+  OverlayEntry? overlayEntry;
+  
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: MediaQuery.of(context).viewPadding.top + 10,
+      left: 20.w,
+      right: 20.w,
+      child: Material(
+        elevation: 6.0,
+        borderRadius: BorderRadius.circular(8.r),
+        color: backgroundColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              if (action != null)
+                InkWell(
+                  onTap: () {
+                    overlayEntry?.remove();
+                    action.onPressed.call();
+                  },
+                  child: Text(
+                    action.label,
+                    style: TextStyle(
+                      color: action.textColor ?? Colors.white,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                )
+              else
+                InkWell(
+                  onTap: () => overlayEntry?.remove(),
+                  child: Text(
+                    'Dismiss',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+  
+  // Insert the overlay and remove after duration
+  overlayState.insert(overlayEntry);
+  
+  // Auto-remove after duration
+  Future.delayed(duration, () {
+    if (overlayEntry?.mounted ?? false) {
+      overlayEntry?.remove();
+    }
+  });
+}
+
+class InternalBankAmountScreen extends StatelessWidget {
   final Map<String, dynamic> transferData;
 
   const InternalBankAmountScreen({
@@ -22,35 +103,68 @@ class InternalBankAmountScreen extends StatefulWidget {
   });
 
   @override
-  State<InternalBankAmountScreen> createState() =>
-      _InternalBankAmountScreenState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<AccountValidationBloc>()),
+        BlocProvider(create: (context) => getIt<AccountsBloc>()),
+      ],
+      child: _InternalBankAmountScreenContent(transferData: transferData),
+    );
+  }
 }
 
-class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
+class _InternalBankAmountScreenContent extends StatefulWidget {
+  final Map<String, dynamic> transferData;
+
+  const _InternalBankAmountScreenContent({
+    required this.transferData,
+  });
+
+  @override
+  State<_InternalBankAmountScreenContent> createState() => _InternalBankAmountScreenContentState();
+}
+
+class _InternalBankAmountScreenContentState extends State<_InternalBankAmountScreenContent> with WidgetsBindingObserver {
   final TextEditingController _amountController = TextEditingController();
   bool _hasInput = false;
-  late final AccountValidationBloc _validationBloc;
-  late final AccountsBloc _accountsBloc;
+  bool _isLoading = false;
+  String? _errorMessage;
   bool _isAccountsFetched = false;
   bool _isValidationLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _validationBloc = getIt<AccountValidationBloc>();
-    _accountsBloc = getIt<AccountsBloc>();
     _amountController.addListener(_onAmountChanged);
     _fetchAccountsIfNeeded();
+    
+    // Add observer to detect when the screen comes back into focus
+    WidgetsBinding.instance.addObserver(this);
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reset loading state when screen is rebuilt (like when coming back from navigation)
+    if (_isLoading) {
+      setState(() {
+        _isLoading = false;
+        _isValidationLoading = false;
+      });
+    }
   }
 
   void _fetchAccountsIfNeeded() {
-    final accountsState = _accountsBloc.state;
+    final accountsBloc = context.read<AccountsBloc>();
+    final accountsState = accountsBloc.state;
+    
     if (!accountsState.isLoading && accountsState.accounts.isNotEmpty) {
       setState(() {
         _isAccountsFetched = true;
       });
     } else if (accountsState.accounts.isEmpty && !accountsState.isLoading) {
-      _accountsBloc.add(const FetchAccounts());
+      accountsBloc.add(const FetchAccounts());
     }
   }
 
@@ -58,14 +172,47 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   void dispose() {
     _amountController.removeListener(_onAmountChanged);
     _amountController.dispose();
+    // Remove the observer
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Reset loading states when app comes back to foreground
+    if (state == AppLifecycleState.resumed && (_isLoading || _isValidationLoading)) {
+      setState(() {
+        _isLoading = false;
+        _isValidationLoading = false;
+      });
+    }
   }
 
   void _onAmountChanged() {
-    final hasText = _amountController.text.trim().isNotEmpty;
-    if (hasText != _hasInput) {
+    final text = _amountController.text;
+    final hasInput = text.isNotEmpty;
+
+    if (hasInput != _hasInput) {
       setState(() {
-        _hasInput = hasText;
+        _hasInput = hasInput;
+      });
+    }
+  }
+
+  void _handleSessionExpired() async {
+    await LocalStorage.instance.clearUserSession();
+
+    if (mounted) {
+      showTopSnackBar(
+        context,
+        message: 'Your session has expired. Please login again.',
+        duration: const Duration(seconds: 3),
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          context.go('/login');
+        }
       });
     }
   }
@@ -73,7 +220,9 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   void _validateBalance() {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-    final accountsState = _accountsBloc.state;
+    final accountsBloc = context.read<AccountsBloc>();
+    final accountsState = accountsBloc.state;
+    
     if (accountsState.accounts.isEmpty) {
       if (accountsState.isLoading) {
         return;
@@ -81,44 +230,39 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
       setState(() {
         _isValidationLoading = true;
       });
-      _accountsBloc.add(const FetchAccounts());
+      accountsBloc.add(const FetchAccounts());
       return;
     }
 
     final amountText = _amountController.text.trim();
     if (amountText.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter an amount'),
-          behavior: SnackBarBehavior.floating,
-        ),
+      showTopSnackBar(
+        context,
+        message: 'Please enter an amount',
       );
       return;
     }
 
     final double? amount = double.tryParse(amountText);
     if (amount == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid number'),
-          behavior: SnackBarBehavior.floating,
-        ),
+      showTopSnackBar(
+        context,
+        message: 'Please enter a valid number',
       );
       return;
     }
 
     if (amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Amount must be greater than zero'),
-          behavior: SnackBarBehavior.floating,
-        ),
+      showTopSnackBar(
+        context,
+        message: 'Amount must be greater than zero',
       );
       return;
     }
 
     setState(() {
-      _isValidationLoading = true;
+      _isLoading = true;
+      _errorMessage = null;
     });
 
     final etbAccount = accountsState.accounts.firstWhere(
@@ -132,327 +276,307 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
         int.tryParse(widget.transferData['accountNumber']?.toString() ?? '') ??
             0;
 
-    _validationBloc.add(
+    // Validate balance first
+    final validationBloc = context.read<AccountValidationBloc>();
+    validationBloc.add(
       AccountValidationEvent.accountDetailsChanged(
         accountId: recipientAccountId,
         amount: amount,
       ),
     );
 
-    _validationBloc.add(
+    validationBloc.add(
       const AccountValidationEvent.validateAccountSubmitted(),
     );
   }
 
-  void _handleSessionExpired() async {
-    await LocalStorage.instance.clearUserSession();
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Your session has expired. Please login again.'),
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
-      );
-
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) {
-          context.go('/login');
-        }
-      });
-    }
-  }
-
   void _navigateToConfirmationScreen() {
+    final accountsBloc = context.read<AccountsBloc>();
+    final accountsState = accountsBloc.state;
+    
+    if (accountsState.accounts.isEmpty) {
+      showTopSnackBar(
+        context,
+        message: 'Please wait while we load your accounts',
+      );
+      return;
+    }
+
+    final senderAccount = accountsState.accounts.firstWhere(
+      (account) =>
+          account.currency.toLowerCase() == 'etb' ||
+          account.currency.toLowerCase() == 'birr',
+      orElse: () => accountsState.accounts.first,
+    );
+    
+    final userData = LocalStorage.instance.getUserData();
+    if (userData == null || !userData.containsKey('full_name')) {
+      showTopSnackBar(
+        context,
+        message: 'Unable to load user data. Please try again.',
+      );
+      return;
+    }
+
     final completeTransferData = {
       ...widget.transferData,
       'amount': double.parse(_amountController.text),
       'name': 'Goh Betoch Bank',
-      'preloaded': true,
-    };
-
-    final accountsState = _accountsBloc.state;
-    if (accountsState.accounts.isNotEmpty) {
-      final senderAccount = accountsState.accounts.firstWhere(
-        (account) =>
-            account.currency.toLowerCase() == 'etb' ||
-            account.currency.toLowerCase() == 'birr',
-        orElse: () => accountsState.accounts.first,
-      );
-      
-      completeTransferData['senderAccount'] = {
+      'senderAccount': {
         'id': senderAccount.id,
         'balance': senderAccount.balance,
         'currency': senderAccount.currency,
-      };
-      
-      final userData = LocalStorage.instance.getUserData();
-      if (userData != null && userData.containsKey('full_name')) {
-        completeTransferData['senderName'] = userData['full_name'];
-      }
-    }
+      },
+      'senderName': userData['full_name'],
+      'preloaded': true,
+    };
 
-    context.pushNamed(RouteName.internalConfirmTransfer,
-        extra: completeTransferData);
+    // Navigate with result handling
+    context.pushNamed(RouteName.internalConfirmTransfer, extra: completeTransferData).then((_) {
+      // Reset loading state when we return from the confirmation screen
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isValidationLoading = false;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: _validationBloc),
-        BlocProvider.value(value: _accountsBloc),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AccountsBloc, AccountsState>(
+          listener: (context, accountsState) {
+            if (!accountsState.isLoading &&
+                !accountsState.hasError &&
+                accountsState.accounts.isNotEmpty) {
+              setState(() {
+                _isAccountsFetched = true;
+                if (_isValidationLoading) {
+                  _isValidationLoading = false;
+                }
+              });
+            }
+
+            if (accountsState.hasError && _hasInput) {
+              setState(() {
+                _isValidationLoading = false;
+              });
+              showTopSnackBar(
+                context,
+                message: 'Failed to load your accounts. Please try again.',
+                backgroundColor: Colors.orange,
+                action: SnackBarAction(
+                  label: 'Retry',
+                  onPressed: () {
+                    setState(() {
+                      _isValidationLoading = true;
+                    });
+                    context.read<AccountsBloc>().add(const FetchAccounts());
+                  },
+                  textColor: Colors.white,
+                ),
+              );
+            }
+          },
+        ),
+        BlocListener<AccountValidationBloc, AccountValidationState>(
+          listener: (context, state) {
+            // Always reset loading states when validation completes or errors
+            if (state.validationError || state.isValidated) {
+              setState(() {
+                _isValidationLoading = false;
+                _isLoading = false;
+              });
+            }
+
+            if (state.validationError &&
+                    state.errorMessage
+                        .toLowerCase()
+                        .contains('unauthorised') ||
+                state.errorMessage
+                    .toLowerCase()
+                    .contains('session has expired')) {
+              _handleSessionExpired();
+              return;
+            }
+
+            if (state.validationError &&
+                state.errorMessage.contains('No accounts available')) {
+              setState(() {
+                _isValidationLoading = true;
+                _isLoading = false;
+              });
+              context.read<AccountsBloc>().add(const FetchAccounts());
+              return;
+            }
+
+            if (state.validationError &&
+                state.errorMessage
+                    .toLowerCase()
+                    .contains('service is currently unavailable')) {
+              showTopSnackBar(
+                context,
+                message: 'The balance validation service is temporarily unavailable. Please try again later.',
+                backgroundColor: Colors.orange,
+                action: SnackBarAction(
+                  label: 'Retry',
+                  onPressed: () {
+                    if (_hasInput) {
+                      _validateBalance();
+                    }
+                  },
+                  textColor: Colors.white,
+                ),
+              );
+              return;
+            }
+
+            if (state.validationError) {
+              final errorMessage = state.errorMessage;
+
+              showTopSnackBar(
+                context,
+                message: errorMessage,
+                backgroundColor: Colors.red,
+                action: SnackBarAction(
+                  label: 'Dismiss',
+                  onPressed: () =>
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                  textColor: Colors.white,
+                ),
+              );
+            }
+
+            if (state.isValidated && !state.isSufficient) {
+              showTopSnackBar(
+                context,
+                message: state.message,
+                backgroundColor: Colors.orange,
+                action: SnackBarAction(
+                  label: 'Try Different Amount',
+                  onPressed: () =>
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                  textColor: Colors.white,
+                ),
+              );
+            }
+
+            if (state.isValidated && state.isSufficient) {
+              _navigateToConfirmationScreen();
+            }
+          },
+        ),
       ],
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<AccountsBloc, AccountsState>(
-            listener: (context, accountsState) {
-              if (!accountsState.isLoading &&
-                  !accountsState.hasError &&
-                  accountsState.accounts.isNotEmpty) {
-                setState(() {
-                  _isAccountsFetched = true;
-                  if (_isValidationLoading) {
-                    _isValidationLoading = false;
-                  }
-                });
-              }
-
-              if (accountsState.hasError && _hasInput) {
-                setState(() {
-                  _isValidationLoading = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text(
-                      'Failed to load your accounts. Please try again.',
-                    ),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.orange,
-                    action: SnackBarAction(
-                      label: 'Retry',
-                      onPressed: () {
-                        setState(() {
-                          _isValidationLoading = true;
-                        });
-                        _accountsBloc.add(const FetchAccounts());
-                      },
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
-          BlocListener<AccountValidationBloc, AccountValidationState>(
-            listener: (context, state) {
-              if (state.validationError || state.isValidated) {
-                setState(() {
-                  _isValidationLoading = false;
-                });
-              }
-              
-              if (state.validationError &&
-                      state.errorMessage
-                          .toLowerCase()
-                          .contains('unauthorised') ||
-                  state.errorMessage
-                      .toLowerCase()
-                      .contains('session has expired')) {
-                _handleSessionExpired();
-                return;
-              }
-
-              if (state.validationError &&
-                  state.errorMessage.contains('No accounts available')) {
-                setState(() {
-                  _isValidationLoading = true;
-                });
-                _accountsBloc.add(const FetchAccounts());
-                return;
-              }
-
-              if (state.validationError &&
-                  state.errorMessage
-                      .toLowerCase()
-                      .contains('service is currently unavailable')) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text(
-                      'The balance validation service is temporarily unavailable. Please try again later.',
-                    ),
-                    duration: const Duration(seconds: 4),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.orange,
-                    action: SnackBarAction(
-                      label: 'Retry',
-                      onPressed: () {
-                        if (_hasInput) {
-                          _validateBalance();
-                        }
-                      },
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-                return;
-              }
-
-              if (state.validationError) {
-                final errorMessage = state.errorMessage;
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(errorMessage),
-                    duration: const Duration(seconds: 4),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.red,
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      onPressed: () =>
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-
-              if (state.isValidated && !state.isSufficient) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    duration: const Duration(seconds: 4),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.orange,
-                    action: SnackBarAction(
-                      label: 'Try Different Amount',
-                      onPressed: () =>
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-
-              if (state.isValidated && state.isSufficient) {
-                _navigateToConfirmationScreen();
-              }
-            },
-          ),
-        ],
-        child: Builder(
-          builder: (context) {
-            final validationState = context.watch<AccountValidationBloc>().state;
-            
-            final isButtonLoading = validationState.isValidating || _isValidationLoading;
-            
-            return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Enter Transfer Amount',
-          style: GoogleFonts.outfit(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-      ),
-              body: SafeArea(
-                    child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.3)),
+      child: Builder(
+        builder: (context) {
+          final validationState = context.watch<AccountValidationBloc>().state;
+          final isButtonLoading = validationState.isValidating || _isValidationLoading || _isLoading;
+  
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.of(context).pop(),
               ),
+              title: Text(
+                'Enter Transfer Amount',
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            body: Padding(
+              padding: EdgeInsets.all(20.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.account_balance_rounded,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                        size: 24.sp,
+                  // Account verification section
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.05),
+                     
+                      border: Border.all(
+                        color: Colors.grey.withOpacity(0.2),
+                        width: 1,
                       ),
-                      SizedBox(width: 12.w),
-                      Text(
-                                      'Recipient Account',
-                        style: GoogleFonts.outfit(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.account_balance_rounded,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 24.sp,
+                            ),
+                            SizedBox(width: 12.w),
+                            Text(
+                              'Recipient Details',
+                              style: GoogleFonts.outfit(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 16.h),
+                        _buildDetailRow('Account Number',
+                            widget.transferData['accountNumber'].toString()),
+                        SizedBox(height: 8.h),
+                        _buildDetailRow(
+                            'Account Holder',
+                            widget.transferData['accountHolderName']
+                                .toString()),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  Text(
+                    'Enter Amount',
+                    style: GoogleFonts.outfit(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    'Enter the amount you want to transfer',
+                    style: GoogleFonts.outfit(
+                      fontSize: 14.sp,
+                      color: Colors.grey[600],
+                    ),
                   ),
                   SizedBox(height: 16.h),
-                                _buildDetailRow(
-                                    'Account Number',
-                                    widget.transferData['accountNumber']
-                                        .toString()),
-                  SizedBox(height: 8.h),
-                                _buildDetailRow(
-                                    'Account Holder',
-                                    widget.transferData['accountHolderName']
-                                        .toString()),
+                  _buildAmountInput(),
+
+                  const Spacer(),
+
+                  ContinueButton(
+                    onPressed: _validateBalance,
+                    isEnabled: _hasInput,
+                    isLoading: isButtonLoading,
+                    text: 'Continue',
+                  ),
+                  SizedBox(height: 16.h),
                 ],
               ),
             ),
-                          SizedBox(height: 24.h),
-            Text(
-              'Enter Amount',
-              style: GoogleFonts.outfit(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              'Enter the amount you want to transfer',
-              style: GoogleFonts.outfit(
-                fontSize: 16.sp,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 16.h),
-            _buildAmountInput(),
-                      
-                      Spacer(),
-                      
-                      ContinueButton(
-                        onPressed: _validateBalance,
-                        isEnabled: _hasInput,
-                        isLoading: isButtonLoading,
-                        text: 'Continue',
-                      ),
-                      SizedBox(height: 16.h),
-                    ],
-                  ),
-        ),
-      ),
-    );
-          }
-        ),
+          );
+        },
       ),
     );
   }
@@ -464,15 +588,15 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
         Text(
           label,
           style: GoogleFonts.outfit(
-            fontSize: 14.sp,
+            fontSize: 12.sp,
             color: Colors.grey[700],
           ),
         ),
         Text(
           value,
           style: GoogleFonts.outfit(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
             color: Colors.black,
           ),
         ),
@@ -481,9 +605,13 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
   }
 
   Widget _buildAmountInput() {
+    // Get validation state to know if we're loading
+    final validationState = context.watch<AccountValidationBloc>().state;
+    final isLoading = validationState.isValidating || _isValidationLoading || _isLoading;
+    
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: isLoading ? Colors.grey[100] : Colors.grey[200],
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
@@ -509,9 +637,10 @@ class _InternalBankAmountScreenState extends State<InternalBankAmountScreen> {
           Expanded(
             child: TextField(
               controller: _amountController,
+              enabled: !isLoading, // Disable input when loading
               style: GoogleFonts.outfit(
                 fontSize: 16.sp,
-                color: Colors.black87,
+                color: isLoading ? Colors.grey[600] : Colors.black87,
               ),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),

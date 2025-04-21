@@ -272,7 +272,7 @@ class _InternalConfirmTransferScreenState
                 title: Text(
                   'Confirm Internal Transfer',
                   style: GoogleFonts.outfit(
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
@@ -286,8 +286,8 @@ class _InternalConfirmTransferScreenState
                           Text(
                             'Review Transfer',
                             style: GoogleFonts.outfit(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
@@ -295,7 +295,7 @@ class _InternalConfirmTransferScreenState
                           Text(
                             'Please verify all details before confirming your internal transfer',
                             style: GoogleFonts.outfit(
-                              fontSize: 16.sp,
+                              fontSize: 14.sp,
                               color: Colors.grey[600],
                             ),
                           ),
@@ -353,20 +353,13 @@ class _InternalConfirmTransferScreenState
                                         Text(
                                           'Transfer Details',
                                           style: GoogleFonts.outfit(
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                           ),
                                         ),
                                         SizedBox(height: 6.h),
-                                        Text(
-                                          'Transaction ID: ${state.transferId ?? "Pending"}',
-                                          style: GoogleFonts.outfit(
-                                            fontSize: 12.sp,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-
+                          
                                         // Goh Betoch Bank badge
                                         Container(
                                           margin: EdgeInsets.symmetric(
@@ -458,9 +451,9 @@ class _InternalConfirmTransferScreenState
                                           'Transfer Amount',
                                           'ETB ${amount.toStringAsFixed(2)}',
                                           valueStyle: GoogleFonts.outfit(
-                                            fontSize: 18.sp,
+                                            fontSize: 20.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,
+                                            color: Theme.of(context).colorScheme.primary,
                                           ),
                                         ),
 
@@ -520,19 +513,16 @@ class _InternalConfirmTransferScreenState
                                   Text(
                                     'Reason for Transfer',
                                     style: GoogleFonts.outfit(
-                                      fontSize: 16.sp,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black,
                                     ),
                                   ),
                                   SizedBox(height: 8.h),
                                   Container(
-                                    padding: EdgeInsets.all(16.w),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[100],
+                                      color: Colors.grey[200],
                                       borderRadius: BorderRadius.circular(12.r),
-                                      border:
-                                          Border.all(color: Colors.grey[300]!),
                                     ),
                                     child: TextField(
                                       controller: _reasonController,
@@ -545,25 +535,18 @@ class _InternalConfirmTransferScreenState
                                         hintText:
                                             'Enter reason for transfer (optional)',
                                         hintStyle: GoogleFonts.outfit(
-                                          fontSize: 14.sp,
+                                          fontSize: 16.sp,
                                           color: Colors.grey[500],
                                         ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20.w,
+                                          vertical: 16.h,
+                                        ),
                                         border: InputBorder.none,
-                                        isDense: true,
-                                        contentPadding:
-                                            EdgeInsets.symmetric(vertical: 8.h),
                                       ),
                                     ),
                                   ),
 
-                                  SizedBox(height: 16.h),
-                                  Text(
-                                    'By confirming this transfer, you agree to the terms and conditions.',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 12.sp,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
                                   SizedBox(height: 16.h),
                                 ],
                               ),
@@ -572,13 +555,13 @@ class _InternalConfirmTransferScreenState
 
                           // Confirm button
                           SizedBox(height: 16.h),
-                    ContinueButton(
-                                  onPressed: () => _processTransfer(context),
-                      isEnabled: !state.isTransferring && !state.isTransferred,
-                      isLoading: state.isTransferring || _isDataLoading,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  text: 'Confirm Transfer',
-                                ),
+                          ContinueButton(
+                            onPressed: () => _processTransfer(context),
+                            isEnabled: !state.isTransferring && !state.isTransferred,
+                            isLoading: state.isTransferring || _isDataLoading,
+                            color: Theme.of(context).colorScheme.primary,
+                            text: state.isTransferring ? 'Processing...' : 'Confirm Transfer',
+                          ),
                         ],
                       ),
                     ),
@@ -625,7 +608,7 @@ class _InternalConfirmTransferScreenState
             style: valueStyle ??
                 GoogleFonts.outfit(
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
           ),

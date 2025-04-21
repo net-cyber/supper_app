@@ -8,15 +8,7 @@ import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/transf/domain/entities/account_validation/account_validation.dart';
 
 abstract class AccountValidationRemoteDataSource {
-  /// Validates an account by checking if it has sufficient funds for a transaction
-  /// 
-  /// Parameters:
-  /// - [amount]: The transaction amount to validate
-  /// - [currentAccountId]: The ID of the account to validate
-  /// 
-  /// Returns:
-  /// - A [Future] with [Either] a [NetworkExceptions] on error or an [AccountValidation] on success
-  Future<Either<NetworkExceptions, AccountValidation>> validateAccount(
+ Future<Either<NetworkExceptions, AccountValidation>> validateAccount(
     double amount, 
     int currentAccountId,
   );
@@ -118,9 +110,9 @@ class AccountValidationRemoteDataSourceImpl implements AccountValidationRemoteDa
           }
         }
         
-        // Log the error message but use the default badRequest
+        // Log the error message AND return it instead of using generic bad request
         log('Bad request in account validation: $errorMessage');
-        return Left(NetworkExceptions.badRequest());
+        return Left(NetworkExceptions.defaultError(errorMessage));
       }
       
       return Left(NetworkExceptions.getDioException(e));
