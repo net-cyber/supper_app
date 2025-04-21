@@ -236,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
         return Container(
           key: ValueKey('account-cards-${state.isLoading}-${state.accounts.length}'),
           margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          height: 290.h,
+          height: 300.h,
           child: Stack(
             children: [
               // PageView for horizontal scrolling of account cards
@@ -478,7 +478,7 @@ class _MainScreenState extends State<MainScreen> {
                     Text(
                       _isBalanceVisible
                           ? account.owner.toUpperCase()
-                          : '••••/••••',
+                          : '•••• ••••',
                       style: GoogleFonts.spaceGrotesk(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
@@ -543,37 +543,6 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
 
-          // Virtual label with subtle background
-          Positioned(
-            bottom: 20.h,
-            right: 20.w,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.12),
-                    Colors.white.withOpacity(0.05),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(4.r),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                'Virtual',
-                style: GoogleFonts.outfit(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -1094,10 +1063,11 @@ class _MainScreenState extends State<MainScreen> {
         context.pushNamed(route);
       },
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 64.w,
-            height: 64.h,
+            width: 60.w,
+            height: 60.h,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -1121,19 +1091,23 @@ class _MainScreenState extends State<MainScreen> {
               child: Icon(
                 icon,
                 color: Colors.white,
-                size: 26.sp,
+                size: 24.sp,
               ),
             ),
           ),
-          SizedBox(height: 12.h),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-              height: 1.2,
+          SizedBox(height: 10.h),
+          Flexible(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+                height: 1.1,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -1249,9 +1223,9 @@ class _MainScreenState extends State<MainScreen> {
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              childAspectRatio: 0.88,
+              childAspectRatio: 0.95,
               crossAxisSpacing: 16.w,
-              mainAxisSpacing: 20.h,
+              mainAxisSpacing: 16.h,
             ),
             itemCount: services.length,
             itemBuilder: (context, index) {
@@ -1281,7 +1255,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         borderRadius: BorderRadius.circular(24.r),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 12.w),
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24.r),
@@ -1294,10 +1268,11 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(14.w),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -1319,21 +1294,23 @@ class _MainScreenState extends State<MainScreen> {
                 child: Icon(
                   icon,
                   color: Colors.white,
-                  size: 24.sp,
+                  size: 22.sp,
                 ),
               ),
-              SizedBox(height: 12.h),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.outfit(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                  height: 1.2,
+              SizedBox(height: 10.h),
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    height: 1.1,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
