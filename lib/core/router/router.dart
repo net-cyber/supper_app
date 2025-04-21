@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/navigation/navigation_service.dart';
+import 'package:super_app/core/presentation/qr_code/qr_code_screen.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/auth/presentation/pages/login/login_screen.dart';
@@ -201,7 +202,12 @@ final router = GoRouter(
     GoRoute(
       name: RouteName.internalBankAccount,
       path: '/${RouteName.internalBankAccount}',
-      builder: (context, state) => const InternalBankAccountScreen(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return InternalBankAccountScreen(
+          accountId: extra?['accountId'] as String?,
+        );
+      },
     ),
     GoRoute(
       name: RouteName.internalBankAmount,
@@ -256,7 +262,7 @@ final router = GoRouter(
       name: RouteName.walletPhone,
       path: '/${RouteName.walletPhone}',
       builder: (context, state) => WalletPhoneScreen(
-        walletProvider: state.extra as Map<String, dynamic>,
+        walletProvider: state.extra as Map<String, dynamic>?,
       ),
     ),
     GoRoute(
@@ -274,17 +280,19 @@ final router = GoRouter(
     GoRoute(
       name: RouteName.walletConfirmation,
       path: '/${RouteName.walletConfirmation}',
+      builder: (context, state) => WalletConfirmationScreen(
+        transferData: state.extra as Map<String, dynamic>,
+      ),
+    ),
+    
+    // QR Code Screen route
+    GoRoute(
+      name: RouteName.qrCodeScreen,
+      path: '/${RouteName.qrCodeScreen}',
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
-        if (extra == null) {
-          return const Scaffold(
-            body: Center(
-              child: Text('Invalid transfer data'),
-            ),
-          );
-        }
-        return WalletConfirmationScreen(
-          transferData: extra,
+        return QrCodeScreen(
+          accountId: extra?['accountId'] as String,
         );
       },
     ),

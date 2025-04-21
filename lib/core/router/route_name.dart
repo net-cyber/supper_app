@@ -37,4 +37,7 @@ class RouteName {
   static const walletPhone = 'wallet-phone';
   static const walletAmount = 'wallet-amount';
   static const walletConfirmation = 'wallet-confirmation';
+  
+  // QR Code routes
+  static const qrCodeScreen = 'qr-code-screen';
 }

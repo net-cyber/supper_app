@@ -13,7 +13,10 @@ import 'package:super_app/features/transf/presentation/widget/continue_button.da
 class InternalBankAccountScreen extends StatefulWidget {
   const InternalBankAccountScreen({
     super.key,
+    this.accountId,
   });
+
+  final String? accountId;
 
   @override
   State<InternalBankAccountScreen> createState() =>
@@ -31,6 +34,12 @@ class _InternalBankAccountScreenState extends State<InternalBankAccountScreen> {
   void initState() {
     super.initState();
     _verificationBloc = getIt<AccountVerificationBloc>();
+    if (widget.accountId != null) {
+      _accountNumberController.text = widget.accountId!;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _verifyAccount();
+      });
+    }
     _accountNumberController.addListener(_onInputChanged);
   }
 

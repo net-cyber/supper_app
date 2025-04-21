@@ -114,7 +114,46 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ),
+        floatingActionButton: _buildQrCodeButton(),
       ),
+    );
+  }
+
+  Widget _buildQrCodeButton() {
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      builder: (context, state) {
+        return FloatingActionButton(
+          onPressed: () {
+            if (state.accounts.isNotEmpty) {
+              final account = state.accounts[_currentAccountIndex];
+              context.pushNamed(RouteName.qrCodeScreen, extra: {'accountId': account.id.toString()});
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No account available'))
+              );
+            }
+          },
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          elevation: 4,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(Icons.qr_code_scanner, color: Colors.white, size: 26.sp),
+              Container(
+                width: 54.w,
+                height: 54.h,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -269,7 +308,7 @@ class _MainScreenState extends State<MainScreen> {
             offset: const Offset(0, 2),
           ),
         ],
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
