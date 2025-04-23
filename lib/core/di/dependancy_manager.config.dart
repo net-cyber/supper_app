@@ -30,6 +30,18 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
     as _i1046;
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
+import '../../features/history/application/detail/bloc/transaction_detail_bloc.dart'
+    as _i360;
+import '../../features/history/application/list/bloc/transaction_history_bloc.dart'
+    as _i638;
+import '../../features/history/application/summary/bloc/transaction_summary_bloc.dart'
+    as _i1048;
+import '../../features/history/domain/repositories/transaction_repository.dart'
+    as _i28;
+import '../../features/history/infrastructure/datasources/transactions_remote_data_source.dart'
+    as _i1019;
+import '../../features/history/infrastructure/repositories/transaction_repository_impl.dart'
+    as _i348;
 import '../../features/transf/application/bank_account_validation/bloc/bank_account_validation_bloc.dart'
     as _i649;
 import '../../features/transf/application/external_transfer/bloc/external_transfer_bloc.dart'
@@ -104,6 +116,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i552.ExternalTransferRemoteDataSourceImpl());
     gh.factory<_i1046.AuthRemoteDataSource>(
         () => _i1046.AuthRemoteDataSourceImpl());
+    gh.factory<_i1019.TransactionsRemoteDataSource>(
+        () => _i1019.TransactionsRemoteDataSourceImpl());
     gh.factory<_i537.FinancialInstitutionRemoteDataSource>(
         () => _i537.FinancialInstitutionRemoteDataSourceImpl());
     gh.factory<_i670.AccountValidationRemoteDataSource>(
@@ -112,6 +126,9 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i811.AccountsRemoteDataSourceImpl());
     gh.factory<_i787.AuthRepository>(
         () => _i446.AuthRepositoryImpl(gh<_i1046.AuthRemoteDataSource>()));
+    gh.factory<_i28.TransactionRepository>(() =>
+        _i348.TransactionRepositoryImpl(
+            gh<_i1019.TransactionsRemoteDataSource>()));
     gh.factory<_i516.UserService>(() => _i516.UserServiceImpl());
     gh.factory<_i15.BankAccountValidationRemoteDataSource>(
         () => _i15.BankAccountValidationRemoteDataSourceImpl());
@@ -158,6 +175,19 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i754.TransferRepository>(),
           gh<_i671.AccountsBloc>(),
         ));
+    gh.factory<_i360.TransactionDetailBloc>(() => _i360.TransactionDetailBloc(
+          gh<_i28.TransactionRepository>(),
+          gh<_i671.AccountsBloc>(),
+        ));
+    gh.factory<_i638.TransactionHistoryBloc>(() => _i638.TransactionHistoryBloc(
+          gh<_i28.TransactionRepository>(),
+          gh<_i671.AccountsBloc>(),
+        ));
+    gh.factory<_i1048.TransactionSummaryBloc>(
+        () => _i1048.TransactionSummaryBloc(
+              gh<_i28.TransactionRepository>(),
+              gh<_i671.AccountsBloc>(),
+            ));
     gh.factory<_i346.AccountValidationBloc>(() => _i346.AccountValidationBloc(
           gh<_i153.AccountValidationRepository>(),
           gh<_i671.AccountsBloc>(),

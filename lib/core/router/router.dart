@@ -15,7 +15,6 @@ import 'package:super_app/features/mortgages/presentation/screens/available_prop
 import 'package:super_app/features/mortgages/presentation/screens/mortgage_dashboard_screen.dart';
 import 'package:super_app/features/mortgages/presentation/screens/property_detail_screen.dart';
 import 'package:super_app/features/auth/presentation/pages/splash/splash_screen.dart';
-import 'package:super_app/features/history/presentation/history_screen.dart';
 import 'package:super_app/core/presentation/main/main_screen.dart';
 import 'package:super_app/features/profile/presentation/profile_screen.dart';
 import 'package:super_app/core/presentation/main/shell_page.dart';
@@ -30,6 +29,8 @@ import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet
 import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_phone_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_amount_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_confirmation_screen.dart';
+import 'package:super_app/features/history/presentation/pages/history_page.dart';
+
 
 final router = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
@@ -117,18 +118,13 @@ final router = GoRouter(
             ),
           ],
         ),
-        // History Branch
+        // Mortgage Branch
         StatefulShellBranch(
           routes: [
             GoRoute(
               name: RouteName.mortgageDashboard,
               path: '/${RouteName.mortgageDashboard}',
               builder: (context, state) => const MortgageDashboardScreen(),
-            ),
-            GoRoute(
-              name: RouteName.history,
-              path: '/${RouteName.history}',
-              builder: (context, state) => const HistoryScreen(),
             ),
           ],
         ),
@@ -246,6 +242,8 @@ final router = GoRouter(
       ),
     ),
 
+
+
     // Wallet transfer routes
     GoRoute(
       name: RouteName.walletSelection,
@@ -287,6 +285,13 @@ final router = GoRouter(
           transferData: extra,
         );
       },
+    ),
+    
+    // Transaction history route
+    GoRoute(
+      name: RouteName.history,
+      path: '/${RouteName.history}',
+      builder: (context, state) => const HistoryPage(),
     ),
   ],
 );

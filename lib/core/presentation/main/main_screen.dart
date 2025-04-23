@@ -21,6 +21,51 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
+// Custom painter for NFC chip icon
+class NFCChipPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    
+    // Draw curved lines representing NFC signal
+    final double centerX = size.width / 2;
+    final double centerY = size.height / 2;
+    
+    // Outer arc
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: size.width * 0.4),
+      -Math.pi / 4,
+      Math.pi / 2,
+      false,
+      paint,
+    );
+    
+    // Middle arc
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: size.width * 0.3),
+      -Math.pi / 4,
+      Math.pi / 2,
+      false,
+      paint,
+    );
+    
+    // Inner arc
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: size.width * 0.2),
+      -Math.pi / 4,
+      Math.pi / 2,
+      false,
+      paint,
+    );
+  }
+  
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
 class _MainScreenState extends State<MainScreen> {
   
   bool _isBalanceVisible = false;
@@ -218,11 +263,61 @@ class _MainScreenState extends State<MainScreen> {
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF111111),
+            Colors.black,
+          ],
+          stops: [0.0, 0.7],
+        ),
       ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
+          
+
+          // Large faded GOH background text
+          Positioned.fill(
+            child: Center(
+              child: Text(
+                'GOH',
+                style: GoogleFonts.outfit(
+                  fontSize: 120.sp,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white.withOpacity(0.05),
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+          ),
+
+          // Subtle gradient overlay for depth
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.r),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.05),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.1),
+                  ],
+                  stops: [0.0, 0.4, 1.0],
+                ),
+              ),
+            ),
+          ),
+
           // Card content
           Padding(
             padding: EdgeInsets.all(20.w),
@@ -243,25 +338,38 @@ class _MainScreenState extends State<MainScreen> {
 
                 SizedBox(height: 24.h),
                 
-                // ETB label
+                // ETB label with glowing effect
                 Row(
                   children: [
-                    Text(
-                      account.currency + ' ',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        account.currency + ' ',
+                        style: GoogleFonts.spaceGrotesk(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     Text(
                       _isBalanceVisible
                           ? account.balance.toString()
                           : '••••••',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18.sp,
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
@@ -269,29 +377,44 @@ class _MainScreenState extends State<MainScreen> {
 
                 SizedBox(height: 24.h),
 
-                // Account number
-                Column(
+                // Account number with NFC chip
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'ACCOUNT NUMBER',
-                      style: GoogleFonts.outfit(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.7),
-                        letterSpacing: 0.5,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'ACCOUNT NUMBER',
+                          style: GoogleFonts.outfit(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.7),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          _isBalanceVisible
+                              ? formatAccountNumber(account.id.toString())
+                              : '•••• •••• •••• ••••',
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      _isBalanceVisible
-                          ? account.id.toString()
-                          : '•••• •••• •••• ••••',
-                      style: GoogleFonts.spaceGrotesk(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        letterSpacing: 1.5,
+                    // NFC chip icon
+                    Container(
+                      width: 25.w,
+                      height: 25.h,
+                      margin: EdgeInsets.only(top: 4.h),
+                      child: CustomPaint(
+                        painter: NFCChipPainter(),
                       ),
                     ),
                   ],
@@ -330,7 +453,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
 
-          // Show/Hide button
+          // Show/Hide button with enhanced styles
           Positioned(
             top: 16.h,
             right: 16.w,
@@ -343,10 +466,21 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5.w),
+                    padding: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withOpacity(0.12),
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 4,
+                          spreadRadius: 0,
+                        ),
+                      ],
                     ),
                     child: Icon(
                       _isBalanceVisible
@@ -356,7 +490,7 @@ class _MainScreenState extends State<MainScreen> {
                       size: 16.sp,
                     ),
                   ),
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 4.h),
                   Text(
                     _isBalanceVisible ? 'Hide' : 'Show',
                     style: GoogleFonts.outfit(
@@ -370,16 +504,34 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
 
-          // Virtual label
+          // Virtual label with subtle background
           Positioned(
             bottom: 20.h,
             right: 20.w,
-            child: Text(
-              'Virtual',
-              style: GoogleFonts.outfit(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.12),
+                    Colors.white.withOpacity(0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(4.r),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                'Virtual',
+                style: GoogleFonts.outfit(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -399,12 +551,84 @@ class _MainScreenState extends State<MainScreen> {
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF111111),
+            Colors.black,
+          ],
+          stops: [0.0, 0.7],
+        ),
       ),
       child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
+          // Accent color top strip
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 5.h,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+                  ],
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.r),
+                  topRight: Radius.circular(16.r),
+                ),
+              ),
+            ),
+          ),
+          
+          // Large faded GOH background text
+          Positioned.fill(
+            child: Center(
+              child: Text(
+                'GOH',
+                style: GoogleFonts.outfit(
+                  fontSize: 120.sp,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white.withOpacity(0.05),
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+          ),
+          
+          // Subtle gradient overlay for depth
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.r),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.05),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.1),
+                  ],
+                  stops: [0.0, 0.4, 1.0],
+                ),
+              ),
+            ),
+          ),
+          
           // Card content
           Padding(
             padding: EdgeInsets.all(20.w),
@@ -413,35 +637,53 @@ class _MainScreenState extends State<MainScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // GOH Card branding
-                Text(
-                  'GOH',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    letterSpacing: 1,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'GOH',
+                      style: GoogleFonts.outfit(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: 24.h),
                 
-                // ETB label
+                // Currency label with glowing effect
                 Row(
                   children: [
-                    Text(
-                      'ETB ',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'Currency ',
+                        style: GoogleFonts.spaceGrotesk(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     Text(
                       '••••••',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18.sp,
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
@@ -449,27 +691,42 @@ class _MainScreenState extends State<MainScreen> {
 
                 SizedBox(height: 24.h),
 
-                // Account number placeholder
-                Column(
+                // Account number placeholder with NFC chip
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'ACCOUNT NUMBER',
-                      style: GoogleFonts.outfit(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.7),
-                        letterSpacing: 0.5,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'ACCOUNT NUMBER',
+                          style: GoogleFonts.outfit(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.7),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          '•••• •••• •••• ••••',
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      '•••• •••• •••• ••••',
-                      style: GoogleFonts.spaceGrotesk(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        letterSpacing: 1.5,
+                    // NFC chip icon
+                    Container(
+                      width: 25.w,
+                      height: 25.h,
+                      margin: EdgeInsets.only(top: 4.h),
+                      child: CustomPaint(
+                        painter: NFCChipPainter(),
                       ),
                     ),
                   ],
@@ -513,10 +770,21 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.all(5.w),
+                  padding: EdgeInsets.all(6.w),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withOpacity(0.12),
                     shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                      ),
+                    ],
                   ),
                   child: Icon(
                     Icons.visibility_off,
@@ -524,7 +792,7 @@ class _MainScreenState extends State<MainScreen> {
                     size: 16.sp,
                   ),
                 ),
-                SizedBox(height: 3.h),
+                SizedBox(height: 4.h),
                 Text(
                   'Show',
                   style: GoogleFonts.outfit(
@@ -537,16 +805,34 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
 
-          // Virtual label
+          // Virtual label with subtle background
           Positioned(
             bottom: 20.h,
             right: 20.w,
-            child: Text(
-              'Virtual',
-              style: GoogleFonts.outfit(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.12),
+                    Colors.white.withOpacity(0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(4.r),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                'Virtual',
+                style: GoogleFonts.outfit(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -1015,6 +1301,19 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     );
+  }
+
+  // Helper to format account number with spaces
+  String formatAccountNumber(String accountNumber) {
+    // Add a space every 4 characters for readability
+    String formatted = '';
+    for (int i = 0; i < accountNumber.length; i++) {
+      if (i > 0 && i % 4 == 0) {
+        formatted += ' ';
+      }
+      formatted += accountNumber[i];
+    }
+    return formatted;
   }
 }
 
