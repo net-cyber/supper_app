@@ -12,6 +12,7 @@ import 'package:super_app/features/chat/common/values/values.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/router/route_name.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({Key? key}) : super(key: key);
@@ -20,580 +21,479 @@ class MessagePage extends StatefulWidget {
   State<MessagePage> createState() => _MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
+class _MessagePageState extends State<MessagePage>
+    with SingleTickerProviderStateMixin {
   late final MessageController controller;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     controller = Get.put(MessageController());
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        controller.state.tabStatus.value = _tabController.index == 0;
+        controller.goTabStatus();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     Get.delete<MessageController>();
     super.dispose();
   }
 
   Widget chatListItem(Message item, BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10.h, left: 0.w, right: 0.w, bottom: 10.h),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1, color: AppColors.primarySecondaryBackground))),
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
       child: InkWell(
-          onTap: () {
-            if (item.doc_id != null) {
-              context.goNamed(RouteName.chat, extra: {
-                "doc_id": item.doc_id!,
-                "to_token": item.token!,
-                "to_name": item.name!,
-                "to_avatar": item.avatar!,
-                "to_online": item.online.toString()
-              });
-            }
-          },
+        borderRadius: BorderRadius.circular(12.r),
+        onTap: () {
+          if (item.doc_id != null) {
+            context.goNamed(RouteName.chat, extra: {
+              "doc_id": item.doc_id!,
+              "to_token": item.token!,
+              "to_name": item.name!,
+              "to_avatar": item.avatar!,
+              "to_online": item.online.toString()
+            });
+          }
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                width: 44.w,
-                height: 44.w,
-                margin: EdgeInsets.only(top: 0.h, left: 0.w, right: 10.w),
-                decoration: BoxDecoration(
-                  color: AppColors.primarySecondaryBackground,
-                  borderRadius: BorderRadius.all(Radius.circular(22.w)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: item.avatar == null
-                    ? Image(
-                        image: AssetImage('assets/images/account_header.png'),
-                      )
-                    : CachedNetworkImage(
-                        imageUrl: item.avatar!,
-                        height: 44.w,
-                        width: 44.w,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(22.w)),
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.fill
-                                // colorFilter: ColorFilter.mode(Colors.red, BlendMode.colorBurn),
-                                ),
+              // Avatar with online indicator
+              Stack(
+                children: [
+                  Hero(
+                    tag: item.token ?? '',
+                    child: Container(
+                      width: 56.w,
+                      height: 56.w,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
                           ),
-                        ),
-                        errorWidget: (context, url, error) => Image(
-                          image: AssetImage('assets/images/account_header.png'),
-                        ),
+                        ],
+                        borderRadius: BorderRadius.circular(28.w),
                       ),
-              ),
-              // 右侧
-              Container(
-                padding: EdgeInsets.only(
-                    top: 0.w, left: 0.w, right: 0.w, bottom: 0.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    // center
-                    SizedBox(
-                        width: 175.w,
-                        height: 44.w,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "${item.name}",
-                                overflow: TextOverflow.clip,
-                                maxLines: 1,
-                                softWrap: false,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.thirdElement,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                              Text(
-                                "${item.last_msg}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                softWrap: false,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.normal,
-                                  color: AppColors.primarySecondaryElementText,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ])),
-                    SizedBox(
-                        width: 85.w,
-                        height: 44.w,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Text(
-                                item.last_time == null
-                                    ? ""
-                                    : duTimeLineFormat(
-                                        (item.last_time as Timestamp).toDate()),
-                                textAlign: TextAlign.end,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.normal,
-                                  color: AppColors.thirdElementText,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                              item.msg_num == 0
-                                  ? Container()
-                                  : Container(
-                                      padding: EdgeInsets.only(
-                                          left: 4.w,
-                                          right: 4.w,
-                                          top: 0.h,
-                                          bottom: 0.h),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      child: Text(
-                                        "${item.msg_num}",
-                                        textAlign: TextAlign.end,
-                                        overflow: TextOverflow.fade,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontFamily: 'Avenir',
-                                          fontWeight: FontWeight.normal,
-                                          color: AppColors.primaryElementText,
-                                          fontSize: 11.sp,
-                                        ),
-                                      ),
-                                    ),
-                            ])),
-                  ],
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget callListItem(CallMessage item) {
-    return Container(
-      padding: EdgeInsets.only(top: 10.h, left: 0.w, right: 0.w, bottom: 10.h),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1, color: AppColors.primarySecondaryBackground))),
-      child: InkWell(
-          onTap: () {},
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: 44.w,
-                height: 44.w,
-                margin: EdgeInsets.only(top: 0.h, left: 0.w, right: 10.w),
-                decoration: BoxDecoration(
-                  color: AppColors.primarySecondaryBackground,
-                  borderRadius: BorderRadius.all(Radius.circular(22.w)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: item.avatar == null
-                    ? Image(
-                        image: AssetImage('assets/images/account_header.png'),
-                      )
-                    : CachedNetworkImage(
-                        imageUrl: item.avatar!,
-                        height: 44.w,
-                        width: 44.w,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(22.w)),
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.fill
-                                // colorFilter: ColorFilter.mode(Colors.red, BlendMode.colorBurn),
-                                ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Image(
-                          image: AssetImage('assets/images/account_header.png'),
-                        ),
-                      ),
-              ),
-              // 右侧
-              Container(
-                padding: EdgeInsets.only(
-                    top: 0.w, left: 0.w, right: 0.w, bottom: 0.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    // center
-                    SizedBox(
-                        width: 175.w,
-                        height: 44.w,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "${item.name}",
-                                overflow: TextOverflow.clip,
-                                maxLines: 1,
-                                softWrap: false,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.thirdElement,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                              Text(
-                                "${item.call_time}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                softWrap: false,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.normal,
-                                  color: AppColors.primarySecondaryElementText,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ])),
-                    SizedBox(
-                        width: 85.w,
-                        height: 44.w,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Text(
-                                item.last_time == null
-                                    ? ""
-                                    : duTimeLineFormat(
-                                        (item.last_time as Timestamp).toDate()),
-                                textAlign: TextAlign.end,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.normal,
-                                  color: AppColors.thirdElementText,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                              Text(
-                                item.type == null ? "" : "${item.type}",
-                                textAlign: TextAlign.end,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.normal,
-                                  color: AppColors.thirdElementText,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ])),
-                  ],
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget _headBar() {
-    return Center(
-        child: Container(
-            width: 320.w,
-            height: 44.w,
-            margin: EdgeInsets.only(bottom: 20.h, top: 20.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(alignment: Alignment.center, children: [
-                  GestureDetector(
-                      child: Container(
-                        width: 44.w,
-                        height: 44.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.primarySecondaryBackground,
-                          borderRadius: BorderRadius.all(Radius.circular(22.w)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 1,
-                              blurRadius: 2,
-                              offset:
-                                  Offset(0, 1), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: controller.state.head_detail.value.avatar == null
-                            ? Image(
-                                image: AssetImage(
-                                    'assets/images/account_header.png'),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(28.w),
+                        child: item.avatar == null
+                            ? Image.asset(
+                                'assets/images/account_header.png',
+                                fit: BoxFit.cover,
                               )
                             : CachedNetworkImage(
-                                imageUrl:
-                                    controller.state.head_detail.value.avatar!,
-                                height: 44.w,
-                                width: 44.w,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(22.w)),
-                                    image: DecorationImage(
-                                        image: imageProvider, fit: BoxFit.fill
-                                        // colorFilter: ColorFilter.mode(Colors.red, BlendMode.colorBurn),
-                                        ),
-                                  ),
+                                imageUrl: item.avatar!,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Container(
+                                  color: Colors.grey[300],
                                 ),
-                                errorWidget: (context, url, error) => Image(
-                                  image: AssetImage(
-                                      'assets/images/account_header.png'),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/images/account_header.png',
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                       ),
-                      onTap: () {
-                        controller.goProfile();
-                      }),
+                    ),
+                  ),
                   Positioned(
-                    bottom: 5.w,
-                    right: 0.w,
-                    height: 14.w,
+                    bottom: 2.w,
+                    right: 2.w,
                     child: Container(
                       width: 14.w,
                       height: 14.w,
                       decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 2.w, color: AppColors.primaryElementText),
-                        color: controller.state.head_detail.value.online == 1
-                            ? AppColors.primaryElementStatus
-                            : AppColors.primarySecondaryElementText,
-                        borderRadius: BorderRadius.all(Radius.circular(12.w)),
+                        border: Border.all(width: 2.w, color: Colors.white),
+                        color: item.online == 1 ? Colors.green : Colors.grey,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                  )
-                ]),
-                // GestureDetector(
-                //   child:Container(
-                //       width: 40.w,
-                //       height: 40.h,
-                //       padding: EdgeInsets.all(7.w),
-                //       child: Image.asset("assets/icons/search.png"),
-                //     ),onTap: (){controller.goSearch();},)
-              ],
-            )));
+                  ),
+                ],
+              ),
+              SizedBox(width: 16.w),
+              // Message content and timestamp
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.name ?? "",
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.sp,
+                              color: Colors.black87,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          item.last_time == null
+                              ? ""
+                              : duTimeLineFormat(
+                                  (item.last_time as Timestamp).toDate()),
+                          style: const TextStyle(
+                            fontFamily: 'Avenir',
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.last_msg ?? "",
+                            style: const TextStyle(
+                              fontFamily: 'Avenir',
+                              color: Color(0xFF757575),
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (item.msg_num! > 0)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryElement,
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Text(
+                              "${item.msg_num}",
+                              style: const TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _headTabs() {
-    return Center(
-        child: Container(
-            width: 320.w,
-            height: 48.h,
-            margin: EdgeInsets.only(bottom: 0.h),
-            padding: EdgeInsets.all(4.w),
-            decoration: BoxDecoration(
-              color: AppColors.primarySecondaryBackground,
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                    child: Container(
-                      width: 150.w,
-                      height: 40.h,
-                      margin: EdgeInsets.only(bottom: 0.h),
-                      padding: EdgeInsets.all(0.h),
-                      decoration: controller.state.tabStatus.value
-                          ? BoxDecoration(
-                              color: AppColors.primaryBackground,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 3,
-                                  offset: Offset(
-                                      0, 2), // changes position of shadow
-                                ),
-                              ],
-                            )
-                          : BoxDecoration(),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              "Chat",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.primaryThreeElementText,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14.sp,
+  Widget callListItem(CallMessage item) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.r),
+        onTap: () {},
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 56.w,
+                height: 56.w,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(28.w),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(28.w),
+                  child: item.avatar == null
+                      ? Image.asset(
+                          'assets/images/account_header.png',
+                          fit: BoxFit.cover,
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: item.avatar!,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: Colors.grey[300],
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'assets/images/account_header.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                ),
+              ),
+              SizedBox(width: 16.w),
+              // Call details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.name ?? "",
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.sp,
+                              color: Colors.black87,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          item.last_time == null
+                              ? ""
+                              : duTimeLineFormat(
+                                  (item.last_time as Timestamp).toDate()),
+                          style: const TextStyle(
+                            fontFamily: 'Avenir',
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              item.type == "voice"
+                                  ? Icons.call
+                                  : Icons.video_call,
+                              color: AppColors.primaryElement,
+                              size: 16.w,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              item.call_time ?? "",
+                              style: const TextStyle(
+                                fontFamily: 'Avenir',
+                                color: Color(0xFF757575),
+                                fontSize: 14,
                               ),
                             ),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 2.h),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      controller.goTabStatus();
-                    }),
-                GestureDetector(
-                    child: Container(
-                      width: 150.w,
-                      height: 40.h,
-                      margin: EdgeInsets.only(bottom: 0.h),
-                      padding: EdgeInsets.all(0.h),
-                      decoration: controller.state.tabStatus.value
-                          ? BoxDecoration()
-                          : BoxDecoration(
-                              color: AppColors.primaryBackground,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 3,
-                                  offset: Offset(
-                                      0, 2), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              "Call",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.primaryText,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14.sp,
-                              ),
+                          child: Text(
+                            item.type == "voice" ? "Voice" : "Video",
+                            style: const TextStyle(
+                              fontFamily: 'Avenir',
+                              color: Color(0xFF616161),
+                              fontSize: 12,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    onTap: () {
-                      controller.goTabStatus();
-                    })
-              ],
-            )));
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Obx(() => SafeArea(
-              child: Stack(alignment: Alignment.center, children: [
-                CustomScrollView(slivers: [
-                  SliverAppBar(
-                    pinned: true,
-                    title: _headBar(),
-                  ),
-                  SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 0.w,
-                        horizontal: 0.w,
+      backgroundColor: Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: Obx(
+          () => NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  floating: true,
+                  pinned: true,
+                  title: Row(
+                    children: [
+                      SizedBox(width: 12.w),
+                      Text(
+                        "Messages",
+                        style: GoogleFonts.outfit(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
-                      sliver: SliverToBoxAdapter(
-                        child: _headTabs(),
-                      )),
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 0.w,
-                      horizontal: 20.w,
+                    ],
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.black87,
+                        size: 24.w,
+                      ),
+                      onPressed: () {
+                        // Search functionality
+                      },
                     ),
-                    sliver: controller.state.tabStatus.value
-                        ? SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                            (content, index) {
-                              var item = controller.state.msgList[index];
-                              return chatListItem(item, context);
-                            },
-                            childCount: controller.state.msgList.length,
-                          ))
-                        : SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                            (content, index) {
-                              var item = controller.state.callList[index];
-                              //controller.state.msgList.length
-                              return callListItem(item);
-                            },
-                            childCount: controller.state.callList.length,
-                          )),
-                  )
-                ]),
-                Positioned(
-                  right: 20.w,
-                  bottom: 70.h,
-                  height: 50.w,
-                  width: 50.w,
-                  child: GestureDetector(
+                  ],
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(48.h),
                     child: Container(
-                        height: 50.w,
-                        width: 50.w,
-                        padding: EdgeInsets.all(10.w),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryElement,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 2,
-                              blurRadius: 2,
-                              offset:
-                                  Offset(1, 1), // changes position of shadow
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey.withOpacity(0.1),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: AppColors.primaryElement,
+                        unselectedLabelColor: Colors.grey,
+                        labelStyle: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                        indicator: UnderlineTabIndicator(
+                          borderSide: BorderSide(
+                            width: 3.h,
+                            color: AppColors.primaryElement,
+                          ),
+                          insets: EdgeInsets.symmetric(horizontal: 60.w),
+                        ),
+                        tabs: [
+                          Tab(text: "Chats"),
+                          Tab(text: "Calls"),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                // Chats list
+                controller.state.msgList.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.chat_bubble_outline,
+                              size: 64.w,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
+                              "No messages yet",
+                              style: GoogleFonts.outfit(
+                                color: Colors.grey,
+                                fontSize: 16.sp,
+                              ),
                             ),
                           ],
-                          borderRadius: BorderRadius.all(Radius.circular(40.w)),
                         ),
-                        child: Image.asset("assets/icons/contact.png")),
-                    onTap: () {
-                      context.goNamed(RouteName.contact);
-                    },
-                  ),
-                )
-              ]),
-            )));
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.only(top: 8.h, bottom: 80.h),
+                        itemCount: controller.state.msgList.length,
+                        itemBuilder: (context, index) {
+                          return chatListItem(
+                              controller.state.msgList[index], context);
+                        },
+                      ),
+
+                // Calls list
+                controller.state.callList.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.call_outlined,
+                              size: 64.w,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
+                              "No calls yet",
+                              style: GoogleFonts.outfit(
+                                color: Colors.grey,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.only(top: 8.h, bottom: 80.h),
+                        itemCount: controller.state.callList.length,
+                        itemBuilder: (context, index) {
+                          return callListItem(controller.state.callList[index]);
+                        },
+                      ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.goNamed(RouteName.contact);
+        },
+        backgroundColor: AppColors.primaryElement,
+        elevation: 4,
+        child: Icon(
+          Icons.person_add_rounded,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }

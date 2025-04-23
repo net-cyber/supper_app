@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/features/chat/common/widgets/widgets.dart';
 import 'package:super_app/features/chat/pages/message/chat/widgets/chat_list.dart';
 import 'index.dart';
 import 'package:super_app/features/chat/common/values/values.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatPage extends StatefulWidget {
   final Map<String, dynamic>? arguments;
@@ -16,13 +19,17 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage>
+    with SingleTickerProviderStateMixin {
   late final ChatController controller;
+  final TextEditingController _textController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     controller = Get.put(ChatController());
+
     if (widget.arguments != null) {
       print("the to name argument is ${widget.arguments!['to_name']}");
 
@@ -45,325 +52,277 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    Get.delete<ChatController>();
+    _textController.dispose();
+    _focusNode.dispose();
+
+    // Delay the controller deletion slightly to prevent navigation issues
+    Future.delayed(Duration.zero, () {
+      if (Get.isRegistered<ChatController>()) {
+        Get.delete<ChatController>();
+      }
+    });
+
     super.dispose();
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: AppColors.primaryBackground,
-      title: Obx(() {
-        return Container(
-          padding: EdgeInsets.only(top: 0.w, left: 0.w, right: 0.w),
-          child: Text(
-            "${controller.state.to_name}",
-            overflow: TextOverflow.clip,
-            maxLines: 1,
-            style: TextStyle(
-              fontFamily: 'Avenir',
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
-              fontSize: 16.sp,
+  PreferredSizeWidget _buildAppBar() {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(65.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              offset: Offset(0, 1),
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios_rounded, size: 20.w),
+                  onPressed: () => context.goNamed(RouteName.message),
+                ),
+                Hero(
+                  tag: controller.state.to_token.value,
+                  child: Container(
+                    width: 40.w,
+                    height: 40.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.w),
+                      child: controller.state.to_avatar.value.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: controller.state.to_avatar.value,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: Colors.grey[300],
+                              ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/account_header.png',
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              'assets/images/account_header.png',
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Show user profile or info
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          controller.state.to_name.value,
+                          style: GoogleFonts.outfit(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.sp,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 2.h),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8.w,
+                              height: 8.w,
+                              decoration: BoxDecoration(
+                                color: controller.state.to_online.value == "1"
+                                    ? Colors.green
+                                    : Colors.grey,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              controller.state.to_online.value == "1"
+                                  ? "Active now"
+                                  : "Offline",
+                              style: const TextStyle(
+                                fontFamily: 'Avenir',
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.phone_outlined,
+                    color: AppColors.primaryElement,
+                    size: 22.w,
+                  ),
+                  onPressed: () {
+                    // Voice call action
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.videocam_outlined,
+                    color: AppColors.primaryElement,
+                    size: 22.w,
+                  ),
+                  onPressed: () {
+                    // Video call action
+                  },
+                ),
+              ],
             ),
           ),
-        );
-      }),
-      actions: [
-        Container(
-          margin: EdgeInsets.only(right: 20.w),
-          child: Stack(alignment: Alignment.center, children: [
-            Container(
-              width: 44.w,
-              height: 44.w,
-              decoration: BoxDecoration(
-                color: AppColors.primarySecondaryBackground,
-                borderRadius: BorderRadius.all(Radius.circular(22.w)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 2,
-                    offset: Offset(0, 1), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: controller.state.to_avatar.value == null
-                  ? Image(
-                      image: AssetImage('assets/images/account_header.png'),
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: controller.state.to_avatar.value,
-                      height: 44.w,
-                      width: 44.w,
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(22.w)),
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.fill
-                              // colorFilter: ColorFilter.mode(Colors.red, BlendMode.colorBurn),
-                              ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Image(
-                        image: AssetImage('assets/images/account_header.png'),
-                      ),
-                    ),
-            ),
-            Positioned(
-              bottom: 5.w,
-              right: 0.w,
-              height: 14.w,
-              child: Container(
-                width: 14.w,
-                height: 14.w,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 2.w, color: AppColors.primaryElementText),
-                  color: controller.state.to_online.value == "1"
-                      ? AppColors.primaryElementStatus
-                      : AppColors.primarySecondaryElementText,
-                  borderRadius: BorderRadius.all(Radius.circular(12.w)),
-                ),
-              ),
-            )
-          ]),
-        )
-      ],
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _buildAppBar(),
-        body: Obx(() => SafeArea(
-                child: ConstrainedBox(
-              constraints: BoxConstraints.expand(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  ChatList(),
-                  Positioned(
-                    bottom: 0.h,
-                    child: Container(
-                      width: 360.w,
-                      constraints:
-                          BoxConstraints(maxHeight: 170.h, minHeight: 70.h),
-                      padding: EdgeInsets.only(
-                          left: 20.w, right: 20.w, bottom: 10.h, top: 10.h),
-                      color: AppColors.primaryBackground,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                              width: 270.w,
-                              constraints: BoxConstraints(
-                                  maxHeight: 170.h, minHeight: 30.h),
-                              padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryBackground,
-                                border: Border.all(
-                                    color:
-                                        AppColors.primarySecondaryElementText),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                              ),
-                              child: Row(children: [
-                                Container(
-                                  width: 220.w,
-                                  constraints: BoxConstraints(
-                                      maxHeight: 150.h, minHeight: 20.h),
-                                  child: TextField(
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null,
-                                    controller: controller.myinputController,
-                                    autofocus: false,
-                                    decoration: InputDecoration(
-                                      hintText: "Message...",
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 10.w, top: 0, bottom: 0),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      disabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      hintStyle: TextStyle(
-                                        color: AppColors
-                                            .primarySecondaryElementText,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  child: Container(
-                                    width: 40.w,
-                                    height: 40.h,
-                                    child: Image.asset("assets/icons/send.png"),
-                                  ),
-                                  onTap: () {
-                                    controller.sendMessage();
-                                  },
-                                )
-                              ])),
-                          GestureDetector(
-                              child: Container(
-                                  height: 40.w,
-                                  width: 40.w,
-                                  padding: EdgeInsets.all(8.w),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryElement,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
-                                        spreadRadius: 2,
-                                        blurRadius: 2,
-                                        offset: Offset(
-                                            1, 1), // changes position of shadow
-                                      ),
-                                    ],
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(40.w)),
-                                  ),
-                                  child: controller.state.more_status.value
-                                      ? Image.asset("assets/icons/by.png")
-                                      : Image.asset("assets/icons/add.png")),
-                              onTap: () {
-                                controller.goMore();
-                              }),
-                        ],
-                      ),
-                    ),
+      appBar: _buildAppBar(),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Column(
+          children: [
+            // Chat messages area
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF8F9FA), // Light gray solid background
+                ),
+                child: ChatList(),
+              ),
+            ),
+
+            // Message input area
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    offset: Offset(0, -1),
+                    blurRadius: 5,
                   ),
-                  controller.state.more_status.value
-                      ? Positioned(
-                          right: 20.w,
-                          bottom: 70.h,
-                          height: 200.w,
-                          width: 40.w,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                child: Container(
-                                    height: 40.w,
-                                    width: 40.w,
-                                    padding: EdgeInsets.all(10.w),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primaryBackground,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          spreadRadius: 2,
-                                          blurRadius: 2,
-                                          offset: Offset(1,
-                                              1), // changes position of shadow
-                                        ),
-                                      ],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.w)),
-                                    ),
-                                    child:
-                                        Image.asset("assets/icons/file.png")),
-                                onTap: () {
-                                  controller.imgFromGallery();
-                                },
-                              ),
-                              GestureDetector(
-                                child: Container(
-                                    height: 40.w,
-                                    width: 40.w,
-                                    padding: EdgeInsets.all(10.w),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primaryBackground,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          spreadRadius: 2,
-                                          blurRadius: 2,
-                                          offset: Offset(1,
-                                              1), // changes position of shadow
-                                        ),
-                                      ],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.w)),
-                                    ),
-                                    child:
-                                        Image.asset("assets/icons/photo.png")),
-                                onTap: () {
-                                  controller.imgFromCamera();
-                                },
-                              ),
-                              GestureDetector(
-                                child: Container(
-                                    height: 40.w,
-                                    width: 40.w,
-                                    padding: EdgeInsets.all(10.w),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primaryBackground,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          spreadRadius: 2,
-                                          blurRadius: 2,
-                                          offset: Offset(1,
-                                              1), // changes position of shadow
-                                        ),
-                                      ],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.w)),
-                                    ),
-                                    child:
-                                        Image.asset("assets/icons/call.png")),
-                                onTap: () {
-                                  controller.callAudio(context);
-                                },
-                              ),
-                              GestureDetector(
-                                child: Container(
-                                    height: 40.w,
-                                    width: 40.w,
-                                    padding: EdgeInsets.all(10.w),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primaryBackground,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          spreadRadius: 2,
-                                          blurRadius: 2,
-                                          offset: Offset(1,
-                                              1), // changes position of shadow
-                                        ),
-                                      ],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.w)),
-                                    ),
-                                    child:
-                                        Image.asset("assets/icons/video.png")),
-                                onTap: () {
-                                  controller.callVideo(context);
-                                },
-                              ),
-                            ],
-                          ))
-                      : Container()
                 ],
               ),
-            ))));
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 12.h,
+              ),
+              child: SafeArea(
+                top: false,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Message input field
+                    Expanded(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: 120.h,
+                          minHeight: 45.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(22.5.w),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
+                        child: TextField(
+                          controller: _textController,
+                          focusNode: _focusNode,
+                          minLines: 1,
+                          maxLines: 5,
+                          keyboardType: TextInputType.multiline,
+                          textCapitalization: TextCapitalization.sentences,
+                          style: const TextStyle(
+                            fontFamily: 'Avenir',
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                            hintText: 'Type a message...',
+                            hintStyle: const TextStyle(
+                              fontFamily: 'Avenir',
+                              color: Color(0xFF9E9E9E),
+                              fontSize: 16,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (text) {
+                            controller.myinputController.text = text;
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+
+                    // Send button
+                    Container(
+                      height: 45.h,
+                      width: 45.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryElement,
+                        borderRadius: BorderRadius.circular(22.5.w),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryElement.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.send_rounded,
+                          color: Colors.white,
+                          size: 20.w,
+                        ),
+                        onPressed: () {
+                          controller.sendMessage();
+                          _textController.clear();
+                          _focusNode.requestFocus();
+                        },
+                        padding: EdgeInsets.zero,
+                        splashRadius: 22.w,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

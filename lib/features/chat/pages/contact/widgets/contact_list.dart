@@ -6,112 +6,145 @@ import 'package:super_app/features/chat/common/widgets/widgets.dart';
 import 'package:super_app/features/chat/common/entities/entities.dart';
 import '../index.dart';
 import 'package:super_app/features/chat/common/values/values.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ContactList extends GetView<ContactController> {
   Widget buildListItem(ContactItem item, BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10.h, left: 0.w, right: 0.w, bottom: 0.h),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1, color: AppColors.primarySecondaryBackground))),
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
       child: InkWell(
-          onTap: () {
-            controller.goChat(context, item);
-          },
+        borderRadius: BorderRadius.circular(12.r),
+        onTap: () {
+          controller.goChat(context, item);
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              // Avatar
               Container(
-                width: 44.w,
-                height: 44.w,
+                width: 52.w,
+                height: 52.w,
                 decoration: BoxDecoration(
-                  color: AppColors.primarySecondaryBackground,
-                  borderRadius: BorderRadius.all(Radius.circular(22.w)),
+                  borderRadius: BorderRadius.circular(26.w),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
                       spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: Offset(0, 1), // changes position of shadow
                     ),
                   ],
                 ),
-                child: CachedNetworkImage(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(26.w),
+                  child: CachedNetworkImage(
                     imageUrl: item.avatar!,
-                    height: 44.w,
-                    width: 44.w,
-                    imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(22.w)),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              // colorFilter: ColorFilter.mode(Colors.red, BlendMode.colorBurn),
-                            ),
-                          ),
-                        )),
-              ),
-              //
-              Container(
-                width: 275.w,
-                padding: EdgeInsets.only(
-                    top: 15.w, left: 10.w, right: 0.w, bottom: 0.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // center
-                    SizedBox(
-                        width: 200.w,
-                        height: 42.w,
-                        child: Text(
-                          "${item.username}",
-                          overflow: TextOverflow.clip,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontFamily: 'Avenir',
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.thirdElement,
-                            fontSize: 16.sp,
-                          ),
-                        )),
-                    Container(
-                      width: 12.w,
-                      height: 12.w,
-                      margin: EdgeInsets.only(top: 5.w),
-                      child: Image.asset(
-                        "assets/icons/ang.png",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[300],
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[300],
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey[500],
+                        size: 30.w,
                       ),
-                    )
-                  ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Username and status
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Username
+                      Text(
+                        "${item.username}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      // Status or additional info
+                      Text(
+                        "Tap to start a conversation",
+                        style: TextStyle(
+                          fontFamily: 'Avenir',
+                          color: Colors.grey[600],
+                          fontSize: 13.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Connection indicator
+              Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryElement.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: AppColors.primaryElement,
+                  size: 16.w,
                 ),
               ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return CustomScrollView(slivers: [
-        SliverPadding(
-          padding: EdgeInsets.symmetric(
-            vertical: 0.w,
-            horizontal: 20.w,
-          ),
-          sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-            (content, index) {
-              var item = controller.state.contactList[index];
-              return buildListItem(item, context);
-            },
-            childCount: controller.state.contactList.length,
-          )),
-        )
-      ]);
+      return controller.state.contactList.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.people_outline,
+                    size: 64.w,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    "No contacts yet",
+                    style: GoogleFonts.outfit(
+                      color: Colors.grey,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 10.w),
+              itemCount: controller.state.contactList.length,
+              itemBuilder: (context, index) {
+                return buildListItem(
+                    controller.state.contactList[index], context);
+              },
+            );
     });
   }
 }

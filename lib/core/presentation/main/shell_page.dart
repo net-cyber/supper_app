@@ -6,7 +6,8 @@ import 'package:hugeicons/hugeicons.dart';
 
 class ShellPage extends StatelessWidget {
   const ShellPage({
-    required this.navigationShell, super.key,
+    required this.navigationShell,
+    super.key,
   });
   final StatefulNavigationShell navigationShell;
 
@@ -20,7 +21,7 @@ class ShellPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
@@ -54,8 +55,13 @@ class ShellPage extends StatelessWidget {
                   'History',
                   1,
                 ),
-                
-                
+                _buildNavItem(
+                  context,
+                  HugeIcons.strokeRoundedMessage01,
+                  HugeIcons.strokeRoundedMessage01,
+                  'Chat',
+                  3,
+                ),
                 _buildNavItem(
                   context,
                   HugeIcons.strokeRoundedAccountSetting01,
@@ -80,7 +86,7 @@ class ShellPage extends StatelessWidget {
   ) {
     final theme = Theme.of(context);
     final isSelected = navigationShell.currentIndex == index;
-    
+
     return InkWell(
       onTap: () => _onNavigationItemSelected(index),
       child: Column(
@@ -90,16 +96,16 @@ class ShellPage extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.all(isSelected ? 12.w : 8.w),
             decoration: BoxDecoration(
-              color: isSelected 
-                ? theme.colorScheme.primary.withOpacity(0.1) 
-                : Colors.transparent,
+              color: isSelected
+                  ? theme.colorScheme.primary.withOpacity(0.1)
+                  : Colors.transparent,
               shape: BoxShape.circle,
             ),
             child: Icon(
               isSelected ? selectedIcon : icon,
-              color: isSelected 
-                ? theme.colorScheme.primary 
-                : theme.colorScheme.onSurfaceVariant,
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
               size: 24.sp,
             ),
           ),
@@ -108,9 +114,9 @@ class ShellPage extends StatelessWidget {
             label,
             style: theme.textTheme.labelMedium?.copyWith(
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              color: isSelected 
-                ? theme.colorScheme.primary 
-                : theme.colorScheme.onSurfaceVariant,
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],

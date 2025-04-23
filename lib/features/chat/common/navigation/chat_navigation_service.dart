@@ -65,6 +65,6 @@ class ChatNavigationService {
   }
 
   static void back(BuildContext context) {
-    Navigator.pop(context);
+    app_router.navigateToMessage(context);
   }
 }

@@ -775,12 +775,6 @@ class _MainScreenState extends State<MainScreen> {
         'color': Theme.of(context).colorScheme.primary,
         'route': RouteName.walletSelection,
       },
-      {
-        'icon': Icons.account_balance_wallet_rounded,
-        'label': 'Send To\nWallet',
-        'color': Theme.of(context).colorScheme.primary,
-        'route': RouteName.message,
-      },
     ];
 
     return Padding(

@@ -24,7 +24,7 @@ import 'package:super_app/features/chat/pages/message/view.dart';
 import 'package:super_app/features/chat/pages/contact/view.dart';
 import 'package:super_app/features/chat/pages/profile/view.dart';
 import 'package:super_app/features/chat/pages/message/chat/view.dart';
-import 'package:super_app/features/chat/pages/message/photoview/view.dart';
+
 import 'package:super_app/features/chat/pages/message/voicecall/view.dart';
 import 'package:super_app/features/chat/pages/message/videocall/view.dart';
 import 'package:get/get.dart';
@@ -235,40 +235,6 @@ final router = GoRouter(
               name: RouteName.message,
               path: '/${RouteName.message}',
               builder: (context, state) => MessagePage(),
-              routes: [
-                GoRoute(
-                  name: RouteName.chat,
-                  path: 'chat',
-                  builder: (context, state) {
-                    final Map<String, dynamic>? extra =
-                        state.extra as Map<String, dynamic>?;
-                    return ChatPage(arguments: extra);
-                  },
-                ),
-                GoRoute(
-                  name: RouteName.photoImgView,
-                  path: 'photo',
-                  builder: (context, state) => PhotoImgViewPage(),
-                ),
-                GoRoute(
-                  name: RouteName.voiceCall,
-                  path: 'voice-call',
-                  builder: (context, state) {
-                    final Map<String, dynamic>? extra =
-                        state.extra as Map<String, dynamic>?;
-                    return VoiceCallViewPage(arguments: extra);
-                  },
-                ),
-                GoRoute(
-                  name: RouteName.videoCall,
-                  path: 'video-call',
-                  builder: (context, state) {
-                    final Map<String, dynamic>? extra =
-                        state.extra as Map<String, dynamic>?;
-                    return VideoCallPage(arguments: extra);
-                  },
-                ),
-              ],
             ),
           ],
         ),
@@ -283,6 +249,38 @@ final router = GoRouter(
           ],
         ),
       ],
+    ),
+
+    // Chat detail routes without bottom navigation bar
+    GoRoute(
+      name: RouteName.chat,
+      path: '/${RouteName.message}/chat',
+      parentNavigatorKey: NavigationService.navigatorKey,
+      builder: (context, state) {
+        final Map<String, dynamic>? extra =
+            state.extra as Map<String, dynamic>?;
+        return ChatPage(arguments: extra);
+      },
+    ),
+    GoRoute(
+      name: RouteName.voiceCall,
+      path: '/${RouteName.message}/voice-call',
+      parentNavigatorKey: NavigationService.navigatorKey,
+      builder: (context, state) {
+        final Map<String, dynamic>? extra =
+            state.extra as Map<String, dynamic>?;
+        return VoiceCallViewPage(arguments: extra);
+      },
+    ),
+    GoRoute(
+      name: RouteName.videoCall,
+      path: '/${RouteName.message}/video-call',
+      parentNavigatorKey: NavigationService.navigatorKey,
+      builder: (context, state) {
+        final Map<String, dynamic>? extra =
+            state.extra as Map<String, dynamic>?;
+        return VideoCallPage(arguments: extra);
+      },
     ),
 
     GoRoute(
@@ -312,7 +310,7 @@ void navigateToChat(
   required String toAvatar,
   required String toOnline,
 }) {
-  context.goNamed(
+  context.pushNamed(
     RouteName.chat,
     extra: {
       "doc_id": docId,
@@ -340,7 +338,7 @@ void navigateToVoiceCall(
   required String toAvatar,
   required String callRole,
 }) {
-  context.goNamed(
+  context.pushNamed(
     RouteName.voiceCall,
     extra: {
       "doc_id": docId,
@@ -360,7 +358,7 @@ void navigateToVideoCall(
   required String toAvatar,
   required String callRole,
 }) {
-  context.goNamed(
+  context.pushNamed(
     RouteName.videoCall,
     extra: {
       "doc_id": docId,

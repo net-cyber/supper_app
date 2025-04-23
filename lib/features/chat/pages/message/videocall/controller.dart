@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
+import 'package:super_app/core/navigation/navigation_service.dart';
 import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
 import 'package:super_app/features/auth/domain/user/user_service.dart';
 import 'package:super_app/features/chat/common/apis/apis.dart';
@@ -20,9 +21,9 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../../../core/navigation/navigation_service.dart';
 import 'state.dart';
 import 'package:go_router/go_router.dart';
+import 'package:super_app/core/router/route_name.dart';
 
 class VideoCallController extends GetxController {
   final VideoCallState state = VideoCallState();
@@ -54,27 +55,35 @@ class VideoCallController extends GetxController {
 
   @override
   void dispose() {
-    super.dispose();
     _dispose();
+    super.dispose();
   }
 
   @override
   void onClose() {
-    super.onClose();
     _dispose();
+    super.onClose();
   }
 
   Future<void> _dispose() async {
-    if (calltimer != null) {
-      calltimer.cancel();
+    try {
+      if (calltimer != null) {
+        calltimer.cancel();
+      }
+
+      // Add call time record before leaving if needed
+      if (state.call_role == "anchor" && state.isJoined.value) {
+        await addCallTime();
+      }
+
+      // Close all resources
+      await player.pause();
+      await engine.leaveChannel();
+      await engine.release();
+      await player.stop();
+    } catch (e) {
+      print("Error during dispose: $e");
     }
-    if (state.call_role == "anchor") {
-      addCallTime();
-    }
-    await player.pause();
-    await engine.leaveChannel();
-    await engine.release();
-    await player.stop();
   }
 
   Future<void> _initEngine() async {
@@ -284,32 +293,48 @@ class VideoCallController extends GetxController {
   }
 
   Future<void> joinChannel() async {
-    await [Permission.microphone, Permission.camera].request();
-    EasyLoading.show(
-        indicator: CircularProgressIndicator(),
-        maskType: EasyLoadingMaskType.clear,
-        dismissOnTap: true);
-    String token = await getToken();
-    if (token.isEmpty) {
-      EasyLoading.dismiss();
-      Get.back();
-      return;
-    }
-    await engine.joinChannel(
-      token:
-          "007eJxTYOic6MPBcGlG1gWBdCnrbw2NrZ08GmetshmSfD9fXfrcdZMCQ4qFuUlSkpllmlmqpYmJYaKlmYGpQUqiiYG5WbKFmaHFmnL2jIZARgbWReYsjAwQCOJzMBSXFqQWJRYUMDAAAC91Hpo=",
-      channelId: "superapp",
-      uid: 0,
-      options: ChannelMediaOptions(
-        channelProfile: channelProfileType,
-        clientRoleType: ClientRoleType.clientRoleBroadcaster,
-      ),
-    );
+    try {
+      await [Permission.microphone, Permission.camera].request();
+      EasyLoading.show(
+          indicator: CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
 
-    if (state.call_role == "audience") {
-      callTime();
+      String token = await getToken();
+      if (token.isEmpty) {
+        EasyLoading.dismiss();
+        // Use GoRouter instead of Get for navigation errors
+        final navigatorKey = NavigationService.navigatorKey;
+        if (navigatorKey.currentContext != null) {
+          GoRouter.of(navigatorKey.currentContext!).pop();
+        }
+        return;
+      }
+
+      await engine.joinChannel(
+        token:
+            "007eJxTYOic6MPBcGlG1gWBdCnrbw2NrZ08GmetshmSfD9fXfrcdZMCQ4qFuUlSkpllmlmqpYmJYaKlmYGpQUqiiYG5WbKFmaHFmnL2jIZARgbWReYsjAwQCOJzMBSXFqQWJRYUMDAAAC91Hpo=",
+        channelId: "superapp",
+        uid: 0,
+        options: ChannelMediaOptions(
+          channelProfile: channelProfileType,
+          clientRoleType: ClientRoleType.clientRoleBroadcaster,
+        ),
+      );
+
+      if (state.call_role == "audience") {
+        callTime();
+      }
+      EasyLoading.dismiss();
+    } catch (e) {
+      print("Error joining channel: $e");
+      EasyLoading.dismiss();
+      // Use GoRouter for error navigation
+      final navigatorKey = NavigationService.navigatorKey;
+      if (navigatorKey.currentContext != null) {
+        GoRouter.of(navigatorKey.currentContext!).pop();
+      }
     }
-    EasyLoading.dismiss();
   }
 
   sendNotifications(String call_type) async {
@@ -329,20 +354,44 @@ class VideoCallController extends GetxController {
   }
 
   Future<void> leaveChannel() async {
-    EasyLoading.show(
-        indicator: CircularProgressIndicator(),
-        maskType: EasyLoadingMaskType.clear,
-        dismissOnTap: true);
-    await player.pause();
-    await sendNotifications("cancel");
-    // await engine.leaveChannel();
-    state.isJoined.value = false;
-    state.switchCameras.value = true;
-    EasyLoading.dismiss();
-    final context = NavigationService.currentContext;
-    if (context != null) {
-      // Use go_router to navigate back
-      context.pop();
+    try {
+      EasyLoading.show(
+          indicator: CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
+      // Stop playback and notify other party
+      await player.pause();
+      await sendNotifications("cancel");
+
+      // Close channel and update state
+      await engine.leaveChannel();
+      state.isJoined.value = false;
+      state.switchCameras.value = true;
+
+      // Add call record if needed
+      if (state.call_role == "anchor") {
+        await addCallTime();
+      }
+
+      EasyLoading.dismiss();
+
+      // Use GoRouter for navigation
+      final navigatorKey = NavigationService.navigatorKey;
+      if (navigatorKey.currentState != null &&
+          navigatorKey.currentContext != null) {
+        GoRouter.of(navigatorKey.currentContext!).goNamed(RouteName.message);
+      }
+    } catch (e) {
+      print("Error during leaveChannel: $e");
+      EasyLoading.dismiss();
+
+      // Fallback navigation
+      final navigatorKey = NavigationService.navigatorKey;
+      if (navigatorKey.currentState != null &&
+          navigatorKey.currentContext != null) {
+        GoRouter.of(navigatorKey.currentContext!).goNamed(RouteName.message);
+      }
     }
   }
 

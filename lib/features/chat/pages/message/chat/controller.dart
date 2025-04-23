@@ -381,7 +381,13 @@ class ChatController extends GetxController {
   void onClose() {
     super.onClose();
     print("onClose-------");
-    clear_msg_num(doc_id.toString());
+    try {
+      if (doc_id != null && doc_id.toString().isNotEmpty) {
+        clear_msg_num(doc_id.toString());
+      }
+    } catch (e) {
+      print("Error in onClose: $e");
+    }
   }
 
   @override

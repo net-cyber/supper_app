@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'controller.dart';
 
 class VideoCallPage extends StatefulWidget {
@@ -38,9 +40,16 @@ class _VideoCallPageState extends State<VideoCallPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.primary_bg,
+        backgroundColor: Colors.black,
         body: SafeArea(child: Obx(() {
           return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF2C3E50), Color(0xFF1A2530)],
+                ),
+              ),
               child: controller.state.isReadyPreview.value
                   ? Stack(
                       children: [
@@ -59,43 +68,36 @@ class _VideoCallPageState extends State<VideoCallPage> {
                         Positioned(
                           top: 30.h,
                           right: 15.w,
-                          child: SizedBox(
-                            width: 80.w,
-                            height: 120.w,
-                            child: AgoraVideoView(
-                              controller: VideoViewController(
-                                rtcEngine: controller.engine,
-                                canvas: const VideoCanvas(uid: 0),
+                          child: Container(
+                            width: 100.w,
+                            height: 140.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: AgoraVideoView(
+                                controller: VideoViewController(
+                                  rtcEngine: controller.engine,
+                                  canvas: const VideoCanvas(uid: 0),
+                                ),
                               ),
                             ),
                           ),
                         ),
                         controller.state.isShowAvatar.value
-                            ? Container()
-                            : Positioned(
-                                top: 10.h,
-                                left: 30.w,
-                                right: 30.w,
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(top: 6.h),
-                                        child: Text(
-                                          "${controller.state.call_time.value}",
-                                          style: TextStyle(
-                                            color: AppColors.primaryElementText,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ),
-                                    ])),
-                        controller.state.isShowAvatar.value
                             ? Positioned(
-                                top: 10.h,
-                                left: 30.w,
-                                right: 30.w,
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -103,120 +105,145 @@ class _VideoCallPageState extends State<VideoCallPage> {
                                         margin: EdgeInsets.only(top: 6.h),
                                         child: Text(
                                           "${controller.state.call_time.value}",
-                                          style: TextStyle(
-                                            color: AppColors.primaryElementText,
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.white70,
                                             fontSize: 14.sp,
-                                            fontWeight: FontWeight.normal,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
                                       Container(
-                                        width: 70.w,
-                                        height: 70.w,
-                                        margin: EdgeInsets.only(top: 150.h),
-                                        padding: EdgeInsets.all(0.w),
+                                        width: 120.w,
+                                        height: 120.w,
+                                        margin: EdgeInsets.only(top: 40.h),
                                         decoration: BoxDecoration(
-                                          color: AppColors.primaryElementText,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.w)),
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black26,
+                                              blurRadius: 15,
+                                              offset: Offset(0, 5),
+                                            ),
+                                          ],
                                         ),
-                                        child: Image.network(
-                                          "${controller.state.to_avatar.value}",
-                                          fit: BoxFit.fill,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(60.w),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "${controller.state.to_avatar.value}",
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                Container(
+                                              color: Colors.grey[800],
+                                              child: Icon(Icons.person,
+                                                  color: Colors.white,
+                                                  size: 50.w),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Container(
+                                              color: Colors.grey[800],
+                                              child: Icon(Icons.person,
+                                                  color: Colors.white,
+                                                  size: 50.w),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(top: 6.h),
+                                        margin: EdgeInsets.only(top: 16.h),
                                         child: Text(
                                           "${controller.state.to_name.value}",
-                                          style: TextStyle(
-                                            color: AppColors.primaryElementText,
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.normal,
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.white,
+                                            fontSize: 24.sp,
+                                            fontWeight: FontWeight.w600,
                                           ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      Text(
+                                        "Connecting video call...",
+                                        style: TextStyle(
+                                          fontFamily: 'Avenir',
+                                          color: Colors.white70,
+                                          fontSize: 16,
                                         ),
                                       )
                                     ]))
                             : Container(),
                         Positioned(
-                            bottom: 80.h,
-                            left: 30.w,
-                            right: 30.w,
+                            bottom: 40.h,
+                            left: 0,
+                            right: 0,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Column(children: [
-                                  GestureDetector(
-                                    child: Container(
-                                      width: 60.w,
-                                      height: 60.w,
-                                      padding: EdgeInsets.all(15.w),
-                                      decoration: BoxDecoration(
-                                        color: controller.state.isJoined.value
-                                            ? AppColors.primaryElementBg
-                                            : AppColors.primaryElementStatus,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30.w)),
-                                      ),
-                                      child: controller.state.isJoined.value
-                                          ? Image.asset(
-                                              "assets/icons/a_phone.png")
-                                          : Image.asset(
-                                              "assets/icons/a_telephone.png"),
+                                // Call button
+                                GestureDetector(
+                                  onTap: controller.state.isJoined.value
+                                      ? controller.leaveChannel
+                                      : controller.joinChannel,
+                                  child: Container(
+                                    width: 65.w,
+                                    height: 65.w,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 20.w),
+                                    decoration: BoxDecoration(
+                                      color: controller.state.isJoined.value
+                                          ? Colors.redAccent
+                                          : Colors.greenAccent,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: controller.state.isJoined.value
+                                              ? Colors.redAccent
+                                                  .withOpacity(0.3)
+                                              : Colors.greenAccent
+                                                  .withOpacity(0.3),
+                                          blurRadius: 12,
+                                          spreadRadius: 2,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ],
                                     ),
-                                    onTap: controller.state.isJoined.value
-                                        ? controller.leaveChannel
-                                        : controller.joinChannel,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10.h),
-                                    child: Text(
+                                    child: Icon(
                                       controller.state.isJoined.value
-                                          ? "Disconnect"
-                                          : "Connected",
-                                      style: TextStyle(
-                                        color: AppColors.primaryElementText,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.normal,
-                                      ),
+                                          ? Icons.call_end
+                                          : Icons.videocam,
+                                      color: Colors.white,
+                                      size: 28.sp,
                                     ),
                                   ),
-                                ]),
-                                Column(children: [
-                                  GestureDetector(
-                                    child: Container(
-                                      width: 60.w,
-                                      height: 60.w,
-                                      padding: EdgeInsets.all(15.w),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            controller.state.switchCameras.value
-                                                ? AppColors.primaryElementText
-                                                : AppColors.primaryText,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30.w)),
-                                      ),
-                                      child:
-                                          controller.state.switchCameras.value
-                                              ? Image.asset(
-                                                  "assets/icons/b_photo.png")
-                                              : Image.asset(
-                                                  "assets/icons/a_photo.png"),
+                                ),
+
+                                // Camera switch button
+                                GestureDetector(
+                                  onTap: controller.switchCamera,
+                                  child: Container(
+                                    width: 55.w,
+                                    height: 55.w,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 20.w),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white24,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 10,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ],
                                     ),
-                                    onTap: controller.switchCamera,
+                                    child: Icon(
+                                      Icons.flip_camera_ios,
+                                      color: Colors.white,
+                                      size: 24.sp,
+                                    ),
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10.h),
-                                    child: Text(
-                                      "switchCamera",
-                                      style: TextStyle(
-                                        color: AppColors.primaryElementText,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                  )
-                                ]),
+                                ),
                               ],
                             ))
                       ],

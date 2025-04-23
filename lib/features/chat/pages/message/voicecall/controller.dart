@@ -22,6 +22,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
 import 'state.dart';
 import 'package:go_router/go_router.dart';
+import 'package:super_app/core/router/route_name.dart';
 
 /// 定义 App ID 和 Token
 
@@ -47,16 +48,24 @@ class VoiceCallViewController extends GetxController {
       ChannelProfileType.channelProfileCommunication;
 
   Future<void> _dispose() async {
-    if (is_calltimer) {
-      calltimer.cancel();
+    try {
+      if (calltimer != null) {
+        calltimer.cancel();
+      }
+
+      // Add call time record before leaving if needed
+      if (state.call_role == "anchor" && state.isJoined.value) {
+        await addCallTime();
+      }
+
+      // Close all resources
+      await player.pause();
+      await engine.leaveChannel();
+      await engine.release();
+      await player.stop();
+    } catch (e) {
+      print("Error during dispose: $e");
     }
-    if (state.call_role == "anchor") {
-      addCallTime();
-    }
-    await player.pause();
-    await engine.leaveChannel();
-    await engine.release();
-    await player.stop();
   }
 
   Future<void> _initEngine() async {
@@ -243,33 +252,50 @@ class VoiceCallViewController extends GetxController {
   }
 
   joinChannel() async {
-    await Permission.microphone.request();
+    try {
+      await Permission.microphone.request();
 
-    EasyLoading.show(
-        indicator: CircularProgressIndicator(),
-        maskType: EasyLoadingMaskType.clear,
-        dismissOnTap: true);
-    String token = await getToken();
-    if (token.isEmpty) {
+      EasyLoading.show(
+          indicator: CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
+      String token = await getToken();
+      if (token.isEmpty) {
+        EasyLoading.dismiss();
+        // Use GoRouter instead of Get for navigation errors
+        final navigatorKey = NavigationService.navigatorKey;
+        if (navigatorKey.currentContext != null) {
+          GoRouter.of(navigatorKey.currentContext!).pop();
+        }
+        return;
+      }
+
+      await engine.joinChannel(
+          token:
+              "007eJxTYOic6MPBcGlG1gWBdCnrbw2NrZ08GmetshmSfD9fXfrcdZMCQ4qFuUlSkpllmlmqpYmJYaKlmYGpQUqiiYG5WbKFmaHFmnL2jIZARgbWReYsjAwQCOJzMBSXFqQWJRYUMDAAAC91Hpo=",
+          channelId: "superapp",
+          uid: 0,
+          options: ChannelMediaOptions(
+            channelProfile: channelProfileType,
+            clientRoleType: ClientRoleType.clientRoleBroadcaster,
+          ));
+
+      if (state.call_role == "audience") {
+        callTime();
+        is_calltimer = true;
+      }
+
       EasyLoading.dismiss();
-      Get.back();
-      return;
+    } catch (e) {
+      print("Error joining channel: $e");
+      EasyLoading.dismiss();
+      // Use GoRouter for error navigation
+      final navigatorKey = NavigationService.navigatorKey;
+      if (navigatorKey.currentContext != null) {
+        GoRouter.of(navigatorKey.currentContext!).pop();
+      }
     }
-    print("token is!!!!!!!!!!!!!!!!!!!!11111 : $token");
-    await engine.joinChannel(
-        token:
-            "007eJxTYOic6MPBcGlG1gWBdCnrbw2NrZ08GmetshmSfD9fXfrcdZMCQ4qFuUlSkpllmlmqpYmJYaKlmYGpQUqiiYG5WbKFmaHFmnL2jIZARgbWReYsjAwQCOJzMBSXFqQWJRYUMDAAAC91Hpo=",
-        channelId: "superapp",
-        uid: 0,
-        options: ChannelMediaOptions(
-          channelProfile: channelProfileType,
-          clientRoleType: ClientRoleType.clientRoleBroadcaster,
-        ));
-    if (state.call_role == "audience") {
-      callTime();
-      is_calltimer = true;
-    }
-    EasyLoading.dismiss();
   }
 
   // send notification
@@ -292,23 +318,47 @@ class VoiceCallViewController extends GetxController {
   }
 
   leaveChannel() async {
-    EasyLoading.show(
-        indicator: CircularProgressIndicator(),
-        maskType: EasyLoadingMaskType.clear,
-        dismissOnTap: true);
-    await player.pause();
-    await sendNotifications("cancel");
-    await engine.leaveChannel(); // Ensure we properly leave the channel
-    state.isJoined.value = false;
-    state.openMicrophone.value = true;
-    state.enableSpeakerphone.value = true;
-    EasyLoading.dismiss();
+    try {
+      EasyLoading.show(
+          indicator: CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
 
-    // Get the current context from the BuildContext
-    final context = NavigationService.currentContext;
-    if (context != null) {
-      // Use go_router to navigate back
-      context.pop();
+      // Stop playback and notify other party
+      await player.pause();
+      await sendNotifications("cancel");
+
+      // Close channel
+      await engine.leaveChannel();
+
+      // Update state values before navigation
+      state.isJoined.value = false;
+      state.openMicrophone.value = true;
+      state.enableSpeakerphone.value = true;
+
+      // Add call record if needed
+      if (state.call_role == "anchor") {
+        await addCallTime();
+      }
+
+      EasyLoading.dismiss();
+
+      // Use GoRouter for navigation
+      final navigatorKey = NavigationService.navigatorKey;
+      if (navigatorKey.currentState != null &&
+          navigatorKey.currentContext != null) {
+        GoRouter.of(navigatorKey.currentContext!).goNamed(RouteName.message);
+      }
+    } catch (e) {
+      print("Error during leaveChannel: $e");
+      EasyLoading.dismiss();
+
+      // Fallback navigation
+      final navigatorKey = NavigationService.navigatorKey;
+      if (navigatorKey.currentState != null &&
+          navigatorKey.currentContext != null) {
+        GoRouter.of(navigatorKey.currentContext!).goNamed(RouteName.message);
+      }
     }
   }
 
@@ -333,14 +383,14 @@ class VoiceCallViewController extends GetxController {
 
   @override
   void onClose() {
-    super.onClose();
     _dispose();
+    super.onClose();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _dispose();
+    super.dispose();
   }
 
   void setParameters(Map<String, dynamic>? params) {
