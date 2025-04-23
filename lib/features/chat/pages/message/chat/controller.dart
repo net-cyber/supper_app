@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:super_app/core/di/dependancy_manager.dart';
+import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
+import 'package:super_app/features/auth/domain/user/user_service.dart';
 import 'package:super_app/features/chat/common/apis/apis.dart';
 import 'package:super_app/features/chat/common/routes/names.dart';
 import 'package:super_app/features/chat/common/utils/utils.dart';
@@ -31,7 +34,9 @@ class ChatController extends GetxController {
   double inputHeightStatus = 0;
   var listener;
   var doc_id = null;
-  final token = UserStore.to.profile.token;
+  late final UserService userService;
+  LoginUser? user;
+  late final String token;
   File? _photo;
   final ImagePicker _picker = ImagePicker();
 
@@ -105,6 +110,7 @@ class ChatController extends GetxController {
       return;
     }
     print("---------------chat--${sendcontent}-----------------");
+    print("---------------chat--${doc_id.toString()}-----------------");
     final content = Msgcontent(
       token: token,
       content: sendcontent,
@@ -287,15 +293,18 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    userService = getIt<UserService>();
+    user = userService.getCurrentUser();
+    token = user?.token ?? "";
     print("onInit------------");
-    var data = Get.parameters;
-    print(data);
-    doc_id = data["doc_id"];
-    state.to_token.value = data["to_token"] ?? "";
-    state.to_name.value = data["to_name"] ?? "";
-    state.to_avatar.value = data["to_avatar"] ?? "";
-    state.to_online.value = data["to_online"] ?? "1";
-    clear_msg_num(doc_id.toString());
+    // var data = Get.parameters;
+    // print("data------------${data}");
+    // doc_id = data["doc_id"];
+    // state.to_token.value = data["to_token"] ?? "";
+    // state.to_name.value = data["to_name"] ?? "";
+    // state.to_avatar.value = data["to_avatar"] ?? "";
+    // state.to_online.value = data["to_online"] ?? "1";
+    // clear_msg_num(doc_id.toString());
   }
 
   @override

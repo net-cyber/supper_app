@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
+import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
+import 'package:super_app/features/auth/domain/user/user_service.dart';
 import 'package:super_app/features/chat/common/apis/apis.dart';
 import 'package:super_app/features/chat/common/entities/entities.dart';
 import 'package:super_app/features/chat/common/routes/routes.dart';
@@ -17,7 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../../core/navigation/navigation_service.dart';
 import 'state.dart';
+import 'package:go_router/go_router.dart';
 
 class VideoCallController extends GetxController {
   final VideoCallState state = VideoCallState();
@@ -27,7 +32,10 @@ class VideoCallController extends GetxController {
   ChannelProfileType channelProfileType =
       ChannelProfileType.channelProfileCommunication;
   String appId = APPID;
-  final profile_token = UserStore.to.profile.token;
+  late final UserService userService;
+  LoginUser? user;
+  late final String profile_token;
+
   late final Timer calltimer;
   int call_m = 0;
   int call_s = 0;
@@ -37,12 +45,10 @@ class VideoCallController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    var data = Get.parameters;
-    state.to_token.value = data["to_token"] ?? "";
-    state.to_name.value = data["to_name"] ?? "";
-    state.to_avatar.value = data["to_avatar"] ?? "";
-    state.call_role.value = data["call_role"] ?? "";
-    state.doc_id.value = data["doc_id"] ?? "";
+    userService = getIt<UserService>();
+    user = userService.getCurrentUser();
+    profile_token = user?.token ?? "";
+
     _initEngine();
   }
 
@@ -290,8 +296,9 @@ class VideoCallController extends GetxController {
       return;
     }
     await engine.joinChannel(
-      token: token,
-      channelId: state.channelId.value,
+      token:
+          "007eJxTYOic6MPBcGlG1gWBdCnrbw2NrZ08GmetshmSfD9fXfrcdZMCQ4qFuUlSkpllmlmqpYmJYaKlmYGpQUqiiYG5WbKFmaHFmnL2jIZARgbWReYsjAwQCOJzMBSXFqQWJRYUMDAAAC91Hpo=",
+      channelId: "superapp",
       uid: 0,
       options: ChannelMediaOptions(
         channelProfile: channelProfileType,
@@ -332,14 +339,25 @@ class VideoCallController extends GetxController {
     state.isJoined.value = false;
     state.switchCameras.value = true;
     EasyLoading.dismiss();
-    if (Get.isSnackbarOpen) {
-      Get.closeAllSnackbars();
+    final context = NavigationService.currentContext;
+    if (context != null) {
+      // Use go_router to navigate back
+      context.pop();
     }
-    Get.back();
   }
 
   Future<void> switchCamera() async {
     await engine.switchCamera();
     state.switchCameras.value = !state.switchCameras.value;
+  }
+
+  void setParameters(Map<String, dynamic>? params) {
+    if (params != null) {
+      state.to_token.value = params["to_token"]?.toString() ?? "";
+      state.to_name.value = params["to_name"]?.toString() ?? "";
+      state.to_avatar.value = params["to_avatar"]?.toString() ?? "";
+      state.call_role.value = params["call_role"]?.toString() ?? "";
+      state.doc_id.value = params["doc_id"]?.toString() ?? "";
+    }
   }
 }

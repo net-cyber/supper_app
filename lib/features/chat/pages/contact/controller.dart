@@ -19,7 +19,9 @@ class ContactController extends GetxController {
   final ContactState state = ContactState();
   final db = FirebaseFirestore.instance;
   // final token = UserStore.to.profile.token;
-  final token = LocalStorage.instance.getAccessToken() ?? "";
+  late final UserService userService;
+  LoginUser? user;
+  late final String token;
   goChat(BuildContext context, ContactItem contactItem) async {
     var from_messages = await db
         .collection("message")
@@ -122,6 +124,9 @@ class ContactController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    userService = getIt<UserService>();
+    user = userService.getCurrentUser();
+    token = user?.token ?? "";
   }
 
   @override

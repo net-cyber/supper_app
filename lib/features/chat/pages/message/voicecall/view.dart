@@ -8,7 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'controller.dart';
 
 class VoiceCallViewPage extends StatefulWidget {
-  const VoiceCallViewPage({Key? key}) : super(key: key);
+  final Map<String, dynamic>? arguments;
+  const VoiceCallViewPage({Key? key, this.arguments}) : super(key: key);
 
   @override
   State<VoiceCallViewPage> createState() => _VoiceCallViewPageState();
@@ -21,6 +22,12 @@ class _VoiceCallViewPageState extends State<VoiceCallViewPage> {
   void initState() {
     super.initState();
     controller = Get.put(VoiceCallViewController());
+    if (widget.arguments != null) {
+      print("Calling setParameters with: ${widget.arguments}");
+      controller.setParameters(widget.arguments);
+    } else {
+      print("NO ARGUMENTS FOUND!");
+    }
   }
 
   @override

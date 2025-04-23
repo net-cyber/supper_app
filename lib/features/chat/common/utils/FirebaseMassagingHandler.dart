@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:super_app/features/chat/common/apis/apis.dart';
 import 'package:super_app/features/chat/common/entities/entities.dart';
+import 'package:super_app/features/chat/common/navigation/chat_navigation_service.dart';
 import 'package:super_app/features/chat/common/routes/names.dart';
 import 'package:super_app/features/chat/common/store/store.dart';
 import 'package:super_app/features/chat/common/values/values.dart';
@@ -13,8 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_app/firebase_options.dart';
+import 'package:super_app/core/navigation/navigation_service.dart';
 
 class FirebaseMassagingHandler {
   FirebaseMassagingHandler._();
@@ -61,7 +64,7 @@ class FirebaseMassagingHandler {
         print(initialMessage);
       }
       var initializationSettingsAndroid =
-          AndroidInitializationSettings("ic_launcher");
+          AndroidInitializationSettings("@mipmap/ic_launcher");
       var darwinInitializationSettings = DarwinInitializationSettings();
       var initializationSettings = InitializationSettings(
           android: initializationSettingsAndroid,
@@ -77,9 +80,23 @@ class FirebaseMassagingHandler {
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
         print("\n notification on onMessage function \n");
-        print(message);
+        print("Full message data: ${message.data}");
+        print("Notification: ${message.notification?.title}");
+        print("Has notification: ${message.notification != null}");
+
         if (message != null) {
-          _receiveNotification(message);
+          if (message.data != null && message.data["call_type"] != null) {
+            if (message.data["call_type"] == "text") {
+              // Text messages should show a notification
+              _showNotification(message: message);
+            } else {
+              // Voice, video, and cancel calls use snackbar
+              _receiveNotification(message);
+            }
+          } else {
+            // Other messages show notification
+            _showNotification(message: message);
+          }
         }
       });
     } on Exception catch (e) {
@@ -89,187 +106,149 @@ class FirebaseMassagingHandler {
 
   static Future<void> _receiveNotification(RemoteMessage message) async {
     if (message.data != null && message.data["call_type"] != null) {
-      //  ////1. voice 2. video 3. text, 4.cancel
       if (message.data["call_type"] == "voice") {
-        //  FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
         var data = message.data;
+        print("data: ${data["token"]}");
+        print("data: ${data["name"]}");
+        print("data: ${data["avatar"]}");
+        print("data: ${data["doc_id"]}");
         var to_token = data["token"];
         var to_name = data["name"];
         var to_avatar = data["avatar"];
         var doc_id = data["doc_id"] ?? "";
-        // var call_role= data["call_type"];
-        if (to_token != null && to_name != null && to_avatar != null) {
-          Get.snackbar(
-              icon: Container(
-                width: 40.w,
-                height: 40.w,
-                padding: EdgeInsets.all(0.w),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(to_avatar.toString())),
-                  borderRadius: BorderRadius.all(Radius.circular(20.w)),
-                ),
-              ),
-              "${to_name}",
-              "Voice call",
-              duration: Duration(seconds: 30),
-              isDismissible: false,
-              mainButton: TextButton(
-                  onPressed: () {},
-                  child: Container(
-                      width: 90.w,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (Get.isSnackbarOpen) {
-                                Get.closeAllSnackbars();
-                              }
-                              FirebaseMassagingHandler._sendNotifications(
-                                  "cancel",
-                                  to_token.toString(),
-                                  to_avatar.toString(),
-                                  to_name.toString(),
-                                  doc_id.toString());
-                            },
-                            child: Container(
-                              width: 40.w,
-                              height: 40.w,
-                              padding: EdgeInsets.all(10.w),
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryElementBg,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30.w)),
-                              ),
-                              child: Image.asset("assets/icons/a_phone.png"),
-                            ),
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                if (Get.isSnackbarOpen) {
-                                  Get.closeAllSnackbars();
-                                }
-                                Get.toNamed(AppRoutes.VoiceCall, parameters: {
-                                  "to_token": to_token.toString(),
-                                  "to_name": to_name.toString(),
-                                  "to_avatar": to_avatar.toString(),
-                                  "doc_id": doc_id.toString(),
-                                  "call_role": "audience"
-                                });
-                              },
-                              child: Container(
-                                width: 40.w,
-                                height: 40.w,
-                                padding: EdgeInsets.all(10.w),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryElementStatus,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.w)),
-                                ),
-                                child:
-                                    Image.asset("assets/icons/a_telephone.png"),
-                              ))
-                        ],
-                      ))));
+
+        // Check if we have a valid context through the navigator key
+        final BuildContext? context = NavigationService.currentContext;
+        if (to_token != null &&
+            to_name != null &&
+            to_avatar != null &&
+            context != null) {
+          try {
+            // Show a custom overlay or use ScaffoldMessenger
+            showCallNotificationOverlay(
+                context: context,
+                title: to_name.toString(),
+                subtitle: 'Voice call',
+                avatar: to_avatar.toString(),
+                onDecline: () {
+                  // Close the overlay
+                  hideCallNotificationOverlay();
+
+                  // Send cancel notification
+                  _sendNotifications(
+                      'cancel',
+                      to_token.toString(),
+                      to_avatar.toString(),
+                      to_name.toString(),
+                      doc_id.toString());
+                },
+                onAccept: () {
+                  // Close the overlay
+                  hideCallNotificationOverlay();
+                  ChatNavigationService.toVoiceCall(context,
+                      docId: doc_id.toString(),
+                      toToken: to_token.toString(),
+                      toName: to_name.toString(),
+                      toAvatar: to_avatar.toString(),
+                      callRole: 'audience');
+                });
+          } catch (e) {
+            print("Error showing voice call overlay: $e");
+            // Fall back to notification
+            _showNotification(
+                message: RemoteMessage(
+                    notification: RemoteNotification(
+                        title: 'Voice Call',
+                        body: 'Incoming call from $to_name'),
+                    data: message.data));
+          }
+        } else {
+          print("context is not available");
+          _showNotification(
+              message: RemoteMessage(
+                  notification: RemoteNotification(
+                      title: 'Voice Call',
+                      body: 'Incoming call from ${to_name ?? 'Unknown'}'),
+                  data: message.data));
         }
       } else if (message.data["call_type"] == "video") {
-        //    FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
-        //  ////1. voice 2. video 3. text, 4.cancel
+        // Use the same approach as voice calls but for video
         var data = message.data;
         var to_token = data["token"];
         var to_name = data["name"];
         var to_avatar = data["avatar"];
         var doc_id = data["doc_id"] ?? "";
-        // var call_role= data["call_type"];
-        if (to_token != null && to_name != null && to_avatar != null) {
-          ConfigStore.to.isCallVocie = true;
-          Get.snackbar(
-              icon: Container(
-                width: 40.w,
-                height: 40.w,
-                padding: EdgeInsets.all(0.w),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(to_avatar.toString())),
-                  borderRadius: BorderRadius.all(Radius.circular(20.w)),
-                ),
-              ),
-              "${to_name}",
-              "Video call",
-              duration: Duration(seconds: 30),
-              isDismissible: false,
-              mainButton: TextButton(
-                  onPressed: () {},
-                  child: Container(
-                      width: 90.w,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (Get.isSnackbarOpen) {
-                                Get.closeAllSnackbars();
-                              }
-                              FirebaseMassagingHandler._sendNotifications(
-                                  "cancel",
-                                  to_token.toString(),
-                                  to_avatar.toString(),
-                                  to_name.toString(),
-                                  doc_id.toString());
-                            },
-                            child: Container(
-                              width: 40.w,
-                              height: 40.w,
-                              padding: EdgeInsets.all(10.w),
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryElementBg,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30.w)),
-                              ),
-                              child: Image.asset("assets/icons/a_phone.png"),
-                            ),
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                if (Get.isSnackbarOpen) {
-                                  Get.closeAllSnackbars();
-                                }
-                                Get.toNamed(AppRoutes.VideoCall, parameters: {
-                                  "to_token": to_token.toString(),
-                                  "to_name": to_name.toString(),
-                                  "to_avatar": to_avatar.toString(),
-                                  "doc_id": doc_id.toString(),
-                                  "call_role": "audience"
-                                });
-                              },
-                              child: Container(
-                                width: 40.w,
-                                height: 40.w,
-                                padding: EdgeInsets.all(10.w),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryElementStatus,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.w)),
-                                ),
-                                child:
-                                    Image.asset("assets/icons/a_telephone.png"),
-                              ))
-                        ],
-                      ))));
+
+        // Check if we have a valid context through the navigator key
+        final BuildContext? context = NavigationService.currentContext;
+        if (to_token != null &&
+            to_name != null &&
+            to_avatar != null &&
+            context != null) {
+          try {
+            // Show a custom overlay
+            showCallNotificationOverlay(
+                context: context,
+                title: to_name.toString(),
+                subtitle: 'Video call',
+                avatar: to_avatar.toString(),
+                onDecline: () {
+                  // Close the overlay
+                  hideCallNotificationOverlay();
+
+                  // Send cancel notification
+                  _sendNotifications(
+                      'cancel',
+                      to_token.toString(),
+                      to_avatar.toString(),
+                      to_name.toString(),
+                      doc_id.toString());
+                },
+                onAccept: () {
+                  // Close the overlay
+                  hideCallNotificationOverlay();
+                  ChatNavigationService.toVideoCall(context,
+                      docId: doc_id.toString(),
+                      toToken: to_token.toString(),
+                      toName: to_name.toString(),
+                      toAvatar: to_avatar.toString(),
+                      callRole: 'audience');
+                });
+          } catch (e) {
+            print("Error showing video call overlay: $e");
+            // Fall back to notification
+            _showNotification(
+                message: RemoteMessage(
+                    notification: RemoteNotification(
+                        title: 'Video Call',
+                        body: 'Incoming call from $to_name'),
+                    data: message.data));
+          }
+        } else {
+          print("context is not available");
+          _showNotification(
+              message: RemoteMessage(
+                  notification: RemoteNotification(
+                      title: 'Video Call',
+                      body: 'Incoming call from ${to_name ?? 'Unknown'}'),
+                  data: message.data));
         }
       } else if (message.data["call_type"] == "cancel") {
+        // Handle call cancellation
         FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
+        hideCallNotificationOverlay();
 
-        if (Get.isSnackbarOpen) {
-          Get.closeAllSnackbars();
-        }
-
-        if (Get.currentRoute.contains(AppRoutes.VoiceCall) ||
-            Get.currentRoute.contains(AppRoutes.VideoCall)) {
-          Get.back();
+        // Close the current call screen if it's open
+        final BuildContext? context = NavigationService.currentContext;
+        if (context != null) {
+          try {
+            // Instead of checking the route with GoRouterState.of(context)
+            // Just try to pop if we're in a call screen
+            // The navigation service will handle this safely
+            context.pop();
+          } catch (e) {
+            print("Error during navigation on cancel: $e");
+          }
         }
 
         var _prefs = await SharedPreferences.getInstance();
@@ -304,6 +283,9 @@ class FirebaseMassagingHandler {
 
     if (notification != null &&
         (androidNotification != null || appleNotification != null)) {
+      print("Attempting to show notification");
+      print("Title: ${notification.title}");
+      print("Body: ${notification.body}");
       flutterLocalNotificationsPlugin.show(
         notification.hashCode,
         notification.title,
@@ -365,5 +347,109 @@ class FirebaseMassagingHandler {
         }
       }
     }
+  }
+
+  // Create an overlay entry to show call notifications
+  static OverlayEntry? _overlayEntry;
+
+  static void showCallNotificationOverlay({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required String avatar,
+    required VoidCallback onDecline,
+    required VoidCallback onAccept,
+  }) {
+    hideCallNotificationOverlay(); // Ensure no duplicate overlays
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50,
+        left: 20,
+        right: 20,
+        child: Material(
+          elevation: 8,
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 40.w,
+                  height: 40.w,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(avatar),
+                    ),
+                    borderRadius: BorderRadius.circular(20.w),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(subtitle),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: onDecline,
+                      child: Container(
+                        width: 40.w,
+                        height: 40.w,
+                        padding: EdgeInsets.all(10.w),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryElementBg,
+                          borderRadius: BorderRadius.circular(30.w),
+                        ),
+                        child: Image.asset("assets/icons/a_phone.png"),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: onAccept,
+                      child: Container(
+                        width: 40.w,
+                        height: 40.w,
+                        padding: EdgeInsets.all(10.w),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryElementStatus,
+                          borderRadius: BorderRadius.circular(30.w),
+                        ),
+                        child: Image.asset("assets/icons/a_telephone.png"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+
+    // Auto-dismiss after 30 seconds
+    Future.delayed(Duration(seconds: 30), () {
+      hideCallNotificationOverlay();
+    });
+  }
+
+  static void hideCallNotificationOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 }

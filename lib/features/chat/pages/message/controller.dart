@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
+import 'package:super_app/features/auth/domain/user/user_service.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/features/chat/common/apis/apis.dart';
 import 'package:super_app/features/chat/common/routes/names.dart';
 import 'package:super_app/features/chat/common/utils/FirebaseMassagingHandler.dart';
@@ -19,7 +23,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   MessageController();
 
   final MessageState state = MessageState();
-  final token = UserStore.to.profile.token;
+  late final UserService userService;
+  LoginUser? user;
+  late final String token;
   final db = FirebaseFirestore.instance;
 
   goProfile() async {
@@ -46,8 +52,8 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
   asyncLoadMsgData() async {
     print("-----------state.msgList.value");
+    print("my access token is $token");
     print(state.msgList.value);
-    var token = UserStore.to.profile.token;
 
     var from_messages = await db
         .collection("message")
@@ -57,7 +63,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         )
         .where("from_token", isEqualTo: token)
         .get();
-    print(from_messages.docs.length);
+    print("the doc is from message ${from_messages.docs.length}");
 
     var to_messages = await db
         .collection("message")
@@ -68,7 +74,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         .where("to_token", isEqualTo: token)
         .get();
     print("to_messages.docs.length------------");
-    print(to_messages.docs.length);
+    print("this doc is to message ${to_messages.docs.length}");
     state.msgList.clear();
 
     if (from_messages.docs.isNotEmpty) {
@@ -115,10 +121,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   }
 
   _snapshots() async {
-    var token = UserStore.to.profile.token;
-    print("token--------");
-    print(token);
-
     final toMessageRef = db
         .collection("message")
         .withConverter(
@@ -158,7 +160,8 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
   asyncLoadCallData() async {
     state.callList.clear();
-    var token = UserStore.to.profile.token;
+    print("==== LOADING CALL DATA ====");
+    print("User token: $token");
 
     var from_chatcall = await db
         .collection("chatcall")
@@ -169,6 +172,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         .where("from_token", isEqualTo: token)
         .limit(30)
         .get();
+
+    print("FROM CALLS - Docs retrieved: ${from_chatcall.docs.length}");
+
     var to_chatcall = await db
         .collection("chatcall")
         .withConverter(
@@ -179,12 +185,22 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         .limit(30)
         .get();
 
+    print("TO CALLS - Docs retrieved: ${to_chatcall.docs.length}");
+
     if (from_chatcall.docs.isNotEmpty) {
+      print("Processing FROM calls documents...");
       await addCall(from_chatcall.docs);
+    } else {
+      print("No FROM calls found");
     }
+
     if (to_chatcall.docs.isNotEmpty) {
+      print("Processing TO calls documents...");
       await addCall(to_chatcall.docs);
+    } else {
+      print("No TO calls found");
     }
+
     // sort
     state.callList.value.sort((a, b) {
       if (b.last_time == null) {
@@ -195,9 +211,13 @@ class MessageController extends GetxController with WidgetsBindingObserver {
       }
       return b.last_time!.compareTo(a.last_time!);
     });
+
+    print("TOTAL call items after processing: ${state.callList.length}");
+    print("==== CALL DATA LOADED ====");
   }
 
   addCall(List<QueryDocumentSnapshot<ChatCall>> data) async {
+    print("Adding ${data.length} call records");
     data.forEach((element) {
       var item = element.data();
       CallMessage message = new CallMessage();
@@ -205,17 +225,24 @@ class MessageController extends GetxController with WidgetsBindingObserver {
       message.last_time = item.last_time;
       message.call_time = item.call_time;
       message.type = item.type;
+
+      print(
+          "Call type: ${item.type}, Call time: ${item.call_time}, Last time: ${item.last_time}");
+
       if (item.from_token == token) {
         message.name = item.to_name;
         message.avatar = item.to_avatar;
         message.token = item.to_token;
+        print("Outgoing call to: ${item.to_name}");
       } else {
         message.name = item.from_name;
         message.avatar = item.from_avatar;
         message.token = item.from_token;
+        print("Incoming call from: ${item.from_name}");
       }
       state.callList.add(message);
     });
+    print("Call list size now: ${state.callList.length}");
   }
 
   getProfile() async {
@@ -243,7 +270,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           //  FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
           var data = message.data;
           var to_token = data["token"];
-          var to_name = data["name"];
+          var to_name = data["username"];
           var to_avatar = data["avatar"];
           //  var doc_id = data["doc_id"];
           if (to_token != null && to_name != null && to_avatar != null) {
@@ -289,6 +316,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() {
     super.onInit();
+    userService = getIt<UserService>();
+    user = userService.getCurrentUser();
+    token = user?.token ?? "";
     getProfile();
     _snapshots();
   }

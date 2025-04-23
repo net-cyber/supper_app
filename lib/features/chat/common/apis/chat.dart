@@ -8,8 +8,8 @@ class ChatAPI {
   static Future<BaseResponseEntity> bind_fcmtoken(
       {BindFcmTokenRequestEntity? params}) async {
     var response = await HttpUtil().post(
-      'api/bind_fcmtoken',
-      queryParameters: params?.toJson(),
+      'fcmtoken',
+      data: params?.toJson(),
     );
     return BaseResponseEntity.fromJson(response as Map<String, dynamic>);
   }
@@ -18,7 +18,7 @@ class ChatAPI {
       {CallRequestEntity? params}) async {
     var response = await HttpUtil().post(
       'sendnotice',
-      queryParameters: params?.toJson(),
+      data: params?.toJson(),
     );
     return BaseResponseEntity.fromJson(response as Map<String, dynamic>);
   }
@@ -26,8 +26,8 @@ class ChatAPI {
   static Future<BaseResponseEntity> call_token(
       {CallTokenRequestEntity? params}) async {
     var response = await HttpUtil().post(
-      'api/get_rtc_token',
-      queryParameters: params?.toJson(),
+      'get_rtc_token',
+      data: params?.toJson(),
     );
     return BaseResponseEntity.fromJson(response as Map<String, dynamic>);
   }

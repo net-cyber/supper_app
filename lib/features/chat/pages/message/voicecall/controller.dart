@@ -1,5 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:super_app/core/di/dependancy_manager.dart';
+import 'package:super_app/core/navigation/navigation_service.dart';
+import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
+import 'package:super_app/features/auth/domain/user/user_service.dart';
 import 'package:super_app/features/chat/common/apis/apis.dart';
 import 'package:super_app/features/chat/common/entities/entities.dart';
 import 'package:super_app/features/chat/common/routes/names.dart';
@@ -17,6 +21,7 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
 import 'state.dart';
+import 'package:go_router/go_router.dart';
 
 /// 定义 App ID 和 Token
 
@@ -26,7 +31,10 @@ class VoiceCallViewController extends GetxController {
   String appId = APPID;
   String title = "Voice Call";
   final db = FirebaseFirestore.instance;
-  final profile_token = UserStore.to.profile.token;
+  late final UserService userService;
+  LoginUser? user;
+  late final String profile_token;
+
   late final RtcEngine engine;
 
   late final Timer calltimer;
@@ -52,81 +60,68 @@ class VoiceCallViewController extends GetxController {
   }
 
   Future<void> _initEngine() async {
-    await player.setAsset("assets/Sound_Horizon.mp3");
-    engine = createAgoraRtcEngine();
-    await engine.initialize(RtcEngineContext(
-      appId: appId,
-    ));
+    try {
+      await player.setAsset("assets/Sound_Horizon.mp3");
+      engine = createAgoraRtcEngine();
+      await engine.initialize(RtcEngineContext(
+        appId: appId,
+      ));
 
-    engine.registerEventHandler(RtcEngineEventHandler(
-      onError: (ErrorCodeType err, String msg) {
-        //logSink.log('[onError] err: $err, msg: $msg');
-        print('[onError] err: $err, msg: $msg');
-        // if(err!=ErrorCodeType.errOk){
-        // Get.snackbar(
-        //     "call error, confirm return！",
-        //     "${msg}",
-        //     duration: Duration(seconds: 60),
-        //     isDismissible: false,
-        //     mainButton: TextButton(
-        //         onPressed: () {
-        //           if (Get.isSnackbarOpen) {
-        //             Get.closeAllSnackbars();
-        //           }
-        //           Get.offAndToNamed(AppRoutes.Message);
-        //         },
-        //         child: Container(
-        //           width: 40.w,
-        //           height: 40.w,
-        //           padding: EdgeInsets.all(10.w),
-        //           decoration: BoxDecoration(
-        //             color: AppColors.primaryElementBg,
-        //             borderRadius:
-        //             BorderRadius.all(Radius.circular(30.w)),
-        //           ),
-        //           child: Image.asset("assets/icons/back.png"),
-        //         )));
-        // }
-      },
-      onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-        print(
-            '[onJoinChannelSuccess] connection: ${connection.toJson()} elapsed: $elapsed');
-        state.isJoined.value = true;
-      },
-      onLeaveChannel: (RtcConnection connection, RtcStats stats) {
-        print(
-            '[onLeaveChannel] connection: ${connection.toJson()} stats: ${stats.toJson()}');
-        state.isJoined.value = false;
-      },
-      onUserJoined:
-          (RtcConnection connection, int remoteUid, int elapsed) async {
-        await player.pause();
-        if (state.call_role == "anchor") {
-          callTime();
-          is_calltimer = true;
-        }
-      },
-      onRtcStats: (RtcConnection connection, RtcStats stats) {
-        print("time----- ");
-        print(stats.duration);
-      },
-      onUserOffline: (RtcConnection connection, int remoteUid,
-          UserOfflineReasonType reason) {
-        print("---onUserOffline----- ");
-      },
-    ));
+      engine.registerEventHandler(RtcEngineEventHandler(
+        onError: (ErrorCodeType err, String msg) {
+          print('[onError] err: $err, msg: $msg');
+          // Safe error handling without using snackbar that may cause null pointer
+          if (err == ErrorCodeType.errInvalidToken) {
+            print("Token error detected - handling gracefully");
+            EasyLoading.showError("Call connection error. Please try again.");
+            Get.back(); // Safely return to previous screen
+          }
+        },
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          print(
+              '[onJoinChannelSuccess] connection: ${connection.toJson()} elapsed: $elapsed');
+          state.isJoined.value = true;
+        },
+        onLeaveChannel: (RtcConnection connection, RtcStats stats) {
+          print(
+              '[onLeaveChannel] connection: ${connection.toJson()} stats: ${stats.toJson()}');
+          state.isJoined.value = false;
+        },
+        onUserJoined:
+            (RtcConnection connection, int remoteUid, int elapsed) async {
+          await player.pause();
+          if (state.call_role == "anchor") {
+            callTime();
+            is_calltimer = true;
+          }
+        },
+        onRtcStats: (RtcConnection connection, RtcStats stats) {
+          print("time----- ");
+          print(stats.duration);
+        },
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
+          print("---onUserOffline----- ");
+        },
+      ));
 
-    await engine.enableAudio();
-    await engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-    await engine.setAudioProfile(
-      profile: AudioProfileType.audioProfileDefault,
-      scenario: AudioScenarioType.audioScenarioGameStreaming,
-    );
-    // is anchor joinChannel
-    await joinChannel();
-    if (state.call_role == "anchor") {
-      await sendNotifications("voice");
-      await player.play();
+      await engine.enableAudio();
+      await engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+      await engine.setAudioProfile(
+        profile: AudioProfileType.audioProfileDefault,
+        scenario: AudioScenarioType.audioScenarioGameStreaming,
+      );
+
+      await joinChannel();
+      if (state.call_role == "anchor") {
+        await sendNotifications("voice");
+        await player.play();
+      }
+    } catch (e) {
+      print("Error initializing voice call engine: $e");
+      EasyLoading.dismiss();
+      await Future.delayed(Duration(milliseconds: 300));
+      Get.back();
     }
   }
 
@@ -176,13 +171,14 @@ class VoiceCallViewController extends GetxController {
   }
 
   addCallTime() async {
-    var profile = UserStore.to.profile;
+    final userService = getIt<UserService>();
+    final LoginUser? user = userService.getCurrentUser();
     var msgdata = new ChatCall(
-      from_token: profile.token,
+      from_token: user!.token,
       to_token: state.to_token.value,
-      from_name: profile.name,
+      from_name: user!.full_name,
       to_name: state.to_name.value,
-      from_avatar: profile.avatar,
+      from_avatar: user!.avatar,
       to_avatar: state.to_avatar.value,
       call_time: "${state.call_time_num.value}",
       type: "voice",
@@ -259,9 +255,11 @@ class VoiceCallViewController extends GetxController {
       Get.back();
       return;
     }
+    print("token is!!!!!!!!!!!!!!!!!!!!11111 : $token");
     await engine.joinChannel(
-        token: token,
-        channelId: state.channelId.value,
+        token:
+            "007eJxTYOic6MPBcGlG1gWBdCnrbw2NrZ08GmetshmSfD9fXfrcdZMCQ4qFuUlSkpllmlmqpYmJYaKlmYGpQUqiiYG5WbKFmaHFmnL2jIZARgbWReYsjAwQCOJzMBSXFqQWJRYUMDAAAC91Hpo=",
+        channelId: "superapp",
         uid: 0,
         options: ChannelMediaOptions(
           channelProfile: channelProfileType,
@@ -276,6 +274,7 @@ class VoiceCallViewController extends GetxController {
 
   // send notification
   sendNotifications(String call_type) async {
+    print("the call type is !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! $call_type");
     CallRequestEntity callRequestEntity = new CallRequestEntity();
     callRequestEntity.call_type = call_type;
     callRequestEntity.to_token = state.to_token.value;
@@ -299,15 +298,18 @@ class VoiceCallViewController extends GetxController {
         dismissOnTap: true);
     await player.pause();
     await sendNotifications("cancel");
-    //  await engine.leaveChannel();
+    await engine.leaveChannel(); // Ensure we properly leave the channel
     state.isJoined.value = false;
     state.openMicrophone.value = true;
     state.enableSpeakerphone.value = true;
     EasyLoading.dismiss();
-    if (Get.isSnackbarOpen) {
-      Get.closeAllSnackbars();
+
+    // Get the current context from the BuildContext
+    final context = NavigationService.currentContext;
+    if (context != null) {
+      // Use go_router to navigate back
+      context.pop();
     }
-    Get.back();
   }
 
   switchMicrophone() async {
@@ -323,13 +325,9 @@ class VoiceCallViewController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    var data = Get.parameters;
-    print(data);
-    state.to_token.value = data["to_token"] ?? "";
-    state.to_name.value = data["to_name"] ?? "";
-    state.to_avatar.value = data["to_avatar"] ?? "";
-    state.call_role.value = data["call_role"] ?? "";
-    state.doc_id.value = data["doc_id"] ?? "";
+    userService = getIt<UserService>();
+    user = userService.getCurrentUser();
+    profile_token = user?.token ?? "";
     _initEngine();
   }
 
@@ -343,5 +341,19 @@ class VoiceCallViewController extends GetxController {
   void dispose() {
     super.dispose();
     _dispose();
+  }
+
+  void setParameters(Map<String, dynamic>? params) {
+    if (params != null) {
+      print("params to name is : ${params["to_avatar"]?.toString()}");
+      print("params to avatar is : ${params["to_token"]?.toString()}");
+      print("params to name is : ${params["call_role"]?.toString()}");
+      print("params to name is : ${params["doc_id"]?.toString()}");
+      state.to_token.value = params["to_token"]?.toString() ?? "";
+      state.to_name.value = params["to_name"]?.toString() ?? "";
+      state.to_avatar.value = params["to_avatar"]?.toString() ?? "";
+      state.call_role.value = params["call_role"]?.toString() ?? "";
+      state.doc_id.value = params["doc_id"]?.toString() ?? "";
+    }
   }
 }

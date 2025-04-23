@@ -256,10 +256,7 @@ final router = GoRouter(
                   builder: (context, state) {
                     final Map<String, dynamic>? extra =
                         state.extra as Map<String, dynamic>?;
-                    Get.parameters = extra?.map(
-                            (key, value) => MapEntry(key, value?.toString())) ??
-                        {};
-                    return VoiceCallViewPage();
+                    return VoiceCallViewPage(arguments: extra);
                   },
                 ),
                 GoRoute(
@@ -268,10 +265,7 @@ final router = GoRouter(
                   builder: (context, state) {
                     final Map<String, dynamic>? extra =
                         state.extra as Map<String, dynamic>?;
-                    Get.parameters = extra?.map(
-                            (key, value) => MapEntry(key, value?.toString())) ??
-                        {};
-                    return VideoCallPage();
+                    return VideoCallPage(arguments: extra);
                   },
                 ),
               ],

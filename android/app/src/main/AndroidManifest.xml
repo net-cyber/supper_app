@@ -91,6 +91,12 @@
 
     <!-- Permissions options for the `use biometric` group -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Add this queries section before the application tag -->
+    <queries>
+        <package android:name="com.google.android.gms" />
+    </queries>
+
     <application
         android:label="${appName}"
         android:name="${applicationName}"

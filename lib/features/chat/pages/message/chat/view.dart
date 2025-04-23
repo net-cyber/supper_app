@@ -25,12 +25,21 @@ class _ChatPageState extends State<ChatPage> {
     controller = Get.put(ChatController());
     if (widget.arguments != null) {
       print("the to name argument is ${widget.arguments!['to_name']}");
+
+      controller.doc_id = widget.arguments!['doc_id']?.toString();
+
       controller.state.to_name.value =
           widget.arguments!['to_name']?.toString() ?? '';
       controller.state.to_avatar.value =
           widget.arguments!['to_avatar']?.toString() ?? '';
       controller.state.to_token.value =
           widget.arguments!['to_token']?.toString() ?? '';
+      controller.state.to_online.value =
+          widget.arguments!['to_online']?.toString() ?? '1';
+
+      if (controller.doc_id != null) {
+        controller.clear_msg_num(controller.doc_id.toString());
+      }
     }
   }
 

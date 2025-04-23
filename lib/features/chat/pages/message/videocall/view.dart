@@ -7,7 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'controller.dart';
 
 class VideoCallPage extends StatefulWidget {
-  const VideoCallPage({Key? key}) : super(key: key);
+  final Map<String, dynamic>? arguments;
+  const VideoCallPage({Key? key, this.arguments}) : super(key: key);
 
   @override
   State<VideoCallPage> createState() => _VideoCallPageState();
@@ -20,6 +21,12 @@ class _VideoCallPageState extends State<VideoCallPage> {
   void initState() {
     super.initState();
     controller = Get.put(VideoCallController());
+    if (widget.arguments != null) {
+      print("Calling setParameters with: ${widget.arguments}");
+      controller.setParameters(widget.arguments);
+    } else {
+      print("NO ARGUMENTS FOUND!");
+    }
   }
 
   @override
