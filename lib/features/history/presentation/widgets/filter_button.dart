@@ -14,23 +14,24 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
 
-    return Container(
-      width: 40.w,
-      height: 40.w,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F4FF), // Light blue background
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: IconButton(
-        icon: Icon(
-          icon,
-          color: theme.primaryColor,
-          size: 20.w,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 40.w,
+        height: 40.w,
+        margin: EdgeInsets.symmetric(vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: Colors.grey[300]!),
         ),
-        onPressed: onPressed,
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
+        child: Icon(
+          icon,
+          color: primaryColor,
+          size: 20.sp,
+        ),
       ),
     );
   }

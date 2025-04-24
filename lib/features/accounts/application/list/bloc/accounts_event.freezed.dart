@@ -21,6 +21,7 @@ mixin _$AccountsEvent {
     required TResult Function() fetchAccounts,
     required TResult Function() loadMoreAccounts,
     required TResult Function() refreshAccounts,
+    required TResult Function() resetAccounts,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -28,6 +29,7 @@ mixin _$AccountsEvent {
     TResult? Function()? fetchAccounts,
     TResult? Function()? loadMoreAccounts,
     TResult? Function()? refreshAccounts,
+    TResult? Function()? resetAccounts,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,6 +37,7 @@ mixin _$AccountsEvent {
     TResult Function()? fetchAccounts,
     TResult Function()? loadMoreAccounts,
     TResult Function()? refreshAccounts,
+    TResult Function()? resetAccounts,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -43,6 +46,7 @@ mixin _$AccountsEvent {
     required TResult Function(FetchAccounts value) fetchAccounts,
     required TResult Function(LoadMoreAccounts value) loadMoreAccounts,
     required TResult Function(RefreshAccounts value) refreshAccounts,
+    required TResult Function(ResetAccounts value) resetAccounts,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,6 +54,7 @@ mixin _$AccountsEvent {
     TResult? Function(FetchAccounts value)? fetchAccounts,
     TResult? Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult? Function(RefreshAccounts value)? refreshAccounts,
+    TResult? Function(ResetAccounts value)? resetAccounts,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +62,7 @@ mixin _$AccountsEvent {
     TResult Function(FetchAccounts value)? fetchAccounts,
     TResult Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult Function(RefreshAccounts value)? refreshAccounts,
+    TResult Function(ResetAccounts value)? resetAccounts,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -127,6 +133,7 @@ class _$FetchAccountsImpl implements FetchAccounts {
     required TResult Function() fetchAccounts,
     required TResult Function() loadMoreAccounts,
     required TResult Function() refreshAccounts,
+    required TResult Function() resetAccounts,
   }) {
     return fetchAccounts();
   }
@@ -137,6 +144,7 @@ class _$FetchAccountsImpl implements FetchAccounts {
     TResult? Function()? fetchAccounts,
     TResult? Function()? loadMoreAccounts,
     TResult? Function()? refreshAccounts,
+    TResult? Function()? resetAccounts,
   }) {
     return fetchAccounts?.call();
   }
@@ -147,6 +155,7 @@ class _$FetchAccountsImpl implements FetchAccounts {
     TResult Function()? fetchAccounts,
     TResult Function()? loadMoreAccounts,
     TResult Function()? refreshAccounts,
+    TResult Function()? resetAccounts,
     required TResult orElse(),
   }) {
     if (fetchAccounts != null) {
@@ -161,6 +170,7 @@ class _$FetchAccountsImpl implements FetchAccounts {
     required TResult Function(FetchAccounts value) fetchAccounts,
     required TResult Function(LoadMoreAccounts value) loadMoreAccounts,
     required TResult Function(RefreshAccounts value) refreshAccounts,
+    required TResult Function(ResetAccounts value) resetAccounts,
   }) {
     return fetchAccounts(this);
   }
@@ -171,6 +181,7 @@ class _$FetchAccountsImpl implements FetchAccounts {
     TResult? Function(FetchAccounts value)? fetchAccounts,
     TResult? Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult? Function(RefreshAccounts value)? refreshAccounts,
+    TResult? Function(ResetAccounts value)? resetAccounts,
   }) {
     return fetchAccounts?.call(this);
   }
@@ -181,6 +192,7 @@ class _$FetchAccountsImpl implements FetchAccounts {
     TResult Function(FetchAccounts value)? fetchAccounts,
     TResult Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult Function(RefreshAccounts value)? refreshAccounts,
+    TResult Function(ResetAccounts value)? resetAccounts,
     required TResult orElse(),
   }) {
     if (fetchAccounts != null) {
@@ -238,6 +250,7 @@ class _$LoadMoreAccountsImpl implements LoadMoreAccounts {
     required TResult Function() fetchAccounts,
     required TResult Function() loadMoreAccounts,
     required TResult Function() refreshAccounts,
+    required TResult Function() resetAccounts,
   }) {
     return loadMoreAccounts();
   }
@@ -248,6 +261,7 @@ class _$LoadMoreAccountsImpl implements LoadMoreAccounts {
     TResult? Function()? fetchAccounts,
     TResult? Function()? loadMoreAccounts,
     TResult? Function()? refreshAccounts,
+    TResult? Function()? resetAccounts,
   }) {
     return loadMoreAccounts?.call();
   }
@@ -258,6 +272,7 @@ class _$LoadMoreAccountsImpl implements LoadMoreAccounts {
     TResult Function()? fetchAccounts,
     TResult Function()? loadMoreAccounts,
     TResult Function()? refreshAccounts,
+    TResult Function()? resetAccounts,
     required TResult orElse(),
   }) {
     if (loadMoreAccounts != null) {
@@ -272,6 +287,7 @@ class _$LoadMoreAccountsImpl implements LoadMoreAccounts {
     required TResult Function(FetchAccounts value) fetchAccounts,
     required TResult Function(LoadMoreAccounts value) loadMoreAccounts,
     required TResult Function(RefreshAccounts value) refreshAccounts,
+    required TResult Function(ResetAccounts value) resetAccounts,
   }) {
     return loadMoreAccounts(this);
   }
@@ -282,6 +298,7 @@ class _$LoadMoreAccountsImpl implements LoadMoreAccounts {
     TResult? Function(FetchAccounts value)? fetchAccounts,
     TResult? Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult? Function(RefreshAccounts value)? refreshAccounts,
+    TResult? Function(ResetAccounts value)? resetAccounts,
   }) {
     return loadMoreAccounts?.call(this);
   }
@@ -292,6 +309,7 @@ class _$LoadMoreAccountsImpl implements LoadMoreAccounts {
     TResult Function(FetchAccounts value)? fetchAccounts,
     TResult Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult Function(RefreshAccounts value)? refreshAccounts,
+    TResult Function(ResetAccounts value)? resetAccounts,
     required TResult orElse(),
   }) {
     if (loadMoreAccounts != null) {
@@ -349,6 +367,7 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
     required TResult Function() fetchAccounts,
     required TResult Function() loadMoreAccounts,
     required TResult Function() refreshAccounts,
+    required TResult Function() resetAccounts,
   }) {
     return refreshAccounts();
   }
@@ -359,6 +378,7 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
     TResult? Function()? fetchAccounts,
     TResult? Function()? loadMoreAccounts,
     TResult? Function()? refreshAccounts,
+    TResult? Function()? resetAccounts,
   }) {
     return refreshAccounts?.call();
   }
@@ -369,6 +389,7 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
     TResult Function()? fetchAccounts,
     TResult Function()? loadMoreAccounts,
     TResult Function()? refreshAccounts,
+    TResult Function()? resetAccounts,
     required TResult orElse(),
   }) {
     if (refreshAccounts != null) {
@@ -383,6 +404,7 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
     required TResult Function(FetchAccounts value) fetchAccounts,
     required TResult Function(LoadMoreAccounts value) loadMoreAccounts,
     required TResult Function(RefreshAccounts value) refreshAccounts,
+    required TResult Function(ResetAccounts value) resetAccounts,
   }) {
     return refreshAccounts(this);
   }
@@ -393,6 +415,7 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
     TResult? Function(FetchAccounts value)? fetchAccounts,
     TResult? Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult? Function(RefreshAccounts value)? refreshAccounts,
+    TResult? Function(ResetAccounts value)? resetAccounts,
   }) {
     return refreshAccounts?.call(this);
   }
@@ -403,6 +426,7 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
     TResult Function(FetchAccounts value)? fetchAccounts,
     TResult Function(LoadMoreAccounts value)? loadMoreAccounts,
     TResult Function(RefreshAccounts value)? refreshAccounts,
+    TResult Function(ResetAccounts value)? resetAccounts,
     required TResult orElse(),
   }) {
     if (refreshAccounts != null) {
@@ -414,4 +438,121 @@ class _$RefreshAccountsImpl implements RefreshAccounts {
 
 abstract class RefreshAccounts implements AccountsEvent {
   const factory RefreshAccounts() = _$RefreshAccountsImpl;
+}
+
+/// @nodoc
+abstract class _$$ResetAccountsImplCopyWith<$Res> {
+  factory _$$ResetAccountsImplCopyWith(
+          _$ResetAccountsImpl value, $Res Function(_$ResetAccountsImpl) then) =
+      __$$ResetAccountsImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$ResetAccountsImplCopyWithImpl<$Res>
+    extends _$AccountsEventCopyWithImpl<$Res, _$ResetAccountsImpl>
+    implements _$$ResetAccountsImplCopyWith<$Res> {
+  __$$ResetAccountsImplCopyWithImpl(
+      _$ResetAccountsImpl _value, $Res Function(_$ResetAccountsImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AccountsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$ResetAccountsImpl implements ResetAccounts {
+  const _$ResetAccountsImpl();
+
+  @override
+  String toString() {
+    return 'AccountsEvent.resetAccounts()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$ResetAccountsImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetchAccounts,
+    required TResult Function() loadMoreAccounts,
+    required TResult Function() refreshAccounts,
+    required TResult Function() resetAccounts,
+  }) {
+    return resetAccounts();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetchAccounts,
+    TResult? Function()? loadMoreAccounts,
+    TResult? Function()? refreshAccounts,
+    TResult? Function()? resetAccounts,
+  }) {
+    return resetAccounts?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetchAccounts,
+    TResult Function()? loadMoreAccounts,
+    TResult Function()? refreshAccounts,
+    TResult Function()? resetAccounts,
+    required TResult orElse(),
+  }) {
+    if (resetAccounts != null) {
+      return resetAccounts();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FetchAccounts value) fetchAccounts,
+    required TResult Function(LoadMoreAccounts value) loadMoreAccounts,
+    required TResult Function(RefreshAccounts value) refreshAccounts,
+    required TResult Function(ResetAccounts value) resetAccounts,
+  }) {
+    return resetAccounts(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FetchAccounts value)? fetchAccounts,
+    TResult? Function(LoadMoreAccounts value)? loadMoreAccounts,
+    TResult? Function(RefreshAccounts value)? refreshAccounts,
+    TResult? Function(ResetAccounts value)? resetAccounts,
+  }) {
+    return resetAccounts?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FetchAccounts value)? fetchAccounts,
+    TResult Function(LoadMoreAccounts value)? loadMoreAccounts,
+    TResult Function(RefreshAccounts value)? refreshAccounts,
+    TResult Function(ResetAccounts value)? resetAccounts,
+    required TResult orElse(),
+  }) {
+    if (resetAccounts != null) {
+      return resetAccounts(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ResetAccounts implements AccountsEvent {
+  const factory ResetAccounts() = _$ResetAccountsImpl;
 }

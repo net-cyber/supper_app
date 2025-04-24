@@ -163,44 +163,75 @@ class _ShellPageState extends State<ShellPage> with WidgetsBindingObserver {
     final currentLocation = GoRouterState.of(context).uri.path;
     final isSelected = currentLocation == '/${RouteName.history}';
     
-    return InkWell(
-      // Navigate to transactions history screen
-      onTap: () {
-        // Use GoRouter instead of direct Navigator
-        context.pushNamed(RouteName.history);
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      builder: (context, accountsState) {
+        // Get account ID from the first account (if available)
+        final int accountId = accountsState.accounts.isNotEmpty 
+            ? accountsState.accounts[0].id 
+            : 0;
+            
+        return InkWell(
+          // Navigate to transactions history screen with account ID
+          onTap: () {
+            if (accountId > 0) {
+              // Pass account ID as extra parameter to history page
+              context.pushNamed(
+                RouteName.history,
+                extra: {'accountId': accountId},
+              );
+            } else {
+              // Show error dialog if no account is available
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('No Account Available'),
+                  content: const Text(
+                    'Please wait while we load your account information or try again later.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: EdgeInsets.all(isSelected ? 12.w : 8.w),
+                decoration: BoxDecoration(
+                  color: isSelected 
+                    ? theme.colorScheme.primary.withOpacity(0.1) 
+                    : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.receipt_long,
+                  color: isSelected 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.onSurfaceVariant,
+                  size: 24.sp,
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                'Transactions',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  color: isSelected 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(isSelected ? 12.w : 8.w),
-            decoration: BoxDecoration(
-              color: isSelected 
-                ? theme.colorScheme.primary.withOpacity(0.1) 
-                : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.receipt_long,
-              color: isSelected 
-                ? theme.colorScheme.primary 
-                : theme.colorScheme.onSurfaceVariant,
-              size: 24.sp,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            'Transactions',
-            style: theme.textTheme.labelMedium?.copyWith(
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              color: isSelected 
-                ? theme.colorScheme.primary 
-                : theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -37,15 +37,18 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
     TransactionFilter? filter,
   }) async {
     try {
+      // Build query parameters
       final Map<String, dynamic> queryParams = {
         'page_id': pageId,
         'page_size': pageSize,
       };
       
+      // Only include account_id if it's greater than 0
       if (accountId > 0) {
         queryParams['account_id'] = accountId;
       }
 
+      // Add filter parameters if provided
       if (filter != null) {
         if (filter.type != null) {
           queryParams['type'] = filter.type!.value;
@@ -76,23 +79,27 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
         }
       }
 
+      // Make the API request
       final response = await getIt<HttpService>().client(requireAuth: true).get(
         '/transactions',
         queryParameters: queryParams,
       );
 
+      // Convert the response data to a list of transactions
       final List<dynamic> transactionsData = response.data as List<dynamic>;
       final transactions = transactionsData
           .map((transactionData) =>
               Transaction.fromJson(transactionData as Map<String, dynamic>))
           .toList();
 
+      // Create and return paginated transactions
+      // Note: The response doesn't have pagination metadata, so we'll infer it
       return PaginatedTransactions(
         transactions: transactions,
-        totalCount: transactions.length,
+        totalCount: transactions.length, // This is a placeholder as the API doesn't return a total count
         currentPage: pageId,
         pageSize: pageSize,
-        hasReachedMax: transactions.length < pageSize,
+        hasReachedMax: transactions.length < pageSize, // If we get fewer items than requested, we've reached the end
       );
     } on DioException {
       rethrow;
@@ -105,23 +112,29 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
     required int accountId,
   }) async {
     try {
+      // Build query parameters
       final Map<String, dynamic> queryParams = {};
       
+      // Only include account_id if it's greater than 0
       if (accountId > 0) {
         queryParams['account_id'] = accountId;
       }
       
+      // Since the API doesn't provide a dedicated endpoint for fetching a single transaction,
+      // we'll fetch all transactions and find the one with the matching ID
       final response = await getIt<HttpService>().client(requireAuth: true).get(
         '/transactions',
         queryParameters: queryParams,
       );
 
+      // Convert the response data to a list of transactions
       final List<dynamic> transactionsData = response.data as List<dynamic>;
       final transactions = transactionsData
           .map((transactionData) =>
               Transaction.fromJson(transactionData as Map<String, dynamic>))
           .toList();
 
+      // Find the transaction with the matching ID
       final transaction = transactions.firstWhere(
         (transaction) => transaction.id == transactionId,
         orElse: () => throw Exception('Transaction not found'),
@@ -140,8 +153,10 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
     DateTime? endDate,
   }) async {
     try {
+      // Build query parameters
       final Map<String, dynamic> queryParams = {};
       
+      // Only include account_id if it's greater than 0
       if (accountId > 0) {
         queryParams['account_id'] = accountId;
       }
@@ -153,17 +168,20 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
         queryParams['end_date'] = endDate.toIso8601String();
       }
 
+      // Make the API request to get all transactions for the account
       final response = await getIt<HttpService>().client(requireAuth: true).get(
         '/transactions',
         queryParameters: queryParams,
       );
 
+      // Convert the response data to a list of transactions
       final List<dynamic> transactionsData = response.data as List<dynamic>;
       final transactions = transactionsData
           .map((transactionData) =>
               Transaction.fromJson(transactionData as Map<String, dynamic>))
           .toList();
 
+      // Calculate summary information
       double totalIncoming = 0;
       double totalOutgoing = 0;
       int successfulTransactions = 0;
@@ -171,18 +189,21 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
       Map<String, double> transactionsByType = {};
 
       for (final transaction in transactions) {
+        // Calculate totals by direction
         if (transaction.direction == 'incoming') {
           totalIncoming += transaction.amount;
         } else {
           totalOutgoing += transaction.amount;
         }
 
+        // Count by status
         if (transaction.status == 'completed') {
           successfulTransactions++;
         } else if (transaction.status == 'failed') {
           failedTransactions++;
         }
 
+        // Summarize by type
         final type = transaction.type;
         if (transactionsByType.containsKey(type)) {
           transactionsByType[type] = (transactionsByType[type] ?? 0) + transaction.amount;
@@ -191,10 +212,12 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
         }
       }
 
+      // Calculate average transaction amount
       final double averageTransactionAmount = transactions.isNotEmpty
           ? transactions.map((t) => t.amount).reduce((a, b) => a + b) / transactions.length
           : 0;
 
+      // Create and return the transaction summary
       return TransactionSummary(
         totalIncoming: totalIncoming,
         totalOutgoing: totalOutgoing,

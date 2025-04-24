@@ -88,30 +88,27 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AccountsBloc>(
-      create: (context) => getIt<AccountsBloc>()..add(const FetchAccounts()),
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        appBar: _buildAppBar(),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            _refreshAccounts(context);
-          },
-          color: Theme.of(context).colorScheme.primary,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                _buildBalanceCard(),
-                SizedBox(height: 1.h),
-                _buildPageIndicator(),
-                SizedBox(height: 24.h),
-                _buildQuickActions(),
-                SizedBox(height: 32.h),
-                _buildServiceCategories(),
-                SizedBox(height: 32.h),
-              ],
-            ),
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: _buildAppBar(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _refreshAccounts(context);
+        },
+        color: Theme.of(context).colorScheme.primary,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              _buildBalanceCard(),
+              SizedBox(height: 1.h),
+              _buildPageIndicator(),
+              SizedBox(height: 24.h),
+              _buildQuickActions(),
+              SizedBox(height: 32.h),
+              _buildServiceCategories(),
+              SizedBox(height: 32.h),
+            ],
           ),
         ),
       ),

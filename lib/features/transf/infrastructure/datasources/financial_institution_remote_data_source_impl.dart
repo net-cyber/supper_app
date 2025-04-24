@@ -8,14 +8,6 @@ import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/transf/domain/entities/financial_institution/financial_institution.dart';
 
 abstract class FinancialInstitutionRemoteDataSource {
-  /// Fetches a paginated list of financial institutions
-  /// 
-  /// Parameters:
-  /// - [pageId]: The page number to fetch
-  /// - [pageSize]: The number of institutions to fetch per page
-  /// 
-  /// Returns:
-  /// - A [Future] with [Either] a [NetworkExceptions] on error or a [List<FinancialInstitution>] on success
   Future<Either<NetworkExceptions, List<FinancialInstitution>>> getFinancialInstitutions({
     required int pageId,
     required int pageSize,

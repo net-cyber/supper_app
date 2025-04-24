@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,22 +23,42 @@ class SplashPage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final splashBloc = SplashBloc();
+        log('SplashPage: Created SplashBloc');
+        
+        // Add a failsafe timer to navigate to login after a delay
+        Future.delayed(
+          const Duration(seconds: 10),
+          () {
+            log('SplashPage: Failsafe timer triggered');
+            context.goNamed(RouteName.login);
+          },
+        );
+        
+        // Trigger the check user status event after showing splash for a short time
         Future.delayed(
           const Duration(milliseconds: 1500),
-          () => splashBloc.add(const SplashEvent.checkUserStatus()),
+          () {
+            log('SplashPage: Triggering checkUserStatus event');
+            splashBloc.add(const SplashEvent.checkUserStatus());
+          },
         );
+        
         return splashBloc;
       },
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
-          if (!state.isLoading && !state.isError) {
+          log('SplashPage: State changed - isLoading: ${state.isLoading}, isError: ${state.isError}, routeName: ${state.routeName}');
+          
+          // If we have a route name and either we're done loading or there's an error, navigate
+          if (state.routeName != null) {
+            log('SplashPage: Navigating to ${state.routeName}');
             context.goNamed(state.routeName!);
           }
           
           if (state.isError) {
-            // Handle error state
-            // Show error message or retry option
-            
+            log('SplashPage: Error state detected');
+            // Navigate to login screen on error
+            context.goNamed(RouteName.login);
           }
         },
         child: Scaffold(

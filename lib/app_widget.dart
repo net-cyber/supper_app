@@ -4,9 +4,13 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:super_app/core/application/app/bloc/app_bloc.dart';
 import 'package:super_app/core/application/app/bloc/app_state.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/router/router.dart';
 import 'package:super_app/core/router/slide_transition.dart';
 import 'package:super_app/core/theme/app_theme.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
+import 'package:super_app/features/history/application/transactions_bloc.dart';
 import 'package:super_app/l10n/l10n.dart';
 
 class AppWidget extends StatelessWidget {
@@ -14,8 +18,18 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove();
-    return BlocProvider(
-      create: (context) => AppBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AppBloc(),
+        ),
+        BlocProvider<AccountsBloc>(
+          create: (context) => getIt<AccountsBloc>()..add(const FetchAccounts()),
+        ),
+        BlocProvider<TransactionsBloc>(
+          create: (context) => getIt<TransactionsBloc>(),
+        ),
+      ],
       child: const App(),
     );
   }

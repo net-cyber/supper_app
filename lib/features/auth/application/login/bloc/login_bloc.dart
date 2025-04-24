@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:go_router/go_router.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/core/router/route_name.dart';
 import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/core/value_object/value_objects.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/auth/application/login/bloc/login_event.dart';
 import 'package:super_app/features/auth/application/login/bloc/login_state.dart';
 import 'package:super_app/features/auth/domain/repositories/auth_repository.dart';
@@ -85,12 +88,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           ));
         },
         (success) async {
+          // Reset AccountsBloc to clear previous user's data first
+          getIt<AccountsBloc>().add(const AccountsEvent.resetAccounts());
+          
           // Store tokens
           await LocalStorage.instance.setAccessToken(success.access_token);
           await LocalStorage.instance.setRefreshToken(success.refresh_token);
 
           // Store user data
           await LocalStorage.instance.setUserData(success.user.toJson());
+
+          // Trigger a fetch of the new user's accounts
+          getIt<AccountsBloc>().add(const AccountsEvent.fetchAccounts());
 
           if (!emit.isDone) {
             emit(state.copyWith(

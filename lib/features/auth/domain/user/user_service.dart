@@ -1,5 +1,8 @@
 import 'package:injectable/injectable.dart';
+import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/auth/domain/login/entities/login_response.dart';
 
 abstract class UserService {
@@ -56,6 +59,10 @@ class UserServiceImpl implements UserService {
   
   @override
   Future<void> logout() async {
+    // Clear user session data
     await LocalStorage.instance.clearUserSession();
+    
+    // Reset AccountsBloc state
+    getIt<AccountsBloc>().add(const AccountsEvent.resetAccounts());
   }
 } 

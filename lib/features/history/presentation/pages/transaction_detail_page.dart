@@ -1,185 +1,361 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:super_app/core/di/dependancy_manager.dart';
-import 'package:super_app/features/history/application/detail/bloc/transaction_detail_bloc.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:math' as math;
+import 'package:google_fonts/google_fonts.dart';
+import 'package:super_app/core/utils/local_storage.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
+import 'package:super_app/features/history/application/transactions_bloc.dart';
 import 'package:super_app/features/history/domain/entities/transaction.dart';
 import 'package:super_app/features/history/domain/entities/transaction_extensions.dart';
+import 'package:super_app/core/presentation/widgets/app_loading_indicator.dart';
+import 'package:super_app/core/presentation/widgets/app_error_widget.dart';
 
-class TransactionDetailPage extends StatelessWidget {
-  final Transaction transaction;
-
+class TransactionDetailPage extends StatefulWidget {
+  final Transaction? transaction;
+  
   const TransactionDetailPage({
+    super.key,
+    this.transaction,
+  });
+
+  @override
+  State<TransactionDetailPage> createState() => _TransactionDetailPageState();
+}
+
+class _TransactionDetailPageState extends State<TransactionDetailPage> {
+  @override
+  Widget build(BuildContext context) {
+    // If we already have a transaction in the widget, use it directly
+    if (widget.transaction != null) {
+      // Get the TransactionsBloc from the parent and add the event
+      context.read<TransactionsBloc>().add(
+        TransactionsEvent.detailSetFromCache(transaction: widget.transaction!),
+      );
+      
+      return TransactionDetailView(
+        transaction: widget.transaction!,
+      );
+    }
+
+    // Otherwise use BlocBuilder to load and show the transaction
+    return const TransactionDetailLoadingView();
+  }
+}
+
+class TransactionDetailLoadingView extends StatelessWidget {
+  const TransactionDetailLoadingView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Transaction Details',
+          style: GoogleFonts.outfit(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: BlocBuilder<TransactionsBloc, TransactionsState>(
+        builder: (context, state) {
+          if (state.detailStatus == TransactionsDetailStatus.loading) {
+            return const AppLoadingIndicator();
+          } else if (state.detailStatus == TransactionsDetailStatus.failure) {
+            return AppErrorWidget(
+              message: state.detailErrorMessage,
+              onRetry: () {
+                // Retry logic
+              },
+            );
+          } else if (state.detailStatus == TransactionsDetailStatus.success && state.selectedTransaction != null) {
+            return TransactionDetailView(
+              transaction: state.selectedTransaction!,
+            );
+          } else {
+            return Center(
+              child: Text(
+                'No transaction data available.',
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class TransactionDetailView extends StatefulWidget {
+  final Transaction transaction;
+  
+  const TransactionDetailView({
     super.key,
     required this.transaction,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<TransactionDetailBloc>()
-        ..add(TransactionDetailSetFromCache(transaction: transaction)),
-      child: const TransactionDetailView(),
-    );
-  }
+  State<TransactionDetailView> createState() => _TransactionDetailViewState();
 }
 
-class TransactionDetailView extends StatelessWidget {
-  const TransactionDetailView({super.key});
+class _TransactionDetailViewState extends State<TransactionDetailView> {
+  String _accountHolderName = 'Account Holder';
+  String _accountNumber = '';
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+  
+  void _loadUserData() {
+    // Get user data from local storage for name
+    final userData = LocalStorage.instance.getUserData();
+    if (userData != null && userData.containsKey('full_name')) {
+      setState(() {
+        _accountHolderName = userData['full_name'] as String;
+      });
+    }
+    
+    // Get accounts from AccountsBloc for account number
+    final accountsState = context.read<AccountsBloc>().state;
+    if (accountsState.accounts.isNotEmpty) {
+      setState(() {
+        _accountNumber = accountsState.accounts.first.id.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    
+    // Format transaction date
+    final DateFormat dateFormat = DateFormat('MMM dd, yyyy');
+    final DateFormat timeFormat = DateFormat('hh:mm a');
+    final String formattedDate = dateFormat.format(widget.transaction.created_at);
+    final String formattedTime = timeFormat.format(widget.transaction.created_at);
 
-    return BlocBuilder<TransactionDetailBloc, TransactionDetailState>(
-      builder: (context, state) {
-        if (state.status == TransactionDetailStatus.loading) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Transaction Details'),
-              centerTitle: false,
-              backgroundColor: Colors.grey[100],
-              elevation: 0,
-            ),
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (state.status == TransactionDetailStatus.failure) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Transaction Details'),
-              centerTitle: false,
-              backgroundColor: Colors.grey[100],
-              elevation: 0,
-            ),
-            body: Center(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Transaction Details',
+          style: GoogleFonts.outfit(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Error: ${state.errorMessage}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Go Back'),
+                  // Amount and Date section
+                  Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
+                    child: Column(
+                      children: [
+                        // Amount with currency
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              widget.transaction.amount.toString(),
+                              style: GoogleFonts.outfit(
+                                fontSize: 36.sp,
+                                fontWeight: FontWeight.bold,
+                                color: primaryColor,
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 6.h),
+                              child: Text(
+                                widget.transaction.currency,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        // Date and time
+                        Text(
+                          "$formattedDate   $formattedTime",
+                          style: GoogleFonts.outfit(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Transaction Details List with BlocBuilder to get account info
+                  BlocBuilder<AccountsBloc, AccountsState>(
+                    builder: (context, accountsState) {
+                      // Update account info if available from the bloc
+                      if (accountsState.accounts.isNotEmpty && _accountNumber.isEmpty) {
+                        _accountNumber = accountsState.accounts.first.id.toString();
+                      }
+                      
+                      return Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(horizontal: 16.w),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        child: Column(
+                          children: [
+                            _buildDetailRow('Transaction Type:', widget.transaction.transactionTypeDisplay.toUpperCase()),
+                            _buildDetailRow('Bank Name:', widget.transaction.bank_code ?? 'Gohe Betoch Bank'),
+                            
+                            // Show sender or recipient based on transaction direction
+                            if (widget.transaction.isOutgoing) ...[
+                              _buildDetailRow('Sender Name:', _accountHolderName),
+                              _buildDetailRow('Sender Account:', _maskAccountNumber(_accountNumber)),
+                              _buildDetailRow('Recipient Name:', widget.transaction.counterparty_name ?? 'Not Available'),
+                              _buildDetailRow('Recipient Account:', widget.transaction.account_number ?? 'Not Available'),
+                            ] else ...[
+                              _buildDetailRow('Sender Name:', widget.transaction.counterparty_name ?? 'Not Available'),
+                              _buildDetailRow('Sender Account:', widget.transaction.account_number ?? 'Not Available'),
+                              _buildDetailRow('Recipient Name:', _accountHolderName),
+                              _buildDetailRow('Recipient Account:', _maskAccountNumber(_accountNumber)),
+                            ],
+                            
+                            _buildDetailRow('Transaction Ref:', widget.transaction.id.toString()),
+                            
+                            // Add FT Ref if available
+                            if (widget.transaction.reference != null)
+                              _buildDetailRow('FT Ref:', widget.transaction.reference!.substring(0, math.min(widget.transaction.reference!.length, 16))),
+                            
+                            // Fee details
+                            _buildDetailRow('Service-Charge:', '${widget.transaction.currency} ${widget.transaction.transaction_fees ?? 0}'),
+                            
+                            // Add VAT if applicable
+                            if (widget.transaction.transaction_fees != null && widget.transaction.transaction_fees! > 0)
+                              _buildDetailRow('VAT(15%):', '${widget.transaction.currency} ${(widget.transaction.transaction_fees! * 0.15).toStringAsFixed(2)}'),
+                            
+                            _buildDetailRow(
+                              'Total Amount:', 
+                              '${widget.transaction.currency} ${widget.transaction.totalAmount}',
+                              valueColor: primaryColor,
+                              valueFontWeight: FontWeight.bold
+                            ),
+                            
+                            // Transaction status with color
+                            _buildDetailRow(
+                              'Transaction Status:',
+                              widget.transaction.status.toUpperCase(),
+                              valueColor: widget.transaction.isCompleted
+                                  ? Colors.green
+                                  : widget.transaction.isPending
+                                      ? Colors.orange
+                                      : Colors.red,
+                              valueFontWeight: FontWeight.bold
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                ],
+              ),
+            ),
+          ),
+          
+          // Share Button
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Container(
+              width: double.infinity,
+              height: 56.h,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    primaryColor,
+                    Color.fromARGB(255, primaryColor.red - 20, primaryColor.green - 20, primaryColor.blue + 30),
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(12.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: primaryColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
-            ),
-          );
-        }
-
-        final transaction = state.transaction!;
-        
-        // Format created_at date
-        final String formattedDate = DateFormat('MMM dd, yyyy · hh:mm a').format(transaction.created_at);
-
-        return Scaffold(
-          backgroundColor: Colors.grey[100],
-          appBar: AppBar(
-            title: const Text(
-              'Transaction Details',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _shareReceipt(context, widget.transaction),
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.share_rounded,
+                          color: Colors.white,
+                          size: 22.sp,
+                        ),
+                        SizedBox(width: 12.w),
+                        Text(
+                          'Share Receipt',
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-            centerTitle: false,
-            backgroundColor: Colors.grey[100],
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Transaction Status and Amount
-                  _buildStatusCard(context, theme, transaction),
-                  
-                  SizedBox(height: 24.h),
-                  
-                  // Transaction Details
-                  _buildDetailsSection(context, theme, formattedDate, transaction),
-                  
-                  SizedBox(height: 24.h),
-                  
-                  // Amount Breakdown
-                  _buildAmountSection(context, theme, transaction),
-                  
-                  SizedBox(height: 24.h),
-                  
-                  // Recipient Details
-                  _buildRecipientSection(context, theme, transaction),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildStatusCard(BuildContext context, ThemeData theme, Transaction transaction) {
-    final isCompleted = transaction.isCompleted;
-    final statusColor = isCompleted ? Colors.green : Colors.orange;
-    final isOutgoing = transaction.isOutgoing;
-    final amountPrefix = isOutgoing ? '- ' : '+ ';
-    
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Status Indicator
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Text(
-              transaction.status.toUpperCase(),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: statusColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          
-          SizedBox(height: 16.h),
-          
-          // Amount
-          Text(
-            '$amountPrefix${transaction.currency} ${transaction.amount}',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.primaryColor,
-            ),
-          ),
-          
-          SizedBox(height: 8.h),
-          
-          // Reference
-          Text(
-            'Reference: ${transaction.reference ?? "N/A"}',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[600],
             ),
           ),
         ],
@@ -187,197 +363,93 @@ class TransactionDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailsSection(BuildContext context, ThemeData theme, String formattedDate, Transaction transaction) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Transaction Details',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16.h),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildDetailItem(
-                context,
-                'Transaction Type',
-                transaction.transactionTypeDisplay,
-                showDivider: true,
-              ),
-              _buildDetailItem(
-                context,
-                'Date & Time',
-                formattedDate,
-                showDivider: true,
-              ),
-              _buildDetailItem(
-                context,
-                'Transaction ID',
-                transaction.id.toString(),
-                showDivider: false,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAmountSection(BuildContext context, ThemeData theme, Transaction transaction) {
-    final totalAmount = transaction.totalAmount;
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Amount',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16.h),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildDetailItem(
-                context,
-                'Amount',
-                '${transaction.currency} ${transaction.amount}',
-                showDivider: true,
-              ),
-              _buildDetailItem(
-                context,
-                'Transaction Fee',
-                '${transaction.currency} ${transaction.transaction_fees ?? 0}',
-                showDivider: true,
-              ),
-              _buildDetailItem(
-                context,
-                'Total Amount',
-                '${transaction.currency} ${totalAmount}',
-                showDivider: false,
-                isTotal: true,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecipientSection(BuildContext context, ThemeData theme, Transaction transaction) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          transaction.isOutgoing ? 'Recipient Details' : 'Sender Details',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16.h),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildDetailItem(
-                context,
-                transaction.isOutgoing ? 'Recipient Name' : 'Sender Name',
-                transaction.counterparty_name ?? 'Not Available',
-                showDivider: true,
-              ),
-              _buildDetailItem(
-                context,
-                'Bank',
-                transaction.bank_code ?? 'Not Available',
-                showDivider: true,
-              ),
-              _buildDetailItem(
-                context,
-                'Account Number',
-                transaction.account_number ?? 'Not Available',
-                showDivider: false,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailItem(
-    BuildContext context,
+  Widget _buildDetailRow(
     String label,
     String value, {
-    bool showDivider = true,
-    bool isTotal = false,
+    Color? valueColor,
+    FontWeight? valueFontWeight,
   }) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14.sp,
-                ),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 140.w,
+            child: Text(
+              label,
+              style: GoogleFonts.outfit(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
               ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                  fontSize: isTotal ? 16.sp : 14.sp,
-                ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: GoogleFonts.outfit(
+                fontSize: 14.sp,
+                fontWeight: valueFontWeight ?? FontWeight.w600,
+                color: valueColor ?? Colors.black,
               ),
-            ],
+            ),
           ),
-        ),
-        if (showDivider)
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.grey[200],
-          ),
-      ],
+        ],
+      ),
     );
+  }
+
+  String _maskAccountNumber(String accountNumber) {
+    if (accountNumber.isEmpty) return 'Not Available';
+    if (accountNumber.length <= 4) return accountNumber;
+    
+    final visiblePart = accountNumber.substring(accountNumber.length - 4);
+    final maskedPart = '*' * (accountNumber.length - 4);
+    return '$maskedPart$visiblePart';
+  }
+
+  void _shareReceipt(BuildContext context, Transaction transaction) async {
+    // Format transaction data into a receipt-like string
+    final dateFormat = DateFormat('MMM dd, yyyy • hh:mm a');
+    final formattedDate = dateFormat.format(transaction.created_at);
+    
+    final statusEmoji = transaction.isCompleted 
+      ? '✅' 
+      : transaction.isPending 
+        ? '⏳' 
+        : '❌';
+    
+    final receipt = '''
+TRANSACTION RECEIPT $statusEmoji
+
+$formattedDate
+ID: ${transaction.id}
+
+Transaction Type: ${transaction.transactionTypeDisplay}
+Status: ${transaction.status.toUpperCase()}
+
+Amount: ${transaction.currency} ${transaction.amount}
+${transaction.hasFees ? 'Fee: ${transaction.currency} ${transaction.transaction_fees}' : ''}
+Total: ${transaction.currency} ${transaction.totalAmount}
+
+${transaction.isOutgoing ? 'Recipient' : 'Sender'}: ${transaction.counterparty_name ?? 'Not Available'}
+${transaction.bank_code != null ? 'Bank: ${transaction.bank_code}' : ''}
+${transaction.account_number != null ? 'Account: ${transaction.account_number}' : ''}
+
+Reference: ${transaction.reference ?? 'Not Available'}
+''';
+
+    try {
+      await Share.share(receipt, subject: 'Transaction Receipt');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not share receipt: $e'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 } 

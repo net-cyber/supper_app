@@ -110,10 +110,7 @@ final router = GoRouter(
             GoRoute(
               name: RouteName.mainScreen,
               path: '/${RouteName.mainScreen}',
-              builder: (context, state) => BlocProvider(
-                create: (context) => getIt<AccountsBloc>(),
-                child: const MainScreen(),
-              ),
+              builder: (context, state) => const MainScreen(),
               routes: const [],
             ),
           ],
@@ -291,7 +288,13 @@ final router = GoRouter(
     GoRoute(
       name: RouteName.history,
       path: '/${RouteName.history}',
-      builder: (context, state) => const HistoryPage(),
+      builder: (context, state) {
+        // Extract account ID from extra parameters
+        final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
+        final int accountId = extra != null ? extra['accountId'] as int? ?? 0 : 0;
+        
+        return HistoryPage(accountId: accountId);
+      },
     ),
   ],
 );

@@ -30,12 +30,7 @@ import '../../features/auth/infrastructure/auth/datasources/auth_remote_data_sou
     as _i1046;
 import '../../features/auth/infrastructure/auth/repositories/auth_repository_impl.dart'
     as _i446;
-import '../../features/history/application/detail/bloc/transaction_detail_bloc.dart'
-    as _i360;
-import '../../features/history/application/list/bloc/transaction_history_bloc.dart'
-    as _i638;
-import '../../features/history/application/summary/bloc/transaction_summary_bloc.dart'
-    as _i1048;
+import '../../features/history/application/transactions_bloc.dart' as _i73;
 import '../../features/history/domain/repositories/transaction_repository.dart'
     as _i28;
 import '../../features/history/infrastructure/datasources/transactions_remote_data_source.dart'
@@ -162,7 +157,7 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i192.FinancialInstitutionRepository>()));
     gh.factory<_i265.AccountVerificationBloc>(() =>
         _i265.AccountVerificationBloc(gh<_i644.TransferAccountRepository>()));
-    gh.factory<_i671.AccountsBloc>(
+    gh.singleton<_i671.AccountsBloc>(
         () => _i671.AccountsBloc(gh<_i706.AccountRespository>()));
     gh.factory<_i1032.ExternalTransferBloc>(() => _i1032.ExternalTransferBloc(
           gh<_i863.ExternalTransferRepository>(),
@@ -175,19 +170,10 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i754.TransferRepository>(),
           gh<_i671.AccountsBloc>(),
         ));
-    gh.factory<_i360.TransactionDetailBloc>(() => _i360.TransactionDetailBloc(
+    gh.singleton<_i73.TransactionsBloc>(() => _i73.TransactionsBloc(
           gh<_i28.TransactionRepository>(),
           gh<_i671.AccountsBloc>(),
         ));
-    gh.factory<_i638.TransactionHistoryBloc>(() => _i638.TransactionHistoryBloc(
-          gh<_i28.TransactionRepository>(),
-          gh<_i671.AccountsBloc>(),
-        ));
-    gh.factory<_i1048.TransactionSummaryBloc>(
-        () => _i1048.TransactionSummaryBloc(
-              gh<_i28.TransactionRepository>(),
-              gh<_i671.AccountsBloc>(),
-            ));
     gh.factory<_i346.AccountValidationBloc>(() => _i346.AccountValidationBloc(
           gh<_i153.AccountValidationRepository>(),
           gh<_i671.AccountsBloc>(),

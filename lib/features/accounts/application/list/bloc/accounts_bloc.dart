@@ -5,12 +5,13 @@ import 'package:super_app/features/accounts/application/list/bloc/accounts_event
 import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
 import 'package:super_app/features/accounts/domain/repositories/account_repository.dart';
 
-@injectable
+@singleton
 class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
   AccountsBloc(this._accountRepository) : super(AccountsState.initial()) {
     on<FetchAccounts>(_onFetchAccounts);
     on<LoadMoreAccounts>(_onLoadMoreAccounts);
     on<RefreshAccounts>(_onRefreshAccounts);
+    on<ResetAccounts>(_onResetAccounts);
     add(const FetchAccounts());
   }
 
@@ -103,5 +104,12 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
     Emitter<AccountsState> emit,
   ) async {
     add(const FetchAccounts());
+  }
+  
+  void _onResetAccounts(
+    ResetAccounts event,
+    Emitter<AccountsState> emit,
+  ) {
+    emit(AccountsState.initial());
   }
 }
