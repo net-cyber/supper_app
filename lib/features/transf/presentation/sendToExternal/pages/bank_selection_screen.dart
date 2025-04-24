@@ -104,9 +104,9 @@ class _BankSelectionScreenContentState
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Select Bank',
+          'Transfer to Other Bank',
           style: GoogleFonts.outfit(
-            fontSize: 20.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -123,6 +123,22 @@ class _BankSelectionScreenContentState
             ),
           ),
           
+          // "Select Bank" heading
+          Padding(
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 8.h),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Select Bank',
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          
           // Banks Grid
           Expanded(
             child: BlocBuilder<FinancialInstitutionBloc, FinancialInstitutionState>(
@@ -132,14 +148,8 @@ class _BankSelectionScreenContentState
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Loading banks...',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16.sp,
-                            color: Colors.grey[600],
-                          ),
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
                         ),
                       ],
                     ),

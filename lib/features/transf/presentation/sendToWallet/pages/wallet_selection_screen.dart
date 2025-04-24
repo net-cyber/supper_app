@@ -18,8 +18,9 @@ class WalletSelectionScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final bloc = getIt<FinancialInstitutionBloc>();
-        // Fetch with wallet-specific page size and immediately filter for wallets only
+        // Combine the events to reduce visual loading state impact
         bloc.add(const FetchInstitutions(pageSize: FinancialInstitutionBloc.walletPageSize));
+        // Filter is still needed but will be applied after the fetch completes
         bloc.add(const FilterByType(type: FinancialInstitutionType.wallet));
         return bloc;
       },
@@ -44,6 +45,9 @@ class _WalletSelectionScreenContentState
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    
+    // We don't need to add any events here since the BlocProvider already initializes the data
+    // This prevents duplicate loading states from occurring
   }
 
   @override
@@ -105,136 +109,196 @@ class _WalletSelectionScreenContentState
         title: Text(
           'Load To Wallet',
           style: GoogleFonts.outfit(
-            fontSize: 20.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
       ),
-      body: BlocBuilder<FinancialInstitutionBloc, FinancialInstitutionState>(
-        builder: (context, state) {
-          if (state.isLoading && state.filteredInstitutions.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'Loading wallets...',
-                      style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
+      body: Column(
+        children: [
+          // Search input
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            child: WalletSearchBar(
+              onSearch: _onSearchChanged,
+              hintText: 'Search wallet...',
+            ),
+          ),
+          
+          // "Select Wallet" heading
+          Padding(
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 8.h),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Select Wallet',
+                style: GoogleFonts.outfit(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            );
-          } else if (state.filteredInstitutions.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.account_balance_wallet_outlined,
-                    size: 48.sp,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'No wallets available',
+            ),
+          ),
+          
+          // Wallet list
+          Expanded(
+            child: BlocConsumer<FinancialInstitutionBloc, FinancialInstitutionState>(
+              // Only rebuild when loading status changes or filtered institutions change
+              buildWhen: (previous, current) => 
+                previous.isLoading != current.isLoading ||
+                previous.filteredInstitutions != current.filteredInstitutions,
+              // Handle loading states more efficiently
+              listener: (context, state) {
+                // No specific actions needed in listener for now
+                // But this helps control when we rebuild
+              },
+              builder: (context, state) {
+                // Show loading indicator only for initial loading when no items exist yet
+                if (state.isLoading && state.filteredInstitutions.isEmpty) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+                    ),
+                  );
+                }
+                
+                // Handle empty state (no wallets found) - only when not loading
+                if (state.filteredInstitutions.isEmpty && !state.isLoading) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.account_balance_wallet_outlined,
+                          size: 48.sp,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'No wallets available',
                           style: GoogleFonts.outfit(
                             fontSize: 16.sp,
                             color: Colors.grey[600],
                           ),
-                    ),
-                ],
-              ),
-            );
-          }
-          
-          return ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.symmetric(vertical: 16.h),
-            itemCount: state.filteredInstitutions.length + (state.isLoading && state.hasMorePages ? 1 : 0),
-            itemBuilder: (context, index) {
-              // Show loading indicator at the end when loading more
-              if (index == state.filteredInstitutions.length) {
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.h),
-                    child: CircularProgressIndicator(),
-            ),
-    );
-  }
-
-              final wallet = state.filteredInstitutions[index];
-              
-              // Determine if logoUrl is already a network URL or needs assets path
-              final String logoPath = wallet.logoUrl != null && 
-                    (wallet.logoUrl!.startsWith('http://') || 
-                      wallet.logoUrl!.startsWith('https://'))
-                  ? wallet.logoUrl!
-                  : wallet.logoUrl != null && wallet.logoUrl!.isNotEmpty
-                      ? wallet.logoUrl!
-                      : 'assets/images/wallets/${wallet.code.toLowerCase()}.png';
-              
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                child: Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-        child: InkWell(
-                    onTap: () => _selectWallet(wallet),
-                    borderRadius: BorderRadius.circular(8.r),
-          child: Padding(
-                      padding: EdgeInsets.all(16.h),
-            child: Row(
-              children: [
-                          // Wallet logo
-                Container(
-                  width: 60.w,
-                  height: 60.w,
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    shape: BoxShape.circle,
-                  ),
-                            child: Center(
-                              child: _buildLogoImage(logoPath, wallet.name),
+                        ),
+                        // Add button to clear search if user is searching
+                        if (state.searchQuery.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(top: 8.h),
+                            child: TextButton(
+                              onPressed: () => _onSearchChanged(''),
+                              child: Text(
+                                'Clear search',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 14.sp,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
                             ),
-                ),
-                          
-                SizedBox(width: 16.w),
-                          
-                          // Wallet name
-                Expanded(
-                  child: Text(
-                              wallet.name,
-                    style: GoogleFonts.outfit(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
-                                color: Colors.black,
+                          ),
+                      ],
                     ),
-                  ),
-                ),
-                          
-                          // Chevron icon
-                Icon(
-                  Icons.chevron_right,
-                            color: Colors.grey[600],
-                  size: 24.sp,
-                ),
-              ],
+                  );
+                }
+                
+                // Show list with wallets
+                return ListView.builder(
+                  controller: _scrollController,
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  // Only show pagination indicator if we're definitely loading more (not initial load)
+                  // and if we have some items already and we have more pages to load
+                  itemCount: state.filteredInstitutions.length + 
+                    ((state.isLoading && state.hasMorePages && state.filteredInstitutions.isNotEmpty) ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    // Show loading indicator at the end when paginating (loading more)
+                    // Only show this if we're clearly in pagination mode (not initial loading)
+                    if (index == state.filteredInstitutions.length && 
+                        state.isLoading && 
+                        state.filteredInstitutions.isNotEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.h),
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      );
+                    }
+                    
+                    // Regular wallet item
+                    final wallet = state.filteredInstitutions[index];
+                    
+                    // Determine if logoUrl is already a network URL or needs assets path
+                    final String logoPath = wallet.logoUrl != null && 
+                          (wallet.logoUrl!.startsWith('http://') || 
+                            wallet.logoUrl!.startsWith('https://'))
+                        ? wallet.logoUrl!
+                        : wallet.logoUrl != null && wallet.logoUrl!.isNotEmpty
+                            ? wallet.logoUrl!
+                            : 'assets/images/wallets/${wallet.code.toLowerCase()}.png';
+                    
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: InkWell(
+                          onTap: () => _selectWallet(wallet),
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.h),
+                            child: Row(
+                              children: [
+                                // Wallet logo
+                                Container(
+                                  width: 60.w,
+                                  height: 60.w,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[50],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: _buildLogoImage(logoPath, wallet.name),
+                                  ),
+                                ),
+                                
+                                SizedBox(width: 16.w),
+                                
+                                // Wallet name
+                                Expanded(
+                                  child: Text(
+                                    wallet.name,
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                
+                                // Chevron icon
+                                Icon(
+                                  Icons.chevron_right,
+                                  color: Colors.grey[600],
+                                  size: 24.sp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
-        ),
-                ),
-              );
-            },
-          );
-        },
+        ],
       ),
     );
   }
@@ -249,7 +313,7 @@ class _WalletSelectionScreenContentState
         logoPath,
         width: 30.w,
         height: 30.h,
-            fit: BoxFit.contain,
+        fit: BoxFit.contain,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
           return SizedBox(
@@ -303,9 +367,9 @@ class _WalletSelectionScreenContentState
     
     return Text(
       initials.toUpperCase(),
-        style: GoogleFonts.outfit(
+      style: GoogleFonts.outfit(
         fontSize: 18.sp,
-          fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.primary,
       ),
     );

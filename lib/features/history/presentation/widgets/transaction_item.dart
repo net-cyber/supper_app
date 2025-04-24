@@ -181,7 +181,7 @@ class TransactionItem extends StatelessWidget {
                       formattedAmount,
                       style: GoogleFonts.outfit(
                         fontWeight: FontWeight.w700,
-                        fontSize: 17.sp,
+                        fontSize: 12.sp,
                         color: isOutgoing 
                             ? Colors.red[700]
                             : Colors.green[700],
