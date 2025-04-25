@@ -169,10 +169,10 @@ class _ShellPageState extends State<ShellPage> with WidgetsBindingObserver {
         final int accountId = accountsState.accounts.isNotEmpty 
             ? accountsState.accounts[0].id 
             : 0;
-            
-        return InkWell(
+    
+    return InkWell(
           // Navigate to transactions history screen with account ID
-          onTap: () {
+      onTap: () {
             if (accountId > 0) {
               // Pass account ID as extra parameter to history page
               context.pushNamed(
@@ -197,39 +197,39 @@ class _ShellPageState extends State<ShellPage> with WidgetsBindingObserver {
                 ),
               );
             }
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.all(isSelected ? 12.w : 8.w),
-                decoration: BoxDecoration(
-                  color: isSelected 
-                    ? theme.colorScheme.primary.withOpacity(0.1) 
-                    : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.all(isSelected ? 12.w : 8.w),
+            decoration: BoxDecoration(
+              color: isSelected 
+                ? theme.colorScheme.primary.withOpacity(0.1) 
+                : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
                   Icons.receipt_long,
-                  color: isSelected 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.onSurfaceVariant,
-                  size: 24.sp,
-                ),
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                'Transactions',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
+              color: isSelected 
+                ? theme.colorScheme.primary 
+                : theme.colorScheme.onSurfaceVariant,
+              size: 24.sp,
+            ),
           ),
+          SizedBox(height: 4.h),
+          Text(
+                'Transactions',
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              color: isSelected 
+                ? theme.colorScheme.primary 
+                : theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
         );
       },
     );

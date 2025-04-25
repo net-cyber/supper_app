@@ -10,7 +10,7 @@ import 'package:super_app/core/utils/local_storage.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_state.dart';
 import 'package:super_app/features/history/application/transactions_bloc.dart';
-import 'package:super_app/features/history/domain/entities/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
 import 'package:super_app/features/history/domain/entities/transaction_extensions.dart';
 import 'package:super_app/core/presentation/widgets/app_loading_indicator.dart';
 import 'package:super_app/core/presentation/widgets/app_error_widget.dart';

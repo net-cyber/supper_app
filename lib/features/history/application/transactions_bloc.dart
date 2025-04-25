@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -7,9 +6,9 @@ import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
-import 'package:super_app/features/history/domain/entities/paginated_transactions.dart';
-import 'package:super_app/features/history/domain/entities/transaction.dart';
-import 'package:super_app/features/history/domain/entities/transaction_filter.dart';
+import 'package:super_app/features/history/domain/entities/paginated_transactions/paginated_transactions.dart';
+import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
 import 'package:super_app/features/history/domain/repositories/transaction_repository.dart';
 
 part 'transactions_event.dart';
@@ -43,21 +42,17 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     int accountId = 0; // Initialize with 0, will be updated if accounts are available
     try {
       final accountsState = accountsBloc.state;
-      log('TransactionsBloc: Initializing with AccountsBloc state: ${accountsState.toString()}');
       
       if (accountsState.accounts.isNotEmpty) {
         accountId = accountsState.accounts.first.id;
-        log('TransactionsBloc: Initialized with account ID: $accountId from AccountsBloc');
       } else {
         // Try to trigger account loading if not already loading
         if (!accountsState.isLoading) {
           accountsBloc.add(const AccountsEvent.fetchAccounts());
-          log('TransactionsBloc: Triggered account loading');
         }
-        log('TransactionsBloc: No accounts available during initialization, will require user to select an account or refresh');
       }
     } catch (e) {
-      log('TransactionsBloc: Error getting account during initialization: $e');
+      // Error handling with empty catch block
     }
     
     return TransactionsState.initial().copyWith(accountId: accountId);
@@ -68,23 +63,17 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionsFetched event,
     Emitter<TransactionsState> emit,
   ) async {
-    log('TransactionsBloc: Fetching transaction history');
-
-    // If we're already loading, don't do anything
     if (state.listStatus == TransactionsListStatus.loading) {
-      log('TransactionsBloc: Already loading, ignoring fetch request');
       return;
     }
 
-    // Set loading state for list
+    if (state.listStatus != TransactionsListStatus.loading) {
     emit(state.copyWith(listStatus: TransactionsListStatus.loading));
+    }
 
-    // Check internet connection
     final hasConnectivity = await AppConnectivity.connectivity();
-    log('TransactionsBloc: Internet connectivity check: $hasConnectivity');
 
     if (!hasConnectivity) {
-      log('TransactionsBloc: No internet connection');
       emit(
         state.copyWith(
           listStatus: TransactionsListStatus.failure,
@@ -94,23 +83,15 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       return;
     }
 
-    // Get active account ID
     int accountId = state.accountId;
     
-    // If we don't have a valid account ID, try to get one
     if (accountId <= 0) {
       try {
         final accountsState = _accountsBloc.state;
-        log('TransactionsBloc: AccountsBloc state: ${accountsState.toString()}');
         
-        // Check if we have accounts available
         if (accountsState.accounts.isNotEmpty) {
-          // Use the account ID from AccountsBloc
           accountId = accountsState.accounts.first.id;
-          log('TransactionsBloc: Using account ID: $accountId from AccountsBloc');
         } else {
-          // No accounts available
-          log('TransactionsBloc: No accounts available in AccountsBloc');
           emit(
             state.copyWith(
               listStatus: TransactionsListStatus.failure,
@@ -120,7 +101,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
           return;
         }
       } catch (e) {
-        log('TransactionsBloc: Error getting account: $e');
         emit(
           state.copyWith(
             listStatus: TransactionsListStatus.failure,
@@ -132,7 +112,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     }
 
     try {
-      log('TransactionsBloc: Calling repository for account: $accountId');
       final result = await _transactionRepository.getTransactions(
         pageId: 1,
         pageSize: state.pageSize,
@@ -142,7 +121,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
 
       result.fold(
         (failure) {
-          log('TransactionsBloc: Failed to fetch transactions: ${failure.toString()}');
           emit(
             state.copyWith(
               listStatus: TransactionsListStatus.failure,
@@ -151,21 +129,31 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
           );
         },
         (paginatedTransactions) {
-          log('TransactionsBloc: Successfully fetched ${paginatedTransactions.transactions.length} transactions');
+          final filteredTransactions = state.filter != null 
+              ? _applyLocalFilter(paginatedTransactions.transactions, state.filter!)
+              : paginatedTransactions.transactions;
+              
+          final filteredPaginatedTransactions = PaginatedTransactions(
+            transactions: filteredTransactions,
+            totalCount: filteredTransactions.length,
+            currentPage: paginatedTransactions.currentPage,
+            pageSize: paginatedTransactions.pageSize,
+            hasReachedMax: paginatedTransactions.hasReachedMax,
+          );
+          
           emit(
             state.copyWith(
               listStatus: TransactionsListStatus.success,
-              paginatedTransactions: paginatedTransactions,
+              paginatedTransactions: filteredPaginatedTransactions,
               accountId: accountId,
               currentPage: 1,
-              hasReachedMax: paginatedTransactions.hasReachedMax,
+              hasReachedMax: paginatedTransactions.hasReachedMax || filteredTransactions.isEmpty,
               listErrorMessage: '',
             ),
           );
         },
       );
     } catch (e) {
-      log('TransactionsBloc: Unexpected error: $e');
       emit(
         state.copyWith(
           listStatus: TransactionsListStatus.failure,
@@ -179,8 +167,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionsRefreshed event,
     Emitter<TransactionsState> emit,
   ) async {
-    log('TransactionsBloc: Refreshing transaction history');
-    
     emit(state.copyWith(
       listStatus: TransactionsListStatus.initial,
       paginatedTransactions: null,
@@ -195,37 +181,96 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionsFiltered event,
     Emitter<TransactionsState> emit,
   ) async {
-    log('TransactionsBloc: Filtering transactions with ${event.filter}');
-    
     emit(state.copyWith(
       filter: event.filter,
-      listStatus: TransactionsListStatus.initial,
+      listStatus: TransactionsListStatus.loading,
       paginatedTransactions: null,
       currentPage: 1,
       hasReachedMax: false,
     ));
     
-    add(const TransactionsEvent.fetched());
+    try {
+      int accountId = state.accountId;
+      
+      if (accountId <= 0) {
+        final accountsState = _accountsBloc.state;
+        if (accountsState.accounts.isNotEmpty) {
+          accountId = accountsState.accounts.first.id;
+        } else {
+          emit(
+            state.copyWith(
+              listStatus: TransactionsListStatus.failure,
+              listErrorMessage: 'No accounts available. Please add an account or try again later.',
+            ),
+          );
+          return;
+        }
+      }
+      
+      final result = await _transactionRepository.getTransactions(
+        pageId: 1,
+        pageSize: state.pageSize,
+        accountId: accountId,
+        filter: event.filter,
+      );
+      
+      result.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              listStatus: TransactionsListStatus.failure,
+              listErrorMessage: NetworkExceptions.getRawErrorMessage(failure),
+            ),
+          );
+        },
+        (paginatedTransactions) {
+          final filteredTransactions = event.filter != null 
+              ? _applyLocalFilter(paginatedTransactions.transactions, event.filter!)
+              : paginatedTransactions.transactions;
+              
+          final filteredPaginatedTransactions = PaginatedTransactions(
+            transactions: filteredTransactions,
+            totalCount: filteredTransactions.length,
+            currentPage: paginatedTransactions.currentPage,
+            pageSize: paginatedTransactions.pageSize,
+            hasReachedMax: paginatedTransactions.hasReachedMax,
+          );
+          
+          // Emit success state immediately without artificial delay
+          emit(
+            state.copyWith(
+              listStatus: TransactionsListStatus.success,
+              paginatedTransactions: filteredPaginatedTransactions,
+              accountId: accountId,
+              currentPage: 1,
+              hasReachedMax: paginatedTransactions.hasReachedMax || filteredTransactions.isEmpty,
+              listErrorMessage: '',
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          listStatus: TransactionsListStatus.failure,
+          listErrorMessage: 'An unexpected error occurred. Please try again later.',
+        ),
+      );
+    }
   }
 
   Future<void> _onTransactionsLoadMore(
     TransactionsLoadMore event,
     Emitter<TransactionsState> emit,
   ) async {
-    log('TransactionsBloc: Loading more transactions');
-    
-    // If we're already loading or have reached the max, don't do anything
     if (state.listStatus == TransactionsListStatus.loading || 
         state.listStatus == TransactionsListStatus.loadingMore ||
         state.hasReachedMax ||
         state.listStatus == TransactionsListStatus.initial) {
-      log('TransactionsBloc: Already loading or reached max, ignoring load more request');
       return;
     }
 
-    // Get account ID
     if (state.accountId <= 0) {
-      log('TransactionsBloc: No valid account ID for loading more');
       emit(
         state.copyWith(
           listStatus: TransactionsListStatus.failure,
@@ -236,22 +281,17 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     }
     
     final accountId = state.accountId;
-    log('TransactionsBloc: Using account ID for loading more: $accountId');
 
-    // Set loading more state
     emit(state.copyWith(
       listStatus: TransactionsListStatus.loadingMore,
     ));
 
-    // Check internet connection
     final hasConnectivity = await AppConnectivity.connectivity();
-    log('TransactionsBloc: Internet connectivity check: $hasConnectivity');
 
     if (!hasConnectivity) {
-      log('TransactionsBloc: No internet connection');
       emit(
         state.copyWith(
-          listStatus: TransactionsListStatus.success, // Revert to success state but with existing data
+          listStatus: TransactionsListStatus.success,
           listErrorMessage: 'No internet connection. Please check your network.',
         ),
       );
@@ -259,16 +299,13 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     }
 
     try {
-      // Make sure we have existing transactions to append to
       final existingTransactions = state.paginatedTransactions?.transactions ?? [];
       if (existingTransactions.isEmpty) {
-        log('TransactionsBloc: No existing transactions, fetching from beginning');
         add(const TransactionsEvent.fetched());
         return;
       }
 
       final nextPage = state.currentPage + 1;
-      log('TransactionsBloc: Loading page $nextPage for account ID: $accountId');
       
       final result = await _transactionRepository.getTransactions(
         pageId: nextPage,
@@ -279,25 +316,22 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
 
       result.fold(
         (failure) {
-          log('TransactionsBloc: Failed to fetch more transactions: ${failure.toString()}');
           emit(
             state.copyWith(
-              listStatus: TransactionsListStatus.success, // Revert to success state but with existing data
+              listStatus: TransactionsListStatus.success,
               listErrorMessage: 'Failed to load more transactions. ${NetworkExceptions.getRawErrorMessage(failure)}',
-              hasReachedMax: true, // Assume we've reached the max to prevent further attempts
+              hasReachedMax: true,
             ),
           );
         },
         (newPaginatedTransactions) {
-          log('TransactionsBloc: Successfully fetched ${newPaginatedTransactions.transactions.length} more transactions');
-          
           final newTransactions = newPaginatedTransactions.transactions;
           
-          // If we got no new transactions or fewer than requested, we've reached the end
-          final hasReachedMax = newTransactions.isEmpty || newTransactions.length < state.pageSize;
+          final filteredNewTransactions = state.filter != null 
+              ? _applyLocalFilter(newTransactions, state.filter!)
+              : newTransactions;
           
-          if (newTransactions.isEmpty) {
-            log('TransactionsBloc: No more transactions available');
+          if (filteredNewTransactions.isEmpty) {
             emit(
               state.copyWith(
                 listStatus: TransactionsListStatus.success,
@@ -308,16 +342,16 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
             return;
           }
           
-          // Combine existing and new transactions
-          final allTransactions = [...existingTransactions, ...newTransactions];
+          final existingTransactions = state.paginatedTransactions?.transactions ?? [];
           
-          // Create a new paginated transactions object
+          final allTransactions = [...existingTransactions, ...filteredNewTransactions];
+          
           final updatedPaginatedTransactions = PaginatedTransactions(
             transactions: allTransactions,
-            totalCount: allTransactions.length, // This is a placeholder
+            totalCount: allTransactions.length,
             currentPage: nextPage,
             pageSize: state.pageSize,
-            hasReachedMax: hasReachedMax,
+            hasReachedMax: newPaginatedTransactions.hasReachedMax,
           );
           
           emit(
@@ -325,19 +359,18 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
               listStatus: TransactionsListStatus.success,
               paginatedTransactions: updatedPaginatedTransactions,
               currentPage: nextPage,
-              hasReachedMax: hasReachedMax,
+              hasReachedMax: newPaginatedTransactions.hasReachedMax || filteredNewTransactions.isEmpty,
               listErrorMessage: '',
             ),
           );
         },
       );
     } catch (e) {
-      log('TransactionsBloc: Unexpected error loading more: $e');
       emit(
         state.copyWith(
-          listStatus: TransactionsListStatus.success, // Revert to success state but with existing data
+          listStatus: TransactionsListStatus.success,
           listErrorMessage: 'An unexpected error occurred while loading more transactions.',
-          hasReachedMax: true, // Assume we've reached the max to prevent further attempts
+          hasReachedMax: true,
         ),
       );
     }
@@ -347,8 +380,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionsAccountChanged event,
     Emitter<TransactionsState> emit,
   ) async {
-    log('TransactionsBloc: Account changed to ID: ${event.accountId}');
-    
     emit(state.copyWith(
       accountId: event.accountId,
       listStatus: TransactionsListStatus.initial,
@@ -365,17 +396,11 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionDetailFetched event,
     Emitter<TransactionsState> emit,
   ) async {
-    log('TransactionsBloc: Fetching transaction detail for ID: ${event.transactionId}');
-
-    // Set loading state for detail
     emit(state.copyWith(detailStatus: TransactionsDetailStatus.loading));
 
-    // Check internet connection
     final hasConnectivity = await AppConnectivity.connectivity();
-    log('TransactionsBloc: Internet connectivity check: $hasConnectivity');
 
     if (!hasConnectivity) {
-      log('TransactionsBloc: No internet connection');
       emit(
         state.copyWith(
           detailStatus: TransactionsDetailStatus.failure,
@@ -385,18 +410,14 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       return;
     }
 
-    // Get active account ID
     int accountId = event.accountId > 0 ? event.accountId : state.accountId;
     
-    // If we still don't have an account ID, try to get one from AccountsBloc
     if (accountId <= 0) {
       try {
         final accountsState = _accountsBloc.state;
         if (accountsState.accounts.isNotEmpty) {
           accountId = accountsState.accounts.first.id;
-          log('TransactionsBloc: Using account ID: $accountId');
         } else {
-          log('TransactionsBloc: No accounts available');
           emit(
             state.copyWith(
               detailStatus: TransactionsDetailStatus.failure,
@@ -406,7 +427,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
           return;
         }
       } catch (e) {
-        log('TransactionsBloc: Error getting account: $e');
         emit(
           state.copyWith(
             detailStatus: TransactionsDetailStatus.failure,
@@ -418,7 +438,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     }
 
     try {
-      log('TransactionsBloc: Calling repository for transaction ID: ${event.transactionId}, account ID: $accountId');
       final result = await _transactionRepository.getTransactionById(
         transactionId: event.transactionId,
         accountId: accountId,
@@ -426,7 +445,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
 
       result.fold(
         (failure) {
-          log('TransactionsBloc: Failed to fetch transaction detail: ${failure.toString()}');
           emit(
             state.copyWith(
               detailStatus: TransactionsDetailStatus.failure,
@@ -435,7 +453,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
           );
         },
         (transaction) {
-          log('TransactionsBloc: Successfully fetched transaction detail');
           emit(
             state.copyWith(
               detailStatus: TransactionsDetailStatus.success,
@@ -446,7 +463,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
         },
       );
     } catch (e) {
-      log('TransactionsBloc: Unexpected error: $e');
       emit(
         state.copyWith(
           detailStatus: TransactionsDetailStatus.failure,
@@ -460,7 +476,6 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionDetailSetFromCache event,
     Emitter<TransactionsState> emit,
   ) {
-    log('TransactionsBloc: Setting transaction detail from cache');
     emit(
       state.copyWith(
         detailStatus: TransactionsDetailStatus.success,
@@ -468,5 +483,56 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
         detailErrorMessage: '',
       ),
     );
+  }
+
+  // Add this new method to apply local filtering
+  List<Transaction> _applyLocalFilter(List<Transaction> transactions, TransactionFilter filter) {
+    return transactions.where((transaction) {
+      if (filter.type != null && transaction.type != filter.type!.value) {
+        return false;
+      }
+      
+      if (filter.direction != null && transaction.direction != filter.direction!.value) {
+        return false;
+      }
+      
+      if (filter.status != null && transaction.status != filter.status!.value) {
+        return false;
+      }
+      
+      if (filter.startDate != null && transaction.created_at.isBefore(filter.startDate!)) {
+        return false;
+      }
+      
+      if (filter.endDate != null) {
+        final endDatePlusOne = filter.endDate!.add(const Duration(days: 1));
+        if (transaction.created_at.isAfter(endDatePlusOne)) {
+          return false;
+        }
+      }
+      
+      if (filter.counterpartyName != null && filter.counterpartyName!.isNotEmpty) {
+        final counterpartyName = transaction.counterparty_name?.toLowerCase() ?? '';
+        if (!counterpartyName.contains(filter.counterpartyName!.toLowerCase())) {
+          return false;
+        }
+      }
+      
+      if (filter.bankCode != null && 
+          filter.bankCode!.isNotEmpty && 
+          transaction.bank_code != filter.bankCode) {
+        return false;
+      }
+      
+      if (filter.minAmount != null && transaction.amount < filter.minAmount!) {
+        return false;
+      }
+      
+      if (filter.maxAmount != null && transaction.amount > filter.maxAmount!) {
+        return false;
+      }
+      
+      return true;
+    }).toList();
   }
 } 

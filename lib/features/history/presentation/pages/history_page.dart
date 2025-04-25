@@ -8,11 +8,12 @@ import 'package:super_app/core/presentation/widgets/app_error_widget.dart';
 import 'package:super_app/core/presentation/widgets/app_loading_indicator.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/history/application/transactions_bloc.dart';
-import 'package:super_app/features/history/domain/entities/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
 import 'package:super_app/features/history/domain/entities/transaction_extensions.dart';
-import 'package:super_app/features/history/domain/entities/transaction_filter.dart';
+import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
 import 'package:super_app/features/history/presentation/widgets/filter_button.dart';
 import 'package:super_app/features/history/presentation/widgets/transaction_item.dart';
+import 'package:super_app/features/history/presentation/widgets/transaction_filter_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/router/route_name.dart';
 
@@ -44,11 +45,9 @@ class _HistoryViewState extends State<HistoryView> {
     super.initState();
     _scrollController.addListener(_onScroll);
     
-    // If a specific account ID was passed, use it to fetch transactions
     if (widget.accountId > 0) {
       context.read<TransactionsBloc>().add(TransactionsEvent.accountChanged(accountId: widget.accountId));
     } else {
-      // Otherwise, just fetch transactions using the default account
       context.read<TransactionsBloc>().add(const TransactionsEvent.fetched());
     }
   }
@@ -75,7 +74,6 @@ class _HistoryViewState extends State<HistoryView> {
 
   void _onRefresh() {
     if (widget.accountId > 0) {
-      // If we have a specific account ID, use it when refreshing
       context.read<TransactionsBloc>().add(
         TransactionsEvent.accountChanged(accountId: widget.accountId)
       );
@@ -87,9 +85,7 @@ class _HistoryViewState extends State<HistoryView> {
   }
 
   void _onFilterByAccount() {
-    // If we have a specific account ID passed from main page, use it
     if (widget.accountId > 0) {
-      // Show a toast or snackbar indicating we're using the selected account
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -101,18 +97,15 @@ class _HistoryViewState extends State<HistoryView> {
         ),
       );
       
-      // Ensure we're using this account ID for transactions
       context.read<TransactionsBloc>().add(
         TransactionsEvent.accountChanged(accountId: widget.accountId)
       );
     } else {
-      // Otherwise, show account selection dialog - implementation would depend on your app's UI
       _showAccountSelectionDialog();
     }
   }
   
   void _showAccountSelectionDialog() {
-    // Get accounts from AccountsBloc
     final accountsState = context.read<AccountsBloc>().state;
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
@@ -131,7 +124,6 @@ class _HistoryViewState extends State<HistoryView> {
       return;
     }
     
-    // Show dialog with account selection
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -156,11 +148,11 @@ class _HistoryViewState extends State<HistoryView> {
                 margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
                 decoration: BoxDecoration(
                   color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(color: Colors.grey[200]!),
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(color: primaryColor.withOpacity(0.1)),
                 ),
                 child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   title: Text(
                     account.owner,
                     style: GoogleFonts.outfit(
@@ -175,30 +167,28 @@ class _HistoryViewState extends State<HistoryView> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  trailing: Text(
-                    '${account.currency} ${account.balance}',
+                trailing: Text(
+                  '${account.currency} ${account.balance}',
                     style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                       fontSize: 15.sp,
                       color: primaryColor,
-                    ),
                   ),
-                  onTap: () {
-                    // Close dialog
-                    Navigator.of(context).pop();
-                    
-                    // Set selected account ID in bloc
-                    context.read<TransactionsBloc>().add(
-                      TransactionsEvent.accountChanged(accountId: account.id)
-                    );
-                  },
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  
+                  context.read<TransactionsBloc>().add(
+                    TransactionsEvent.accountChanged(accountId: account.id)
+                  );
+                },
                 ),
               );
             },
           ),
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(14.r),
         ),
         actions: [
           TextButton(
@@ -223,7 +213,7 @@ class _HistoryViewState extends State<HistoryView> {
     final primaryColor = theme.colorScheme.primary;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,6 +232,36 @@ class _HistoryViewState extends State<HistoryView> {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
+          BlocBuilder<TransactionsBloc, TransactionsState>(
+            buildWhen: (previous, current) => previous.filter != current.filter,
+            builder: (context, state) {
+              final bool hasActiveFilters = state.filter != null;
+              
+              return Stack(
+                children: [
+                  FilterButton(
+                    icon: Icons.filter_list,
+                    onPressed: _showFilterDialog,
+                  ),
+                  if (hasActiveFilters)
+                    Positioned(
+                      right: 8.w,
+                      top: 8.h,
+                      child: Container(
+                        width: 10.w,
+                        height: 10.w,
+                        decoration: BoxDecoration(
+                          color: primaryColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+          SizedBox(width: 8.w),
           FilterButton(
             icon: Icons.account_balance,
             onPressed: _onFilterByAccount,
@@ -251,7 +271,178 @@ class _HistoryViewState extends State<HistoryView> {
       ),
       body: Column(
         children: [
-          // Transactions list
+          BlocBuilder<TransactionsBloc, TransactionsState>(
+            buildWhen: (previous, current) => previous.filter != current.filter,
+            builder: (context, state) {
+              final filter = state.filter;
+              
+              if (filter == null) {
+                return const SizedBox.shrink();
+              }
+              
+              final List<Widget> filterChips = [];
+              
+              if (filter.type != null) {
+                String typeLabel;
+                if (filter.type?.value == 'external_transfer') {
+                  typeLabel = 'External Transfer';
+                } else if (filter.type?.value == 'internal_transfer') {
+                  typeLabel = 'Internal Transfer';
+                } else {
+                  typeLabel = 'Top-up';
+                }
+                
+                filterChips.add(_buildActiveFilterChip(
+                  label: typeLabel,
+                  onRemove: () => _removeTypeFilter(),
+                ));
+              }
+              
+              if (filter.direction != null) {
+                filterChips.add(_buildActiveFilterChip(
+                  label: filter.direction?.value == 'incoming' 
+                      ? 'Incoming' 
+                      : 'Outgoing',
+                  onRemove: () => _removeDirectionFilter(),
+                ));
+              }
+              
+              if (filter.status != null) {
+                String statusLabel;
+                if (filter.status?.value == 'completed') {
+                  statusLabel = 'Completed';
+                } else if (filter.status?.value == 'pending') {
+                  statusLabel = 'Pending';
+                } else {
+                  statusLabel = 'Failed';
+                }
+                
+                filterChips.add(_buildActiveFilterChip(
+                  label: statusLabel,
+                  onRemove: () => _removeStatusFilter(),
+                ));
+              }
+              
+              if (filter.startDate != null || filter.endDate != null) {
+                final DateFormat dateFormat = DateFormat('MMM d, yy');
+                String dateLabel = 'Date: ';
+                
+                if (filter.startDate != null && filter.endDate != null) {
+                  dateLabel += '${dateFormat.format(filter.startDate!)} - ${dateFormat.format(filter.endDate!)}';
+                } else if (filter.startDate != null) {
+                  dateLabel += 'From ${dateFormat.format(filter.startDate!)}';
+                } else if (filter.endDate != null) {
+                  dateLabel += 'Until ${dateFormat.format(filter.endDate!)}';
+                }
+                
+                filterChips.add(_buildActiveFilterChip(
+                  label: dateLabel,
+                  onRemove: () => _removeDateFilters(),
+                ));
+              }
+              
+              if (filter.counterpartyName != null && filter.counterpartyName!.isNotEmpty) {
+                filterChips.add(_buildActiveFilterChip(
+                  label: 'Name: ${filter.counterpartyName}',
+                  onRemove: () => _removeCounterpartyFilter(),
+                ));
+              }
+              
+              if (filter.minAmount != null || filter.maxAmount != null) {
+                String amountLabel = 'Amount: ';
+                
+                if (filter.minAmount != null && filter.maxAmount != null) {
+                  amountLabel += '${filter.minAmount} - ${filter.maxAmount}';
+                } else if (filter.minAmount != null) {
+                  amountLabel += '≥ ${filter.minAmount}';
+                } else if (filter.maxAmount != null) {
+                  amountLabel += '≤ ${filter.maxAmount}';
+                }
+                
+                filterChips.add(_buildActiveFilterChip(
+                  label: amountLabel,
+                  onRemove: () => _removeAmountFilters(),
+                ));
+              }
+              
+              if (filterChips.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              
+              return Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: primaryColor.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+              boxShadow: [
+                BoxShadow(
+                      color: primaryColor.withOpacity(0.03),
+                  offset: const Offset(0, 2),
+                      blurRadius: 3,
+                ),
+              ],
+            ),
+            child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+              children: [
+                          Text(
+                            'Active Filters:',
+                            style: GoogleFonts.outfit(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              color: primaryColor.withOpacity(0.8),
+                            ),
+                          ),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: _clearAllFilters,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              'Clear All',
+                              style: GoogleFonts.outfit(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                                color: primaryColor,
+                              ),
+                            ),
+                ),
+              ],
+            ),
+                    ),
+                    SizedBox(height: 6.h),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+                        children: [
+                          for (int i = 0; i < filterChips.length; i++) ...[
+                            filterChips[i],
+                            if (i < filterChips.length - 1) 
+                              SizedBox(width: 8.w),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          
           Expanded(
             child: BlocConsumer<TransactionsBloc, TransactionsState>(
               listenWhen: (previous, current) => 
@@ -287,7 +478,6 @@ class _HistoryViewState extends State<HistoryView> {
                 
                 if (state.listStatus == TransactionsListStatus.failure && 
                    (state.paginatedTransactions == null || state.paginatedTransactions!.isEmpty)) {
-                  // Check if it's a "no account" related error
                   if (state.listErrorMessage.contains('account') || state.listErrorMessage.contains('log in')) {
                     return Center(
                       child: Padding(
@@ -295,10 +485,17 @@ class _HistoryViewState extends State<HistoryView> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            Container(
+                              padding: EdgeInsets.all(20.r),
+                              decoration: BoxDecoration(
+                                color: primaryColor.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
                               Icons.account_balance_wallet_outlined,
-                              size: 80.sp,
-                              color: primaryColor.withOpacity(0.7),
+                                size: 70.sp,
+                                color: primaryColor,
+                              ),
                             ),
                             SizedBox(height: 24.h),
                             Text(
@@ -306,6 +503,7 @@ class _HistoryViewState extends State<HistoryView> {
                               style: GoogleFonts.outfit(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.sp,
+                                color: primaryColor,
                               ),
                             ),
                             SizedBox(height: 16.h),
@@ -332,7 +530,7 @@ class _HistoryViewState extends State<HistoryView> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12.r),
                                 ),
-                                elevation: 1,
+                                elevation: 2,
                               ),
                               child: Text(
                                 'Refresh',
@@ -348,7 +546,6 @@ class _HistoryViewState extends State<HistoryView> {
                     );
                   }
                   
-                  // For other errors, use the standard error widget
                   return Center(
                     child: AppErrorWidget(
                       message: state.listErrorMessage,
@@ -364,17 +561,25 @@ class _HistoryViewState extends State<HistoryView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        Container(
+                          padding: EdgeInsets.all(20.r),
+                          decoration: BoxDecoration(
+                            color: primaryColor.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
                           Icons.receipt_long,
-                          size: 72.sp,
-                          color: primaryColor.withOpacity(0.5),
+                            size: 64.sp,
+                            color: primaryColor,
+                          ),
                         ),
-                        SizedBox(height: 16.h),
+                        SizedBox(height: 20.h),
                         Text(
                           'No transactions found',
                           style: GoogleFonts.outfit(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w600,
+                            color: primaryColor,
                           ),
                         ),
                         SizedBox(height: 8.h),
@@ -386,8 +591,10 @@ class _HistoryViewState extends State<HistoryView> {
                           ),
                         ),
                         SizedBox(height: 24.h),
-                        ElevatedButton(
+                        ElevatedButton.icon(
                           onPressed: _onRefresh,
+                          icon: Icon(Icons.refresh, size: 18.sp),
+                          label: Text('Refresh'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
                             foregroundColor: Colors.white,
@@ -395,14 +602,7 @@ class _HistoryViewState extends State<HistoryView> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
                             ),
-                            elevation: 1,
-                          ),
-                          child: Text(
-                            'Refresh',
-                            style: GoogleFonts.outfit(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            elevation: 2,
                           ),
                         ),
                       ],
@@ -418,7 +618,6 @@ class _HistoryViewState extends State<HistoryView> {
                     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                     itemCount: transactions.length + (state.hasReachedMax ? 1 : 1),
                     itemBuilder: (context, index) {
-                      // Check if we've reached the end of the transactions list
                       if (index >= transactions.length) {
                         return state.hasReachedMax
                           ? Padding(
@@ -428,7 +627,7 @@ class _HistoryViewState extends State<HistoryView> {
                                   'No more transactions',
                                   style: GoogleFonts.outfit(
                                     fontSize: 16.sp,
-                                    color: Colors.grey[600],
+                                    color: primaryColor.withOpacity(0.7),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -465,6 +664,125 @@ class _HistoryViewState extends State<HistoryView> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => TransactionFilterDialog(
+        initialFilter: context.read<TransactionsBloc>().state.filter,
+      ),
+    );
+  }
+  
+  Widget _buildActiveFilterChip({
+    required String label,
+    required VoidCallback onRemove,
+  }) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            primaryColor.withOpacity(0.15),
+            primaryColor.withOpacity(0.08),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: primaryColor.withOpacity(0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 10.w, top: 6.h, bottom: 6.h),
+            child: Text(
+              label,
+              style: GoogleFonts.outfit(
+                fontSize: 12.sp,
+                color: primaryColor,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ),
+          Material(
+            color: Colors.transparent,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onRemove,
+              child: Padding(
+                padding: EdgeInsets.all(6.w),
+                child: Icon(
+                  Icons.close,
+                  size: 16.sp,
+                  color: primaryColor,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  void _removeTypeFilter() {
+    final currentFilter = context.read<TransactionsBloc>().state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(type: null);
+    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _removeDirectionFilter() {
+    final currentFilter = context.read<TransactionsBloc>().state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(direction: null);
+    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _removeStatusFilter() {
+    final currentFilter = context.read<TransactionsBloc>().state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(status: null);
+    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _removeDateFilters() {
+    final currentFilter = context.read<TransactionsBloc>().state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(startDate: null, endDate: null);
+    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _removeCounterpartyFilter() {
+    final currentFilter = context.read<TransactionsBloc>().state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(counterpartyName: null);
+    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _removeAmountFilters() {
+    final currentFilter = context.read<TransactionsBloc>().state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(minAmount: null, maxAmount: null);
+    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _clearAllFilters() {
+    context.read<TransactionsBloc>().add(
+      TransactionsEvent.filtered(filter: TransactionFilter()),
     );
   }
 } 

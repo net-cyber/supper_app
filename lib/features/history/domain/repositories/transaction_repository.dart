@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
-import 'package:super_app/features/history/domain/entities/paginated_transactions.dart';
-import 'package:super_app/features/history/domain/entities/transaction.dart';
-import 'package:super_app/features/history/domain/entities/transaction_filter.dart';
-import 'package:super_app/features/history/domain/entities/transaction_summary.dart';
+import 'package:super_app/features/history/domain/entities/paginated_transactions/paginated_transactions.dart';
+import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
+import 'package:super_app/features/history/domain/entities/transaction_summary/transaction_summary.dart';
 
 abstract class TransactionRepository {
   /// Fetches a paginated list of transactions for a specific account

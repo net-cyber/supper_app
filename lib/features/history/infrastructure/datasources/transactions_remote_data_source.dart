@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/handlers/http_service.dart';
-import 'package:super_app/features/history/domain/entities/paginated_transactions.dart';
-import 'package:super_app/features/history/domain/entities/transaction.dart';
-import 'package:super_app/features/history/domain/entities/transaction_filter.dart';
-import 'package:super_app/features/history/domain/entities/transaction_summary.dart';
+import 'package:super_app/features/history/domain/entities/paginated_transactions/paginated_transactions.dart';
+import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
+import 'package:super_app/features/history/domain/entities/transaction_summary/transaction_summary.dart';
 
 abstract class TransactionsRemoteDataSource {
   Future<PaginatedTransactions> getTransactions({
@@ -112,16 +112,12 @@ class TransactionsRemoteDataSourceImpl implements TransactionsRemoteDataSource {
     required int accountId,
   }) async {
     try {
-      // Build query parameters
-      final Map<String, dynamic> queryParams = {};
       
-      // Only include account_id if it's greater than 0
+      final Map<String, dynamic> queryParams = {};
       if (accountId > 0) {
         queryParams['account_id'] = accountId;
       }
-      
-      // Since the API doesn't provide a dedicated endpoint for fetching a single transaction,
-      // we'll fetch all transactions and find the one with the matching ID
+     // we'll fetch all transactions and find the one with the matching ID
       final response = await getIt<HttpService>().client(requireAuth: true).get(
         '/transactions',
         queryParameters: queryParams,

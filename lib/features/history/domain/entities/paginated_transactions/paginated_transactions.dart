@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:super_app/features/history/domain/entities/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
 
 part 'paginated_transactions.freezed.dart';
 part 'paginated_transactions.g.dart';

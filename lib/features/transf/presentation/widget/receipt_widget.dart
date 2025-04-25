@@ -29,6 +29,9 @@ class ReceiptWidget {
   }) async {
     final pdf = pw.Document();
     final numberFormat = NumberFormat("#,##0.00", "en_US");
+    
+    // Status color - green for completed
+    final statusColor = PdfColor(0, 0.7, 0, 1); // Green color for COMPLETED
 
     pdf.addPage(
       pw.Page(
@@ -39,67 +42,38 @@ class ReceiptWidget {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                // Header with bank info and receipt title
+                // Header with bank info and transaction details
                 pw.Row(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    // Left side - Bank logo and details
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    // Left side - Bank logo and name
+                    pw.Row(
                       children: [
-                        pw.Row(
-                          children: [
-                            pw.Container(
-                              width: 40,
-                              height: 40,
-                              decoration: pw.BoxDecoration(
-                                color: PdfColor.fromInt(primaryColor.value),
-                                borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
-                              ),
-                              child: pw.Center(
-                                child: pw.Text(
-                                  'GB',
-                                  style: pw.TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: pw.FontWeight.bold,
-                                    color: PdfColors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            pw.SizedBox(width: 8),
-                            pw.Text(
-                              'Goh Betoch Bank Super App',
+                        pw.Container(
+                          width: 40,
+                          height: 40,
+                          decoration: pw.BoxDecoration(
+                            color: PdfColor.fromInt(primaryColor.value),
+                            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                          ),
+                          child: pw.Center(
+                            child: pw.Text(
+                              'GB',
                               style: pw.TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: pw.FontWeight.bold,
-                                color: PdfColor.fromInt(primaryColor.value),
+                                color: PdfColors.white,
                               ),
                             ),
-                          ],
-                        ),
-                        pw.SizedBox(height: 4),
-                        pw.Text(
-                          'Electronic Receipt',
-                          style: pw.TextStyle(
-                            fontSize: 14,
-                            color: PdfColor.fromInt(secondaryColor.value),
                           ),
                         ),
-                        pw.SizedBox(height: 8),
+                        pw.SizedBox(width: 8),
                         pw.Text(
-                          'Addis Ababa, Ethiopia',
-                          style: const pw.TextStyle(fontSize: 10),
-                        ),
-                        pw.Text(
-                          'info@gohbetochbank.com',
-                          style: const pw.TextStyle(fontSize: 10),
-                        ),
-                        pw.Text(
-                          'www.gohbetochbank.com',
+                          'Goh Betoch Bank',
                           style: pw.TextStyle(
-                            fontSize: 10,
+                            fontSize: 16,
+                            fontWeight: pw.FontWeight.bold,
                             color: PdfColor.fromInt(primaryColor.value),
                           ),
                         ),
@@ -109,13 +83,33 @@ class ReceiptWidget {
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.end,
                       children: [
-                        pw.Text(
-                          'TIN No: ${transactionId.padLeft(10, '0')}',
-                          style: const pw.TextStyle(fontSize: 10),
+                        pw.Row(
+                          children: [
+                            pw.Text(
+                              'Transaction ID: ${transactionId}',
+                              style: const pw.TextStyle(fontSize: 10),
+                            ),
+                          ],
                         ),
                         pw.Text(
-                          'VAT Reg: 12970',
+                          'Date: $timestamp',
                           style: const pw.TextStyle(fontSize: 10),
+                        ),
+                        pw.Container(
+                          margin: const pw.EdgeInsets.only(top: 4),
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: pw.BoxDecoration(
+                            color: status.toUpperCase() == 'COMPLETED' ? statusColor : PdfColors.red,
+                            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                          ),
+                          child: pw.Text(
+                            status.toUpperCase(),
+                            style: pw.TextStyle(
+                              color: PdfColors.white,
+                              fontSize: 8,
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -123,6 +117,16 @@ class ReceiptWidget {
                 ),
 
                 pw.SizedBox(height: 20),
+                pw.Text(
+                  'Transaction Receipt',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColor.fromInt(primaryColor.value),
+                  ),
+                ),
+                
+                pw.SizedBox(height: 10),
                 pw.Container(
                   width: double.infinity,
                   decoration: pw.BoxDecoration(
@@ -141,121 +145,59 @@ class ReceiptWidget {
                   ),
                 ),
 
-                // Sender's Details
+                // Transaction Information Section
                 pw.SizedBox(height: 10),
-                pw.Container(
-                  padding: const pw.EdgeInsets.all(10),
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Row(
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    // Left column - Transaction Information
+                    pw.Expanded(
+                      flex: 1,
+                      child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          // Left column - Sender's Details
-                          pw.Expanded(
-                            child: pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: [
-                                pw.Text(
-                                  "Sender's Details",
-                                  style: pw.TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: pw.FontWeight.bold,
-                                    color: PdfColor.fromInt(primaryColor.value),
-                                  ),
-                                ),
-                                pw.SizedBox(height: 4),
-                                pw.Text(
-                                  'Account Holder Name:',
-                                  style: const pw.TextStyle(fontSize: 10),
-                                ),
-                                pw.Text(
-                                  fromName,
-                                  style: pw.TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: pw.FontWeight.bold,
-                                  ),
-                                ),
-                                pw.SizedBox(height: 4),
-                                pw.Text(
-                                  'Account Number:',
-                                  style: const pw.TextStyle(fontSize: 10),
-                                ),
-                                pw.Text(
-                                  fromAccountId,
-                                  style: pw.TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: pw.FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                          pw.Text(
+                            "Transaction Information",
+                            style: pw.TextStyle(
+                              fontSize: 11,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(primaryColor.value),
                             ),
                           ),
-                          // Right column - Beneficiary's Details
-                          pw.Expanded(
-                            child: pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: [
-                                pw.Text(
-                                  "Beneficiary's Details",
-                                  style: pw.TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: pw.FontWeight.bold,
-                                    color: PdfColor.fromInt(primaryColor.value),
-                                  ),
-                                ),
-                                pw.SizedBox(height: 4),
-                                pw.Text(
-                                  'Account Holder Name:',
-                                  style: const pw.TextStyle(fontSize: 10),
-                                ),
-                                pw.Text(
-                                  toName,
-                                  style: pw.TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: pw.FontWeight.bold,
-                                  ),
-                                ),
-                                pw.SizedBox(height: 4),
-                                pw.Text(
-                                  'Account Number:',
-                                  style: const pw.TextStyle(fontSize: 10),
-                                ),
-                                pw.Text(
-                                  toAccountId,
-                                  style: pw.TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: pw.FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          pw.SizedBox(height: 4),
+                          _buildInfoRow('Transaction Type:', transactionType),
+                          _buildInfoRow('External Transfer', 'Yes'),
+                          _buildInfoRow('Direction:', 'Outgoing'),
+                          _buildInfoRow('RRN:', transactionRef),
                         ],
                       ),
-                      pw.SizedBox(height: 10),
-                      pw.Text(
-                        'Transaction Channel: Goh Betoch Bank Super App',
-                        style: const pw.TextStyle(fontSize: 10),
+                    ),
+                    // Right column - Recipient Details
+                    pw.Expanded(
+                      flex: 1,
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            "Recipient Details",
+                            style: pw.TextStyle(
+                              fontSize: 11,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromInt(primaryColor.value),
+                            ),
+                          ),
+                          pw.SizedBox(height: 4),
+                          _buildInfoRow('Name:', toName),
+                          _buildInfoRow('Bank:', toBank),
+                          _buildInfoRow('Account Number:', toAccountId),
+                        ],
                       ),
-                      pw.Text(
-                        'Service Type: ${transactionType}',
-                        style: const pw.TextStyle(fontSize: 10),
-                      ),
-                      pw.Text(
-                        'Transfer Reference: $transactionRef',
-                        style: const pw.TextStyle(fontSize: 10),
-                      ),
-                      pw.Text(
-                        'Date: $timestamp',
-                        style: const pw.TextStyle(fontSize: 10),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
 
                 // Payment Details
-                pw.SizedBox(height: 10),
+                pw.SizedBox(height: 20),
                 pw.Container(
                   width: double.infinity,
                   decoration: pw.BoxDecoration(
@@ -274,48 +216,19 @@ class ReceiptWidget {
                   ),
                 ),
 
-                pw.Container(
-                  padding: const pw.EdgeInsets.all(10),
-                  child: pw.Column(
-                    children: [
-                      _buildPaymentRow('Transaction Amount', amount, currency),
-                      _buildPaymentRow('Service Charge', 0.00, currency),
-                      _buildPaymentRow('Excise Tax (15%)', 0.00, currency),
-                      _buildPaymentRow('VAT (15%)', 0.00, currency),
-                      _buildPaymentRow('Stamp Duty', 0.00, currency),
-                      _buildPaymentRow('Discount', 0.00, currency),
-                      _buildPaymentRow('Penalty Fee', 0.00, currency),
-                      _buildPaymentRow('Interest Fee', 0.00, currency),
-                      _buildPaymentRow('Income Tax', 0.00, currency),
-                      pw.Container(
-                        decoration: pw.BoxDecoration(
-                          border: pw.Border(
-                            top: pw.BorderSide(color: PdfColors.grey300),
-                          ),
-                        ),
-                        padding: const pw.EdgeInsets.symmetric(vertical: 5),
-                        child: _buildPaymentRow('Total', amount, currency, isBold: true),
-                      ),
-                    ],
-                  ),
-                ),
-
                 pw.SizedBox(height: 10),
-                pw.Text(
-                  'Amount in words: ${_convertToWords(amount)} ${currency} Only',
-                  style: pw.TextStyle(
-                    fontSize: 10,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
+                _buildPaymentRow('Transaction Amount', amount, currency),
+                _buildPaymentRow('Transaction Fee', 0.00, currency),
+                pw.Divider(color: PdfColors.grey300),
+                _buildPaymentRow('Total', amount, currency, isBold: true),
 
                 pw.Spacer(),
 
-                // Footer with bank stamp and QR
+                // Footer with bank name and QR code
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    // Bank logo and name
+                    // Bank name
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
@@ -327,37 +240,32 @@ class ReceiptWidget {
                             color: PdfColor.fromInt(primaryColor.value),
                           ),
                         ),
-                        pw.Text(
-                          'Always One Step Ahead!',
-                          style: pw.TextStyle(
-                            fontSize: 8,
-                            color: PdfColor.fromInt(secondaryColor.value),
-                          ),
-                        ),
                       ],
                     ),
-                    // Bank stamp
+                    
+                    // Status stamp
+                    status.toUpperCase() == 'COMPLETED' ? 
                     pw.Container(
-                      width: 80,
-                      height: 80,
+                      width: 70,
+                      height: 70,
                       decoration: pw.BoxDecoration(
                         shape: pw.BoxShape.circle,
                         border: pw.Border.all(
-                          color: PdfColor.fromInt(primaryColor.value),
+                          color: statusColor,
                           width: 2,
                         ),
                       ),
                       child: pw.Center(
                         child: pw.Text(
-                          'GB',
+                          'COMPLETED',
                           style: pw.TextStyle(
-                            fontSize: 24,
+                            fontSize: 10,
                             fontWeight: pw.FontWeight.bold,
-                            color: PdfColor.fromInt(primaryColor.value),
+                            color: statusColor,
                           ),
                         ),
                       ),
-                    ),
+                    ) : pw.SizedBox(),
                   ],
                 ),
 
@@ -366,8 +274,8 @@ class ReceiptWidget {
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
                     pw.Container(
-                      width: 100,
-                      height: 100,
+                      width: 80,
+                      height: 80,
                       child: pw.BarcodeWidget(
                         color: PdfColors.black,
                         barcode: pw.Barcode.qrCode(),
@@ -378,17 +286,10 @@ class ReceiptWidget {
                       crossAxisAlignment: pw.CrossAxisAlignment.end,
                       children: [
                         pw.Text(
-                          'Terms & Conditions:',
+                          'This is an electronic receipt for your records.',
                           style: const pw.TextStyle(
                             fontSize: 8,
                             color: PdfColors.grey700,
-                          ),
-                        ),
-                        pw.Text(
-                          'https://www.gohbetochbank.com/privacy-and-security/',
-                          style: pw.TextStyle(
-                            fontSize: 8,
-                            color: PdfColor.fromInt(primaryColor.value),
                           ),
                         ),
                         pw.Text(
@@ -412,22 +313,46 @@ class ReceiptWidget {
     return pdf;
   }
 
+  static pw.Widget _buildInfoRow(String label, String value) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            label,
+            style: const pw.TextStyle(
+              fontSize: 10,
+            ),
+          ),
+          pw.Text(
+            value,
+            style: pw.TextStyle(
+              fontSize: 10,
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   static pw.Widget _buildPaymentRow(String label, double amount, String currency, {bool isBold = false}) {
     final style = isBold
         ? pw.TextStyle(
-            fontSize: 10,
+            fontSize: 12,
             fontWeight: pw.FontWeight.bold,
           )
         : const pw.TextStyle(fontSize: 10);
 
     return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+      padding: const pw.EdgeInsets.symmetric(vertical: 4),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Text(label, style: style),
           pw.Text(
-            '${amount.toStringAsFixed(2)} $currency',
+            '$currency ${amount.toStringAsFixed(2)}',
             style: style,
           ),
         ],
