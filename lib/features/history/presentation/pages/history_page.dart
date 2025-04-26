@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_app/core/di/dependancy_manager.dart';
 import 'package:super_app/core/presentation/widgets/app_error_widget.dart';
 import 'package:super_app/core/presentation/widgets/app_loading_indicator.dart';
@@ -11,12 +14,15 @@ import 'package:super_app/features/history/application/transactions_bloc.dart';
 import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
 import 'package:super_app/features/history/domain/entities/transaction_extensions.dart';
 import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
+import 'package:super_app/features/history/domain/entities/transaction_type.dart';
 import 'package:super_app/features/history/presentation/widgets/filter_button.dart';
 import 'package:super_app/features/history/presentation/widgets/transaction_item.dart';
 import 'package:super_app/features/history/presentation/widgets/transaction_filter_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/router/route_name.dart';
 
+/// The main history page that shows transaction history
+/// This is a stateless component that uses BlocProvider to handle TransactionsBloc
 class HistoryPage extends StatelessWidget {
   final int accountId;
   
@@ -24,14 +30,169 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HistoryView(accountId: accountId);
+    // Use BlocProvider to provide a new TransactionsBloc instance to the widget tree
+    // We use BlocProvider.value because the bloc is a singleton managed by dependency injection
+    // This prevents the bloc from being closed when the widget is disposed
+    final bloc = getIt<TransactionsBloc>();
+    
+    return BlocProvider.value(
+      value: bloc,
+      child: _HistoryPageContent(accountId: accountId),
+    );
   }
 }
 
-class HistoryView extends StatefulWidget {
+/// A wrapper widget that initializes the TransactionsBloc safely
+class _HistoryPageContent extends StatefulWidget {
   final int accountId;
   
-  const HistoryView({super.key, this.accountId = 0});
+  const _HistoryPageContent({required this.accountId});
+  
+  @override
+  State<_HistoryPageContent> createState() => _HistoryPageContentState();
+}
+
+class _HistoryPageContentState extends State<_HistoryPageContent> {
+  bool _shouldPreserveFilters = false;
+  static const String _preserveFiltersKey = 'preserve_transaction_filters';
+  static const String _lastFilterKey = 'last_transaction_filter';
+  
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the bloc here, which is safer than in the BlocProvider.create
+    _initializeFiltersAndData();
+  }
+  
+  Future<void> _initializeFiltersAndData() async {
+    if (!mounted) return;
+    
+    await _loadFilterPreservationSetting();
+    
+    final bloc = context.read<TransactionsBloc>();
+    
+    // Reset any active filters when entering the page, but only if not preserving filters
+    if (bloc.state.isFilterActive && !_shouldPreserveFilters) {
+      bloc.add(const TransactionsEvent.clearAllFilters());
+    } else if (_shouldPreserveFilters) {
+      // If we should preserve filters, try to load the last filter
+      final savedFilter = await _loadLastAppliedFilter();
+      if (savedFilter != null) {
+        bloc.add(TransactionsEvent.filtered(filter: savedFilter));
+        return; // Don't proceed with regular fetch since we're applying a filter
+      }
+    }
+    
+    // Then initialize with the appropriate account or fetch data
+    if (widget.accountId > 0) {
+      bloc.add(TransactionsEvent.accountChanged(accountId: widget.accountId));
+    } else {
+      bloc.add(const TransactionsEvent.fetched());
+    }
+  }
+  
+  Future<void> _loadFilterPreservationSetting() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _shouldPreserveFilters = prefs.getBool(_preserveFiltersKey) ?? false;
+    } catch (e) {
+      // In case of error, default to false
+      _shouldPreserveFilters = false;
+    }
+  }
+  
+  Future<TransactionFilter?> _loadLastAppliedFilter() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final filterString = prefs.getString(_lastFilterKey);
+      
+      if (filterString == null || filterString.isEmpty) {
+        return null;
+      }
+      
+      // Parse the JSON and work with it directly without type casting the map
+      final dynamic json = jsonDecode(filterString);
+      
+      // Extract type
+      TransactionType? type;
+      final typeValue = json['type']?.toString();
+      if (typeValue == 'external_transfer') {
+        type = TransactionType.externalTransfer;
+      } else if (typeValue == 'internal_transfer') {
+        type = TransactionType.internalTransfer;
+      } else if (typeValue == 'topup') {
+        type = TransactionType.topUp;
+      }
+      
+      // Extract direction
+      TransactionDirection? direction;
+      final directionValue = json['direction']?.toString();
+      if (directionValue == 'incoming') {
+        direction = TransactionDirection.incoming;
+      } else if (directionValue == 'outgoing') {
+        direction = TransactionDirection.outgoing;
+      }
+      
+      // Extract status
+      TransactionStatus? status;
+      final statusValue = json['status']?.toString();
+      if (statusValue == 'completed') {
+        status = TransactionStatus.completed;
+      } else if (statusValue == 'pending') {
+        status = TransactionStatus.pending;
+      } else if (statusValue == 'failed') {
+        status = TransactionStatus.failed;
+      }
+      
+      // Extract dates
+      DateTime? startDate, endDate;
+      if (json['startDate'] is int) {
+        startDate = DateTime.fromMillisecondsSinceEpoch(json['startDate'] as int);
+      }
+      if (json['endDate'] is int) {
+        endDate = DateTime.fromMillisecondsSinceEpoch(json['endDate'] as int);
+      }
+      
+      // Extract other fields
+      String? counterpartyName = json['counterpartyName']?.toString();
+      
+      double? minAmount;
+      if (json['minAmount'] != null) {
+        minAmount = double.tryParse(json['minAmount'].toString());
+      }
+      
+      double? maxAmount;
+      if (json['maxAmount'] != null) {
+        maxAmount = double.tryParse(json['maxAmount'].toString());
+      }
+      
+      // Create and return the filter
+      return TransactionFilter(
+        type: type,
+        direction: direction,
+        status: status,
+        startDate: startDate,
+        endDate: endDate,
+        counterpartyName: counterpartyName,
+        minAmount: minAmount,
+        maxAmount: maxAmount,
+      );
+    } catch (e) {
+      // Return null in case of any error
+      return null;
+    }
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return const HistoryView();
+  }
+}
+
+/// The main view for transaction history
+/// Receives TransactionsBloc via BlocProvider
+class HistoryView extends StatefulWidget {
+  const HistoryView({super.key});
 
   @override
   State<HistoryView> createState() => _HistoryViewState();
@@ -44,12 +205,6 @@ class _HistoryViewState extends State<HistoryView> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    
-    if (widget.accountId > 0) {
-      context.read<TransactionsBloc>().add(TransactionsEvent.accountChanged(accountId: widget.accountId));
-    } else {
-      context.read<TransactionsBloc>().add(const TransactionsEvent.fetched());
-    }
   }
 
   @override
@@ -61,7 +216,12 @@ class _HistoryViewState extends State<HistoryView> {
 
   void _onScroll() {
     if (_isBottom) {
-      context.read<TransactionsBloc>().add(const TransactionsEvent.loadMore());
+      try {
+        context.read<TransactionsBloc>().add(const TransactionsEvent.scrolledToBottom());
+      } catch (e) {
+        // Silently ignore errors when adding the event
+        // This could happen if the bloc is closed or not available
+      }
     }
   }
 
@@ -73,35 +233,56 @@ class _HistoryViewState extends State<HistoryView> {
   }
 
   void _onRefresh() {
-    if (widget.accountId > 0) {
-      context.read<TransactionsBloc>().add(
-        TransactionsEvent.accountChanged(accountId: widget.accountId)
-      );
-    } else {
-      context.read<TransactionsBloc>().add(
-        const TransactionsEvent.refreshed()
-      );
-    }
-  }
-
-  void _onFilterByAccount() {
-    if (widget.accountId > 0) {
+    try {
+      context.read<TransactionsBloc>().add(const TransactionsEvent.refreshed());
+    } catch (e) {
+      // Provide feedback if refresh fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Using selected account ID: ${widget.accountId}',
+            'Unable to refresh. Please try again.',
             style: GoogleFonts.outfit(),
           ),
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
         ),
       );
+    }
+  }
+
+  void _onFilterByAccount() {
+    try {
+      final bloc = context.read<TransactionsBloc>();
+      final state = bloc.state;
       
-      context.read<TransactionsBloc>().add(
-        TransactionsEvent.accountChanged(accountId: widget.accountId)
+      if (state.accountId > 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Using selected account ID: ${state.accountId}',
+              style: GoogleFonts.outfit(),
+            ),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        
+        bloc.add(TransactionsEvent.accountChanged(accountId: state.accountId));
+      } else {
+        bloc.add(const TransactionsEvent.openAccountSelection());
+      }
+    } catch (e) {
+      // Provide feedback if account filtering fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Unable to filter by account. Please try again.',
+            style: GoogleFonts.outfit(),
+          ),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
-    } else {
-      _showAccountSelectionDialog();
     }
   }
   
@@ -109,6 +290,7 @@ class _HistoryViewState extends State<HistoryView> {
     final accountsState = context.read<AccountsBloc>().state;
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
+    final transactionsBloc = context.read<TransactionsBloc>();
     
     if (accountsState.accounts.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -177,8 +359,9 @@ class _HistoryViewState extends State<HistoryView> {
                 ),
                 onTap: () {
                   Navigator.of(context).pop();
+                  transactionsBloc.accountSelectorClosed();
                   
-                  context.read<TransactionsBloc>().add(
+                  transactionsBloc.add(
                     TransactionsEvent.accountChanged(accountId: account.id)
                   );
                 },
@@ -192,7 +375,10 @@ class _HistoryViewState extends State<HistoryView> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              Navigator.of(context).pop();
+              transactionsBloc.accountSelectorClosed();
+            },
             child: Text(
               'Cancel',
               style: GoogleFonts.outfit(
@@ -212,7 +398,15 @@ class _HistoryViewState extends State<HistoryView> {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
 
-    return Scaffold(
+    return BlocListener<TransactionsBloc, TransactionsState>(
+      listenWhen: (previous, current) => 
+        previous.shouldOpenAccountSelector != current.shouldOpenAccountSelector,
+      listener: (context, state) {
+        if (state.shouldOpenAccountSelector) {
+          _showAccountSelectionDialog();
+        }
+      },
+      child: Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Column(
@@ -233,17 +427,15 @@ class _HistoryViewState extends State<HistoryView> {
         elevation: 0,
         actions: [
           BlocBuilder<TransactionsBloc, TransactionsState>(
-            buildWhen: (previous, current) => previous.filter != current.filter,
+              buildWhen: (previous, current) => previous.isFilterActive != current.isFilterActive,
             builder: (context, state) {
-              final bool hasActiveFilters = state.filter != null;
-              
               return Stack(
                 children: [
                   FilterButton(
                     icon: Icons.filter_list,
                     onPressed: _showFilterDialog,
                   ),
-                  if (hasActiveFilters)
+                    if (state.isFilterActive)
                     Positioned(
                       right: 8.w,
                       top: 8.h,
@@ -261,6 +453,38 @@ class _HistoryViewState extends State<HistoryView> {
               );
             },
           ),
+            SizedBox(width: 8.w),
+            BlocBuilder<TransactionsBloc, TransactionsState>(
+              buildWhen: (previous, current) => previous.isFilterActive != current.isFilterActive,
+              builder: (context, state) {
+                if (!state.isFilterActive) {
+                  return const SizedBox.shrink();
+                }
+                return FilterButton(
+                  icon: Icons.clear_all,
+                  onPressed: () {
+                    try {
+                      context.read<TransactionsBloc>().add(
+                        const TransactionsEvent.clearAllFilters()
+                      );
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'All filters cleared',
+                            style: GoogleFonts.outfit(),
+                          ),
+                          duration: const Duration(seconds: 2),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    } catch (e) {
+                      // Handle error
+                    }
+                  },
+              );
+            },
+          ),
           SizedBox(width: 8.w),
           FilterButton(
             icon: Icons.account_balance,
@@ -272,100 +496,11 @@ class _HistoryViewState extends State<HistoryView> {
       body: Column(
         children: [
           BlocBuilder<TransactionsBloc, TransactionsState>(
-            buildWhen: (previous, current) => previous.filter != current.filter,
+              buildWhen: (previous, current) => 
+                previous.activeFilterLabels != current.activeFilterLabels || 
+                previous.isFilterActive != current.isFilterActive,
             builder: (context, state) {
-              final filter = state.filter;
-              
-              if (filter == null) {
-                return const SizedBox.shrink();
-              }
-              
-              final List<Widget> filterChips = [];
-              
-              if (filter.type != null) {
-                String typeLabel;
-                if (filter.type?.value == 'external_transfer') {
-                  typeLabel = 'External Transfer';
-                } else if (filter.type?.value == 'internal_transfer') {
-                  typeLabel = 'Internal Transfer';
-                } else {
-                  typeLabel = 'Top-up';
-                }
-                
-                filterChips.add(_buildActiveFilterChip(
-                  label: typeLabel,
-                  onRemove: () => _removeTypeFilter(),
-                ));
-              }
-              
-              if (filter.direction != null) {
-                filterChips.add(_buildActiveFilterChip(
-                  label: filter.direction?.value == 'incoming' 
-                      ? 'Incoming' 
-                      : 'Outgoing',
-                  onRemove: () => _removeDirectionFilter(),
-                ));
-              }
-              
-              if (filter.status != null) {
-                String statusLabel;
-                if (filter.status?.value == 'completed') {
-                  statusLabel = 'Completed';
-                } else if (filter.status?.value == 'pending') {
-                  statusLabel = 'Pending';
-                } else {
-                  statusLabel = 'Failed';
-                }
-                
-                filterChips.add(_buildActiveFilterChip(
-                  label: statusLabel,
-                  onRemove: () => _removeStatusFilter(),
-                ));
-              }
-              
-              if (filter.startDate != null || filter.endDate != null) {
-                final DateFormat dateFormat = DateFormat('MMM d, yy');
-                String dateLabel = 'Date: ';
-                
-                if (filter.startDate != null && filter.endDate != null) {
-                  dateLabel += '${dateFormat.format(filter.startDate!)} - ${dateFormat.format(filter.endDate!)}';
-                } else if (filter.startDate != null) {
-                  dateLabel += 'From ${dateFormat.format(filter.startDate!)}';
-                } else if (filter.endDate != null) {
-                  dateLabel += 'Until ${dateFormat.format(filter.endDate!)}';
-                }
-                
-                filterChips.add(_buildActiveFilterChip(
-                  label: dateLabel,
-                  onRemove: () => _removeDateFilters(),
-                ));
-              }
-              
-              if (filter.counterpartyName != null && filter.counterpartyName!.isNotEmpty) {
-                filterChips.add(_buildActiveFilterChip(
-                  label: 'Name: ${filter.counterpartyName}',
-                  onRemove: () => _removeCounterpartyFilter(),
-                ));
-              }
-              
-              if (filter.minAmount != null || filter.maxAmount != null) {
-                String amountLabel = 'Amount: ';
-                
-                if (filter.minAmount != null && filter.maxAmount != null) {
-                  amountLabel += '${filter.minAmount} - ${filter.maxAmount}';
-                } else if (filter.minAmount != null) {
-                  amountLabel += '≥ ${filter.minAmount}';
-                } else if (filter.maxAmount != null) {
-                  amountLabel += '≤ ${filter.maxAmount}';
-                }
-                
-                filterChips.add(_buildActiveFilterChip(
-                  label: amountLabel,
-                  onRemove: () => _removeAmountFilters(),
-                ));
-              }
-              
-              if (filterChips.isEmpty) {
+                if (!state.isFilterActive || state.activeFilterLabels.isEmpty) {
                 return const SizedBox.shrink();
               }
               
@@ -405,7 +540,9 @@ class _HistoryViewState extends State<HistoryView> {
                           ),
                           const Spacer(),
                           TextButton(
-                            onPressed: _clearAllFilters,
+                              onPressed: () => context.read<TransactionsBloc>().add(
+                                const TransactionsEvent.clearAllFilters()
+                              ),
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                               minimumSize: Size.zero,
@@ -429,9 +566,11 @@ class _HistoryViewState extends State<HistoryView> {
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Row(
                         children: [
-                          for (int i = 0; i < filterChips.length; i++) ...[
-                            filterChips[i],
-                            if (i < filterChips.length - 1) 
+                            for (int i = 0; i < state.activeFilterLabels.length; i++) ...[
+                              _buildActiveFilterChip(
+                                filterLabel: state.activeFilterLabels[i],
+                              ),
+                              if (i < state.activeFilterLabels.length - 1) 
                               SizedBox(width: 8.w),
                           ],
                         ],
@@ -520,9 +659,7 @@ class _HistoryViewState extends State<HistoryView> {
                             ),
                             SizedBox(height: 32.h),
                             ElevatedButton(
-                              onPressed: () {
-                                _onRefresh();
-                              },
+                                onPressed: _onRefresh,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
                                 foregroundColor: Colors.white,
@@ -663,25 +800,42 @@ class _HistoryViewState extends State<HistoryView> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
 
   void _showFilterDialog() {
+    try {
+      final transactionsBloc = context.read<TransactionsBloc>();
+      
+      // Create a copy of the current filter to pass to the dialog
+      final currentFilter = transactionsBloc.state.filter;
+      
+      showDialog(
+        context: context,
+        builder: (dialogContext) => TransactionFilterDialog(
+          initialFilter: currentFilter,
+          showFilterPreservationOption: true,
+        ),
+      );
+    } catch (e) {
+      // If we can't access the bloc, create a new dialog without initial filter
     showDialog(
       context: context,
-      builder: (context) => TransactionFilterDialog(
-        initialFilter: context.read<TransactionsBloc>().state.filter,
+        builder: (dialogContext) => const TransactionFilterDialog(
+          showFilterPreservationOption: true,
       ),
     );
+    }
   }
   
   Widget _buildActiveFilterChip({
-    required String label,
-    required VoidCallback onRemove,
+    required FilterLabel filterLabel,
   }) {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
+    final transactionsBloc = context.read<TransactionsBloc>();
     
     return Container(
       decoration: BoxDecoration(
@@ -702,7 +856,7 @@ class _HistoryViewState extends State<HistoryView> {
           Padding(
             padding: EdgeInsets.only(left: 10.w, top: 6.h, bottom: 6.h),
             child: Text(
-              label,
+              filterLabel.label,
               style: GoogleFonts.outfit(
                 fontSize: 12.sp,
                 color: primaryColor,
@@ -716,7 +870,33 @@ class _HistoryViewState extends State<HistoryView> {
             shape: const CircleBorder(),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
-              onTap: onRemove,
+              onTap: () {
+                try {
+                  switch (filterLabel.type) {
+                    case FilterLabelType.type:
+                      transactionsBloc.add(const TransactionsEvent.removeFilterType());
+                      break;
+                    case FilterLabelType.direction:
+                      transactionsBloc.add(const TransactionsEvent.removeFilterDirection());
+                      break;
+                    case FilterLabelType.status:
+                      transactionsBloc.add(const TransactionsEvent.removeFilterStatus());
+                      break;
+                    case FilterLabelType.dates:
+                      transactionsBloc.add(const TransactionsEvent.removeFilterDates());
+                      break;
+                    case FilterLabelType.counterparty:
+                      transactionsBloc.add(const TransactionsEvent.removeFilterCounterparty());
+                      break;
+                    case FilterLabelType.amounts:
+                      transactionsBloc.add(const TransactionsEvent.removeFilterAmounts());
+                      break;
+                  }
+                } catch (e) {
+                  // Silently ignore errors when removing filters
+                  // This could happen if the bloc is closed or not available
+                }
+              },
               child: Padding(
                 padding: EdgeInsets.all(6.w),
                 child: Icon(
@@ -729,60 +909,6 @@ class _HistoryViewState extends State<HistoryView> {
           ),
         ],
       ),
-    );
-  }
-  
-  void _removeTypeFilter() {
-    final currentFilter = context.read<TransactionsBloc>().state.filter;
-    if (currentFilter == null) return;
-    
-    final updatedFilter = currentFilter.copyWith(type: null);
-    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
-  }
-  
-  void _removeDirectionFilter() {
-    final currentFilter = context.read<TransactionsBloc>().state.filter;
-    if (currentFilter == null) return;
-    
-    final updatedFilter = currentFilter.copyWith(direction: null);
-    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
-  }
-  
-  void _removeStatusFilter() {
-    final currentFilter = context.read<TransactionsBloc>().state.filter;
-    if (currentFilter == null) return;
-    
-    final updatedFilter = currentFilter.copyWith(status: null);
-    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
-  }
-  
-  void _removeDateFilters() {
-    final currentFilter = context.read<TransactionsBloc>().state.filter;
-    if (currentFilter == null) return;
-    
-    final updatedFilter = currentFilter.copyWith(startDate: null, endDate: null);
-    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
-  }
-  
-  void _removeCounterpartyFilter() {
-    final currentFilter = context.read<TransactionsBloc>().state.filter;
-    if (currentFilter == null) return;
-    
-    final updatedFilter = currentFilter.copyWith(counterpartyName: null);
-    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
-  }
-  
-  void _removeAmountFilters() {
-    final currentFilter = context.read<TransactionsBloc>().state.filter;
-    if (currentFilter == null) return;
-    
-    final updatedFilter = currentFilter.copyWith(minAmount: null, maxAmount: null);
-    context.read<TransactionsBloc>().add(TransactionsEvent.filtered(filter: updatedFilter));
-  }
-  
-  void _clearAllFilters() {
-    context.read<TransactionsBloc>().add(
-      TransactionsEvent.filtered(filter: TransactionFilter()),
     );
   }
 } 

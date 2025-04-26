@@ -23,6 +23,15 @@ mixin _$TransactionsEvent {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) =>
@@ -34,6 +43,15 @@ mixin _$TransactionsEvent {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) =>
@@ -45,6 +63,15 @@ mixin _$TransactionsEvent {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -57,6 +84,24 @@ mixin _$TransactionsEvent {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -69,6 +114,19 @@ mixin _$TransactionsEvent {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) =>
@@ -80,6 +138,19 @@ mixin _$TransactionsEvent {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -155,6 +226,15 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -169,6 +249,15 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -183,6 +272,15 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -201,6 +299,24 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -216,6 +332,19 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -230,6 +359,19 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -293,6 +435,15 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -307,6 +458,15 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -321,6 +481,15 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -339,6 +508,24 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -354,6 +541,19 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -368,6 +568,19 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -470,6 +683,15 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -484,6 +706,15 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -498,6 +729,15 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -516,6 +756,24 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -531,6 +789,19 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -545,6 +816,19 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -616,6 +900,15 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -630,6 +923,15 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -644,6 +946,15 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -662,6 +973,24 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -677,6 +1006,19 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -691,6 +1033,19 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -784,6 +1139,15 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -798,6 +1162,15 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -812,6 +1185,15 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -830,6 +1212,24 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -845,6 +1245,19 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -859,6 +1272,19 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -881,6 +1307,1923 @@ abstract class TransactionsAccountChanged implements TransactionsEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TransactionsAccountChangedImplCopyWith<_$TransactionsAccountChangedImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransactionsRemoveFilterTypeImplCopyWith<$Res> {
+  factory _$$TransactionsRemoveFilterTypeImplCopyWith(
+          _$TransactionsRemoveFilterTypeImpl value,
+          $Res Function(_$TransactionsRemoveFilterTypeImpl) then) =
+      __$$TransactionsRemoveFilterTypeImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsRemoveFilterTypeImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsRemoveFilterTypeImpl>
+    implements _$$TransactionsRemoveFilterTypeImplCopyWith<$Res> {
+  __$$TransactionsRemoveFilterTypeImplCopyWithImpl(
+      _$TransactionsRemoveFilterTypeImpl _value,
+      $Res Function(_$TransactionsRemoveFilterTypeImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsRemoveFilterTypeImpl
+    implements TransactionsRemoveFilterType {
+  const _$TransactionsRemoveFilterTypeImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.removeFilterType()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsRemoveFilterTypeImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return removeFilterType();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return removeFilterType?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterType != null) {
+      return removeFilterType();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return removeFilterType(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return removeFilterType?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterType != null) {
+      return removeFilterType(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsRemoveFilterType implements TransactionsEvent {
+  const factory TransactionsRemoveFilterType() =
+      _$TransactionsRemoveFilterTypeImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsRemoveFilterDirectionImplCopyWith<$Res> {
+  factory _$$TransactionsRemoveFilterDirectionImplCopyWith(
+          _$TransactionsRemoveFilterDirectionImpl value,
+          $Res Function(_$TransactionsRemoveFilterDirectionImpl) then) =
+      __$$TransactionsRemoveFilterDirectionImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsRemoveFilterDirectionImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsRemoveFilterDirectionImpl>
+    implements _$$TransactionsRemoveFilterDirectionImplCopyWith<$Res> {
+  __$$TransactionsRemoveFilterDirectionImplCopyWithImpl(
+      _$TransactionsRemoveFilterDirectionImpl _value,
+      $Res Function(_$TransactionsRemoveFilterDirectionImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsRemoveFilterDirectionImpl
+    implements TransactionsRemoveFilterDirection {
+  const _$TransactionsRemoveFilterDirectionImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.removeFilterDirection()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsRemoveFilterDirectionImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return removeFilterDirection();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return removeFilterDirection?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterDirection != null) {
+      return removeFilterDirection();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return removeFilterDirection(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return removeFilterDirection?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterDirection != null) {
+      return removeFilterDirection(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsRemoveFilterDirection implements TransactionsEvent {
+  const factory TransactionsRemoveFilterDirection() =
+      _$TransactionsRemoveFilterDirectionImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsRemoveFilterStatusImplCopyWith<$Res> {
+  factory _$$TransactionsRemoveFilterStatusImplCopyWith(
+          _$TransactionsRemoveFilterStatusImpl value,
+          $Res Function(_$TransactionsRemoveFilterStatusImpl) then) =
+      __$$TransactionsRemoveFilterStatusImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsRemoveFilterStatusImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsRemoveFilterStatusImpl>
+    implements _$$TransactionsRemoveFilterStatusImplCopyWith<$Res> {
+  __$$TransactionsRemoveFilterStatusImplCopyWithImpl(
+      _$TransactionsRemoveFilterStatusImpl _value,
+      $Res Function(_$TransactionsRemoveFilterStatusImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsRemoveFilterStatusImpl
+    implements TransactionsRemoveFilterStatus {
+  const _$TransactionsRemoveFilterStatusImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.removeFilterStatus()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsRemoveFilterStatusImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return removeFilterStatus();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return removeFilterStatus?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterStatus != null) {
+      return removeFilterStatus();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return removeFilterStatus(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return removeFilterStatus?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterStatus != null) {
+      return removeFilterStatus(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsRemoveFilterStatus implements TransactionsEvent {
+  const factory TransactionsRemoveFilterStatus() =
+      _$TransactionsRemoveFilterStatusImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsRemoveFilterDatesImplCopyWith<$Res> {
+  factory _$$TransactionsRemoveFilterDatesImplCopyWith(
+          _$TransactionsRemoveFilterDatesImpl value,
+          $Res Function(_$TransactionsRemoveFilterDatesImpl) then) =
+      __$$TransactionsRemoveFilterDatesImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsRemoveFilterDatesImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsRemoveFilterDatesImpl>
+    implements _$$TransactionsRemoveFilterDatesImplCopyWith<$Res> {
+  __$$TransactionsRemoveFilterDatesImplCopyWithImpl(
+      _$TransactionsRemoveFilterDatesImpl _value,
+      $Res Function(_$TransactionsRemoveFilterDatesImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsRemoveFilterDatesImpl
+    implements TransactionsRemoveFilterDates {
+  const _$TransactionsRemoveFilterDatesImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.removeFilterDates()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsRemoveFilterDatesImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return removeFilterDates();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return removeFilterDates?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterDates != null) {
+      return removeFilterDates();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return removeFilterDates(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return removeFilterDates?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterDates != null) {
+      return removeFilterDates(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsRemoveFilterDates implements TransactionsEvent {
+  const factory TransactionsRemoveFilterDates() =
+      _$TransactionsRemoveFilterDatesImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsRemoveFilterCounterpartyImplCopyWith<$Res> {
+  factory _$$TransactionsRemoveFilterCounterpartyImplCopyWith(
+          _$TransactionsRemoveFilterCounterpartyImpl value,
+          $Res Function(_$TransactionsRemoveFilterCounterpartyImpl) then) =
+      __$$TransactionsRemoveFilterCounterpartyImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsRemoveFilterCounterpartyImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsRemoveFilterCounterpartyImpl>
+    implements _$$TransactionsRemoveFilterCounterpartyImplCopyWith<$Res> {
+  __$$TransactionsRemoveFilterCounterpartyImplCopyWithImpl(
+      _$TransactionsRemoveFilterCounterpartyImpl _value,
+      $Res Function(_$TransactionsRemoveFilterCounterpartyImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsRemoveFilterCounterpartyImpl
+    implements TransactionsRemoveFilterCounterparty {
+  const _$TransactionsRemoveFilterCounterpartyImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.removeFilterCounterparty()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsRemoveFilterCounterpartyImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return removeFilterCounterparty();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return removeFilterCounterparty?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterCounterparty != null) {
+      return removeFilterCounterparty();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return removeFilterCounterparty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return removeFilterCounterparty?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterCounterparty != null) {
+      return removeFilterCounterparty(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsRemoveFilterCounterparty
+    implements TransactionsEvent {
+  const factory TransactionsRemoveFilterCounterparty() =
+      _$TransactionsRemoveFilterCounterpartyImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsRemoveFilterAmountsImplCopyWith<$Res> {
+  factory _$$TransactionsRemoveFilterAmountsImplCopyWith(
+          _$TransactionsRemoveFilterAmountsImpl value,
+          $Res Function(_$TransactionsRemoveFilterAmountsImpl) then) =
+      __$$TransactionsRemoveFilterAmountsImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsRemoveFilterAmountsImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsRemoveFilterAmountsImpl>
+    implements _$$TransactionsRemoveFilterAmountsImplCopyWith<$Res> {
+  __$$TransactionsRemoveFilterAmountsImplCopyWithImpl(
+      _$TransactionsRemoveFilterAmountsImpl _value,
+      $Res Function(_$TransactionsRemoveFilterAmountsImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsRemoveFilterAmountsImpl
+    implements TransactionsRemoveFilterAmounts {
+  const _$TransactionsRemoveFilterAmountsImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.removeFilterAmounts()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsRemoveFilterAmountsImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return removeFilterAmounts();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return removeFilterAmounts?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterAmounts != null) {
+      return removeFilterAmounts();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return removeFilterAmounts(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return removeFilterAmounts?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (removeFilterAmounts != null) {
+      return removeFilterAmounts(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsRemoveFilterAmounts implements TransactionsEvent {
+  const factory TransactionsRemoveFilterAmounts() =
+      _$TransactionsRemoveFilterAmountsImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsClearAllFiltersImplCopyWith<$Res> {
+  factory _$$TransactionsClearAllFiltersImplCopyWith(
+          _$TransactionsClearAllFiltersImpl value,
+          $Res Function(_$TransactionsClearAllFiltersImpl) then) =
+      __$$TransactionsClearAllFiltersImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsClearAllFiltersImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsClearAllFiltersImpl>
+    implements _$$TransactionsClearAllFiltersImplCopyWith<$Res> {
+  __$$TransactionsClearAllFiltersImplCopyWithImpl(
+      _$TransactionsClearAllFiltersImpl _value,
+      $Res Function(_$TransactionsClearAllFiltersImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
+  const _$TransactionsClearAllFiltersImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.clearAllFilters()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsClearAllFiltersImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return clearAllFilters();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return clearAllFilters?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (clearAllFilters != null) {
+      return clearAllFilters();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return clearAllFilters(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return clearAllFilters?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (clearAllFilters != null) {
+      return clearAllFilters(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsClearAllFilters implements TransactionsEvent {
+  const factory TransactionsClearAllFilters() =
+      _$TransactionsClearAllFiltersImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsScrolledToBottomImplCopyWith<$Res> {
+  factory _$$TransactionsScrolledToBottomImplCopyWith(
+          _$TransactionsScrolledToBottomImpl value,
+          $Res Function(_$TransactionsScrolledToBottomImpl) then) =
+      __$$TransactionsScrolledToBottomImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsScrolledToBottomImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsScrolledToBottomImpl>
+    implements _$$TransactionsScrolledToBottomImplCopyWith<$Res> {
+  __$$TransactionsScrolledToBottomImplCopyWithImpl(
+      _$TransactionsScrolledToBottomImpl _value,
+      $Res Function(_$TransactionsScrolledToBottomImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsScrolledToBottomImpl
+    implements TransactionsScrolledToBottom {
+  const _$TransactionsScrolledToBottomImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.scrolledToBottom()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsScrolledToBottomImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return scrolledToBottom();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return scrolledToBottom?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (scrolledToBottom != null) {
+      return scrolledToBottom();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return scrolledToBottom(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return scrolledToBottom?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (scrolledToBottom != null) {
+      return scrolledToBottom(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsScrolledToBottom implements TransactionsEvent {
+  const factory TransactionsScrolledToBottom() =
+      _$TransactionsScrolledToBottomImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsOpenAccountSelectionImplCopyWith<$Res> {
+  factory _$$TransactionsOpenAccountSelectionImplCopyWith(
+          _$TransactionsOpenAccountSelectionImpl value,
+          $Res Function(_$TransactionsOpenAccountSelectionImpl) then) =
+      __$$TransactionsOpenAccountSelectionImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsOpenAccountSelectionImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsOpenAccountSelectionImpl>
+    implements _$$TransactionsOpenAccountSelectionImplCopyWith<$Res> {
+  __$$TransactionsOpenAccountSelectionImplCopyWithImpl(
+      _$TransactionsOpenAccountSelectionImpl _value,
+      $Res Function(_$TransactionsOpenAccountSelectionImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsOpenAccountSelectionImpl
+    implements TransactionsOpenAccountSelection {
+  const _$TransactionsOpenAccountSelectionImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.openAccountSelection()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsOpenAccountSelectionImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+  }) {
+    return openAccountSelection();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+  }) {
+    return openAccountSelection?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (openAccountSelection != null) {
+      return openAccountSelection();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+  }) {
+    return openAccountSelection(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+  }) {
+    return openAccountSelection?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    required TResult orElse(),
+  }) {
+    if (openAccountSelection != null) {
+      return openAccountSelection(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsOpenAccountSelection implements TransactionsEvent {
+  const factory TransactionsOpenAccountSelection() =
+      _$TransactionsOpenAccountSelectionImpl;
 }
 
 /// @nodoc
@@ -972,6 +3315,15 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -986,6 +3338,15 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -1000,6 +3361,15 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -1018,6 +3388,24 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -1033,6 +3421,19 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -1047,6 +3448,19 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -1165,6 +3579,15 @@ class _$TransactionDetailSetFromCacheImpl
     required TResult Function(TransactionFilter filter) filtered,
     required TResult Function() loadMore,
     required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
   }) {
@@ -1179,6 +3602,15 @@ class _$TransactionDetailSetFromCacheImpl
     TResult? Function(TransactionFilter filter)? filtered,
     TResult? Function()? loadMore,
     TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
   }) {
@@ -1193,6 +3625,15 @@ class _$TransactionDetailSetFromCacheImpl
     TResult Function(TransactionFilter filter)? filtered,
     TResult Function()? loadMore,
     TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
     required TResult orElse(),
@@ -1211,6 +3652,24 @@ class _$TransactionDetailSetFromCacheImpl
     required TResult Function(TransactionsFiltered value) filtered,
     required TResult Function(TransactionsLoadMore value) loadMore,
     required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
@@ -1226,6 +3685,19 @@ class _$TransactionDetailSetFromCacheImpl
     TResult? Function(TransactionsFiltered value)? filtered,
     TResult? Function(TransactionsLoadMore value)? loadMore,
     TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
   }) {
@@ -1240,6 +3712,19 @@ class _$TransactionDetailSetFromCacheImpl
     TResult Function(TransactionsFiltered value)? filtered,
     TResult Function(TransactionsLoadMore value)? loadMore,
     TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
     required TResult orElse(),
@@ -1283,6 +3768,11 @@ mixin _$TransactionsState {
   int get pageSize => throw _privateConstructorUsedError;
   bool get hasReachedMax => throw _privateConstructorUsedError;
   TransactionFilter? get filter =>
+      throw _privateConstructorUsedError; // Filter related data
+  bool get isFilterActive => throw _privateConstructorUsedError;
+  List<FilterLabel> get activeFilterLabels =>
+      throw _privateConstructorUsedError; // UI state flags
+  bool get shouldOpenAccountSelector =>
       throw _privateConstructorUsedError; // Detail data
   Transaction? get selectedTransaction => throw _privateConstructorUsedError;
 
@@ -1310,6 +3800,9 @@ abstract class $TransactionsStateCopyWith<$Res> {
       int pageSize,
       bool hasReachedMax,
       TransactionFilter? filter,
+      bool isFilterActive,
+      List<FilterLabel> activeFilterLabels,
+      bool shouldOpenAccountSelector,
       Transaction? selectedTransaction});
 
   $PaginatedTransactionsCopyWith<$Res>? get paginatedTransactions;
@@ -1342,6 +3835,9 @@ class _$TransactionsStateCopyWithImpl<$Res, $Val extends TransactionsState>
     Object? pageSize = null,
     Object? hasReachedMax = null,
     Object? filter = freezed,
+    Object? isFilterActive = null,
+    Object? activeFilterLabels = null,
+    Object? shouldOpenAccountSelector = null,
     Object? selectedTransaction = freezed,
   }) {
     return _then(_value.copyWith(
@@ -1385,6 +3881,18 @@ class _$TransactionsStateCopyWithImpl<$Res, $Val extends TransactionsState>
           ? _value.filter
           : filter // ignore: cast_nullable_to_non_nullable
               as TransactionFilter?,
+      isFilterActive: null == isFilterActive
+          ? _value.isFilterActive
+          : isFilterActive // ignore: cast_nullable_to_non_nullable
+              as bool,
+      activeFilterLabels: null == activeFilterLabels
+          ? _value.activeFilterLabels
+          : activeFilterLabels // ignore: cast_nullable_to_non_nullable
+              as List<FilterLabel>,
+      shouldOpenAccountSelector: null == shouldOpenAccountSelector
+          ? _value.shouldOpenAccountSelector
+          : shouldOpenAccountSelector // ignore: cast_nullable_to_non_nullable
+              as bool,
       selectedTransaction: freezed == selectedTransaction
           ? _value.selectedTransaction
           : selectedTransaction // ignore: cast_nullable_to_non_nullable
@@ -1455,6 +3963,9 @@ abstract class _$$TransactionsStateImplCopyWith<$Res>
       int pageSize,
       bool hasReachedMax,
       TransactionFilter? filter,
+      bool isFilterActive,
+      List<FilterLabel> activeFilterLabels,
+      bool shouldOpenAccountSelector,
       Transaction? selectedTransaction});
 
   @override
@@ -1488,6 +3999,9 @@ class __$$TransactionsStateImplCopyWithImpl<$Res>
     Object? pageSize = null,
     Object? hasReachedMax = null,
     Object? filter = freezed,
+    Object? isFilterActive = null,
+    Object? activeFilterLabels = null,
+    Object? shouldOpenAccountSelector = null,
     Object? selectedTransaction = freezed,
   }) {
     return _then(_$TransactionsStateImpl(
@@ -1531,6 +4045,18 @@ class __$$TransactionsStateImplCopyWithImpl<$Res>
           ? _value.filter
           : filter // ignore: cast_nullable_to_non_nullable
               as TransactionFilter?,
+      isFilterActive: null == isFilterActive
+          ? _value.isFilterActive
+          : isFilterActive // ignore: cast_nullable_to_non_nullable
+              as bool,
+      activeFilterLabels: null == activeFilterLabels
+          ? _value._activeFilterLabels
+          : activeFilterLabels // ignore: cast_nullable_to_non_nullable
+              as List<FilterLabel>,
+      shouldOpenAccountSelector: null == shouldOpenAccountSelector
+          ? _value.shouldOpenAccountSelector
+          : shouldOpenAccountSelector // ignore: cast_nullable_to_non_nullable
+              as bool,
       selectedTransaction: freezed == selectedTransaction
           ? _value.selectedTransaction
           : selectedTransaction // ignore: cast_nullable_to_non_nullable
@@ -1553,7 +4079,11 @@ class _$TransactionsStateImpl implements _TransactionsState {
       this.pageSize = 5,
       this.hasReachedMax = false,
       this.filter,
-      this.selectedTransaction});
+      this.isFilterActive = false,
+      final List<FilterLabel> activeFilterLabels = const [],
+      this.shouldOpenAccountSelector = false,
+      this.selectedTransaction})
+      : _activeFilterLabels = activeFilterLabels;
 
 // List status
   @override
@@ -1587,13 +4117,31 @@ class _$TransactionsStateImpl implements _TransactionsState {
   final bool hasReachedMax;
   @override
   final TransactionFilter? filter;
+// Filter related data
+  @override
+  @JsonKey()
+  final bool isFilterActive;
+  final List<FilterLabel> _activeFilterLabels;
+  @override
+  @JsonKey()
+  List<FilterLabel> get activeFilterLabels {
+    if (_activeFilterLabels is EqualUnmodifiableListView)
+      return _activeFilterLabels;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_activeFilterLabels);
+  }
+
+// UI state flags
+  @override
+  @JsonKey()
+  final bool shouldOpenAccountSelector;
 // Detail data
   @override
   final Transaction? selectedTransaction;
 
   @override
   String toString() {
-    return 'TransactionsState(listStatus: $listStatus, listErrorMessage: $listErrorMessage, detailStatus: $detailStatus, detailErrorMessage: $detailErrorMessage, accountId: $accountId, paginatedTransactions: $paginatedTransactions, currentPage: $currentPage, pageSize: $pageSize, hasReachedMax: $hasReachedMax, filter: $filter, selectedTransaction: $selectedTransaction)';
+    return 'TransactionsState(listStatus: $listStatus, listErrorMessage: $listErrorMessage, detailStatus: $detailStatus, detailErrorMessage: $detailErrorMessage, accountId: $accountId, paginatedTransactions: $paginatedTransactions, currentPage: $currentPage, pageSize: $pageSize, hasReachedMax: $hasReachedMax, filter: $filter, isFilterActive: $isFilterActive, activeFilterLabels: $activeFilterLabels, shouldOpenAccountSelector: $shouldOpenAccountSelector, selectedTransaction: $selectedTransaction)';
   }
 
   @override
@@ -1620,6 +4168,13 @@ class _$TransactionsStateImpl implements _TransactionsState {
             (identical(other.hasReachedMax, hasReachedMax) ||
                 other.hasReachedMax == hasReachedMax) &&
             (identical(other.filter, filter) || other.filter == filter) &&
+            (identical(other.isFilterActive, isFilterActive) ||
+                other.isFilterActive == isFilterActive) &&
+            const DeepCollectionEquality()
+                .equals(other._activeFilterLabels, _activeFilterLabels) &&
+            (identical(other.shouldOpenAccountSelector,
+                    shouldOpenAccountSelector) ||
+                other.shouldOpenAccountSelector == shouldOpenAccountSelector) &&
             (identical(other.selectedTransaction, selectedTransaction) ||
                 other.selectedTransaction == selectedTransaction));
   }
@@ -1637,6 +4192,9 @@ class _$TransactionsStateImpl implements _TransactionsState {
       pageSize,
       hasReachedMax,
       filter,
+      isFilterActive,
+      const DeepCollectionEquality().hash(_activeFilterLabels),
+      shouldOpenAccountSelector,
       selectedTransaction);
 
   /// Create a copy of TransactionsState
@@ -1661,6 +4219,9 @@ abstract class _TransactionsState implements TransactionsState {
       final int pageSize,
       final bool hasReachedMax,
       final TransactionFilter? filter,
+      final bool isFilterActive,
+      final List<FilterLabel> activeFilterLabels,
+      final bool shouldOpenAccountSelector,
       final Transaction? selectedTransaction}) = _$TransactionsStateImpl;
 
 // List status
@@ -1683,7 +4244,13 @@ abstract class _TransactionsState implements TransactionsState {
   @override
   bool get hasReachedMax;
   @override
-  TransactionFilter? get filter; // Detail data
+  TransactionFilter? get filter; // Filter related data
+  @override
+  bool get isFilterActive;
+  @override
+  List<FilterLabel> get activeFilterLabels; // UI state flags
+  @override
+  bool get shouldOpenAccountSelector; // Detail data
   @override
   Transaction? get selectedTransaction;
 

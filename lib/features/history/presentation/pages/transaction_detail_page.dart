@@ -30,9 +30,7 @@ class TransactionDetailPage extends StatefulWidget {
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
   @override
   Widget build(BuildContext context) {
-    // If we already have a transaction in the widget, use it directly
     if (widget.transaction != null) {
-      // Get the TransactionsBloc from the parent and add the event
       context.read<TransactionsBloc>().add(
         TransactionsEvent.detailSetFromCache(transaction: widget.transaction!),
       );
@@ -41,8 +39,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         transaction: widget.transaction!,
       );
     }
-
-    // Otherwise use BlocBuilder to load and show the transaction
     return const TransactionDetailLoadingView();
   }
 }

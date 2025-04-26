@@ -17,6 +17,17 @@ class TransactionsEvent with _$TransactionsEvent {
     required int accountId,
   }) = TransactionsAccountChanged;
 
+  // Filter-related events
+  const factory TransactionsEvent.removeFilterType() = TransactionsRemoveFilterType;
+  const factory TransactionsEvent.removeFilterDirection() = TransactionsRemoveFilterDirection;
+  const factory TransactionsEvent.removeFilterStatus() = TransactionsRemoveFilterStatus;
+  const factory TransactionsEvent.removeFilterDates() = TransactionsRemoveFilterDates;
+  const factory TransactionsEvent.removeFilterCounterparty() = TransactionsRemoveFilterCounterparty;
+  const factory TransactionsEvent.removeFilterAmounts() = TransactionsRemoveFilterAmounts;
+  const factory TransactionsEvent.clearAllFilters() = TransactionsClearAllFilters;
+  const factory TransactionsEvent.scrolledToBottom() = TransactionsScrolledToBottom;
+  const factory TransactionsEvent.openAccountSelection() = TransactionsOpenAccountSelection;
+
   // Detail events
   const factory TransactionsEvent.detailFetched({
     required int transactionId,

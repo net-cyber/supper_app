@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
@@ -35,6 +36,17 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     // Detail events
     on<TransactionDetailFetched>(_onTransactionDetailFetched);
     on<TransactionDetailSetFromCache>(_onTransactionDetailSetFromCache);
+    
+    // New filter-related events
+    on<TransactionsRemoveFilterType>(_onRemoveFilterType);
+    on<TransactionsRemoveFilterDirection>(_onRemoveFilterDirection);
+    on<TransactionsRemoveFilterStatus>(_onRemoveFilterStatus);
+    on<TransactionsRemoveFilterDates>(_onRemoveFilterDates);
+    on<TransactionsRemoveFilterCounterparty>(_onRemoveFilterCounterparty);
+    on<TransactionsRemoveFilterAmounts>(_onRemoveFilterAmounts);
+    on<TransactionsClearAllFilters>(_onClearAllFilters);
+    on<TransactionsScrolledToBottom>(_onScrolledToBottom);
+    on<TransactionsOpenAccountSelection>(_onOpenAccountSelection);
   }
 
   // Static method to initialize the state with the account ID from AccountsBloc
@@ -149,6 +161,8 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
               currentPage: 1,
               hasReachedMax: paginatedTransactions.hasReachedMax || filteredTransactions.isEmpty,
               listErrorMessage: '',
+              activeFilterLabels: _generateFilterLabels(state.filter),
+              isFilterActive: _isFilterActive(state.filter),
             ),
           );
         },
@@ -181,12 +195,17 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     TransactionsFiltered event,
     Emitter<TransactionsState> emit,
   ) async {
+    final activeFilterLabels = _generateFilterLabels(event.filter);
+    final isFilterActive = _isFilterActive(event.filter);
+    
     emit(state.copyWith(
       filter: event.filter,
       listStatus: TransactionsListStatus.loading,
       paginatedTransactions: null,
       currentPage: 1,
       hasReachedMax: false,
+      activeFilterLabels: activeFilterLabels,
+      isFilterActive: isFilterActive,
     ));
     
     try {
@@ -485,6 +504,102 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     );
   }
 
+  // New filter event handlers
+  void _onRemoveFilterType(
+    TransactionsRemoveFilterType event,
+    Emitter<TransactionsState> emit,
+  ) {
+    final currentFilter = state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(type: null);
+    add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _onRemoveFilterDirection(
+    TransactionsRemoveFilterDirection event,
+    Emitter<TransactionsState> emit,
+  ) {
+    final currentFilter = state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(direction: null);
+    add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _onRemoveFilterStatus(
+    TransactionsRemoveFilterStatus event,
+    Emitter<TransactionsState> emit,
+  ) {
+    final currentFilter = state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(status: null);
+    add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _onRemoveFilterDates(
+    TransactionsRemoveFilterDates event,
+    Emitter<TransactionsState> emit,
+  ) {
+    final currentFilter = state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(startDate: null, endDate: null);
+    add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _onRemoveFilterCounterparty(
+    TransactionsRemoveFilterCounterparty event,
+    Emitter<TransactionsState> emit,
+  ) {
+    final currentFilter = state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(counterpartyName: null);
+    add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _onRemoveFilterAmounts(
+    TransactionsRemoveFilterAmounts event,
+    Emitter<TransactionsState> emit,
+  ) {
+    final currentFilter = state.filter;
+    if (currentFilter == null) return;
+    
+    final updatedFilter = currentFilter.copyWith(minAmount: null, maxAmount: null);
+    add(TransactionsEvent.filtered(filter: updatedFilter));
+  }
+  
+  void _onClearAllFilters(
+    TransactionsClearAllFilters event,
+    Emitter<TransactionsState> emit,
+  ) {
+    add(TransactionsEvent.filtered(filter: TransactionFilter()));
+  }
+  
+  void _onScrolledToBottom(
+    TransactionsScrolledToBottom event,
+    Emitter<TransactionsState> emit,
+  ) {
+    if (!state.hasReachedMax) {
+      add(const TransactionsEvent.loadMore());
+    }
+  }
+  
+  void _onOpenAccountSelection(
+    TransactionsOpenAccountSelection event,
+    Emitter<TransactionsState> emit,
+  ) {
+    emit(state.copyWith(shouldOpenAccountSelector: true));
+  }
+
+  void accountSelectorClosed() {
+    if (state.shouldOpenAccountSelector) {
+      emit(state.copyWith(shouldOpenAccountSelector: false));
+    }
+  }
+
   // Add this new method to apply local filtering
   List<Transaction> _applyLocalFilter(List<Transaction> transactions, TransactionFilter filter) {
     return transactions.where((transaction) {
@@ -534,5 +649,112 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       
       return true;
     }).toList();
+  }
+  
+  // Helper methods for filtering
+  List<FilterLabel> _generateFilterLabels(TransactionFilter? filter) {
+    final List<FilterLabel> labels = [];
+    
+    if (filter == null) {
+      return labels;
+    }
+    
+    if (filter.type != null) {
+      String typeLabel;
+      if (filter.type?.value == 'external_transfer') {
+        typeLabel = 'External Transfer';
+      } else if (filter.type?.value == 'internal_transfer') {
+        typeLabel = 'Internal Transfer';
+      } else {
+        typeLabel = 'Top-up';
+      }
+      
+      labels.add(FilterLabel(
+        label: typeLabel,
+        type: FilterLabelType.type,
+      ));
+    }
+    
+    if (filter.direction != null) {
+      labels.add(FilterLabel(
+        label: filter.direction?.value == 'incoming' ? 'Incoming' : 'Outgoing',
+        type: FilterLabelType.direction,
+      ));
+    }
+    
+    if (filter.status != null) {
+      String statusLabel;
+      if (filter.status?.value == 'completed') {
+        statusLabel = 'Completed';
+      } else if (filter.status?.value == 'pending') {
+        statusLabel = 'Pending';
+      } else {
+        statusLabel = 'Failed';
+      }
+      
+      labels.add(FilterLabel(
+        label: statusLabel,
+        type: FilterLabelType.status,
+      ));
+    }
+    
+    if (filter.startDate != null || filter.endDate != null) {
+      final DateFormat dateFormat = DateFormat('MMM d, yy');
+      String dateLabel = 'Date: ';
+      
+      if (filter.startDate != null && filter.endDate != null) {
+        dateLabel += '${dateFormat.format(filter.startDate!)} - ${dateFormat.format(filter.endDate!)}';
+      } else if (filter.startDate != null) {
+        dateLabel += 'From ${dateFormat.format(filter.startDate!)}';
+      } else if (filter.endDate != null) {
+        dateLabel += 'Until ${dateFormat.format(filter.endDate!)}';
+      }
+      
+      labels.add(FilterLabel(
+        label: dateLabel,
+        type: FilterLabelType.dates,
+      ));
+    }
+    
+    if (filter.counterpartyName != null && filter.counterpartyName!.isNotEmpty) {
+      labels.add(FilterLabel(
+        label: 'Name: ${filter.counterpartyName}',
+        type: FilterLabelType.counterparty,
+      ));
+    }
+    
+    if (filter.minAmount != null || filter.maxAmount != null) {
+      String amountLabel = 'Amount: ';
+      
+      if (filter.minAmount != null && filter.maxAmount != null) {
+        amountLabel += '${filter.minAmount} - ${filter.maxAmount}';
+      } else if (filter.minAmount != null) {
+        amountLabel += '≥ ${filter.minAmount}';
+      } else if (filter.maxAmount != null) {
+        amountLabel += '≤ ${filter.maxAmount}';
+      }
+      
+      labels.add(FilterLabel(
+        label: amountLabel,
+        type: FilterLabelType.amounts,
+      ));
+    }
+    
+    return labels;
+  }
+  
+  bool _isFilterActive(TransactionFilter? filter) {
+    if (filter == null) {
+      return false;
+    }
+    
+    return filter.type != null ||
+           filter.direction != null ||
+           filter.status != null ||
+           filter.startDate != null ||
+           filter.endDate != null ||
+           (filter.counterpartyName != null && filter.counterpartyName!.isNotEmpty) ||
+           filter.minAmount != null ||
+           filter.maxAmount != null;
   }
 } 
