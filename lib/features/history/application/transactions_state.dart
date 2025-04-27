@@ -30,7 +30,7 @@ class FilterLabel {
   final String label;
   final FilterLabelType type;
   
-  FilterLabel({
+  const FilterLabel({
     required this.label,
     required this.type,
   });
@@ -40,33 +40,52 @@ class FilterLabel {
 class TransactionsState with _$TransactionsState {
   const factory TransactionsState({
     // List status
-    @Default(TransactionsListStatus.initial) TransactionsListStatus listStatus,
-    @Default('') String listErrorMessage,
+    required TransactionsListStatus listStatus,
+    required PaginatedTransactions? paginatedTransactions,
+    required int currentPage,
+    required int pageSize,
+    required bool hasReachedMax,
+    required String listErrorMessage,
+    required int accountId,
+    
+    // Filter-related state
+    required TransactionFilter? filter,
+    required List<FilterLabel> activeFilterLabels,
+    required bool isFilterActive,
+    required bool shouldOpenAccountSelector,
     
     // Detail status
-    @Default(TransactionsDetailStatus.initial) TransactionsDetailStatus detailStatus,
-    @Default('') String detailErrorMessage,
+    required TransactionsDetailStatus detailStatus,
+    required Transaction? selectedTransaction,
+    required String detailErrorMessage,
     
-    // Common data
-    @Default(0) int accountId,
-    
-    // List data
-    PaginatedTransactions? paginatedTransactions,
-    @Default(1) int currentPage,
-    @Default(5) int pageSize,
-    @Default(false) bool hasReachedMax,
-    TransactionFilter? filter,
-    
-    // Filter related data
-    @Default(false) bool isFilterActive,
-    @Default([]) List<FilterLabel> activeFilterLabels,
-    
-    // UI state flags
-    @Default(false) bool shouldOpenAccountSelector,
-    
-    // Detail data
-    Transaction? selectedTransaction,
+    // New UI-related state properties
+    required bool shouldPreserveFilters,
+    required bool shouldShowFilterDialog,
+    required bool isShareInProgress,
   }) = _TransactionsState;
 
-  factory TransactionsState.initial() => const TransactionsState();
+  factory TransactionsState.initial() => const TransactionsState(
+        listStatus: TransactionsListStatus.initial,
+        paginatedTransactions: null,
+        currentPage: 1,
+        pageSize: 20,
+        hasReachedMax: false,
+        listErrorMessage: '',
+        accountId: 0,
+        
+        filter: null,
+        activeFilterLabels: [],
+        isFilterActive: false,
+        shouldOpenAccountSelector: false,
+        
+        detailStatus: TransactionsDetailStatus.initial,
+        selectedTransaction: null,
+        detailErrorMessage: '',
+        
+        // Initialize new UI-related state properties
+        shouldPreserveFilters: false,
+        shouldShowFilterDialog: false,
+        isShareInProgress: false,
+      );
 } 

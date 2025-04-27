@@ -37,4 +37,31 @@ class TransactionsEvent with _$TransactionsEvent {
   const factory TransactionsEvent.detailSetFromCache({
     required Transaction transaction,
   }) = TransactionDetailSetFromCache;
+  
+  // New UI-specific events to move logic from UI to bloc
+  const factory TransactionsEvent.saveFilterPreservation({
+    required bool preserveFilters,
+  }) = TransactionsSaveFilterPreservation;
+  
+  const factory TransactionsEvent.saveLastAppliedFilter({
+    required TransactionFilter filter,
+  }) = TransactionsSaveLastAppliedFilter;
+  
+  const factory TransactionsEvent.loadLastAppliedFilter() = TransactionsLoadLastAppliedFilter;
+  
+  const factory TransactionsEvent.loadFilterPreservationSetting() = TransactionsLoadFilterPreservationSetting;
+  
+  const factory TransactionsEvent.shareReceipt({
+    required Transaction transaction,
+  }) = TransactionsShareReceipt;
+  
+  const factory TransactionsEvent.accountSelectorClosed() = TransactionsAccountSelectorClosed;
+  
+  const factory TransactionsEvent.showFilterDialog() = TransactionsShowFilterDialog;
+  
+  // Scroll-related event
+  const factory TransactionsEvent.scrollPositionChanged({
+    required double scrollOffset,
+    required double maxScrollExtent,
+  }) = TransactionsScrollPositionChanged;
 } 

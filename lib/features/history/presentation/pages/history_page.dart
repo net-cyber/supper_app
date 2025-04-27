@@ -53,10 +53,6 @@ class _HistoryPageContent extends StatefulWidget {
 }
 
 class _HistoryPageContentState extends State<_HistoryPageContent> {
-  bool _shouldPreserveFilters = false;
-  static const String _preserveFiltersKey = 'preserve_transaction_filters';
-  static const String _lastFilterKey = 'last_transaction_filter';
-  
   @override
   void initState() {
     super.initState();
@@ -67,119 +63,16 @@ class _HistoryPageContentState extends State<_HistoryPageContent> {
   Future<void> _initializeFiltersAndData() async {
     if (!mounted) return;
     
-    await _loadFilterPreservationSetting();
-    
     final bloc = context.read<TransactionsBloc>();
     
-    // Reset any active filters when entering the page, but only if not preserving filters
-    if (bloc.state.isFilterActive && !_shouldPreserveFilters) {
-      bloc.add(const TransactionsEvent.clearAllFilters());
-    } else if (_shouldPreserveFilters) {
-      // If we should preserve filters, try to load the last filter
-      final savedFilter = await _loadLastAppliedFilter();
-      if (savedFilter != null) {
-        bloc.add(TransactionsEvent.filtered(filter: savedFilter));
-        return; // Don't proceed with regular fetch since we're applying a filter
-      }
-    }
+    // Load filter preservation setting from SharedPreferences via bloc
+    bloc.add(const TransactionsEvent.loadFilterPreservationSetting());
     
     // Then initialize with the appropriate account or fetch data
     if (widget.accountId > 0) {
       bloc.add(TransactionsEvent.accountChanged(accountId: widget.accountId));
     } else {
       bloc.add(const TransactionsEvent.fetched());
-    }
-  }
-  
-  Future<void> _loadFilterPreservationSetting() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      _shouldPreserveFilters = prefs.getBool(_preserveFiltersKey) ?? false;
-    } catch (e) {
-      // In case of error, default to false
-      _shouldPreserveFilters = false;
-    }
-  }
-  
-  Future<TransactionFilter?> _loadLastAppliedFilter() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final filterString = prefs.getString(_lastFilterKey);
-      
-      if (filterString == null || filterString.isEmpty) {
-        return null;
-      }
-      
-      // Parse the JSON and work with it directly without type casting the map
-      final dynamic json = jsonDecode(filterString);
-      
-      // Extract type
-      TransactionType? type;
-      final typeValue = json['type']?.toString();
-      if (typeValue == 'external_transfer') {
-        type = TransactionType.externalTransfer;
-      } else if (typeValue == 'internal_transfer') {
-        type = TransactionType.internalTransfer;
-      } else if (typeValue == 'topup') {
-        type = TransactionType.topUp;
-      }
-      
-      // Extract direction
-      TransactionDirection? direction;
-      final directionValue = json['direction']?.toString();
-      if (directionValue == 'incoming') {
-        direction = TransactionDirection.incoming;
-      } else if (directionValue == 'outgoing') {
-        direction = TransactionDirection.outgoing;
-      }
-      
-      // Extract status
-      TransactionStatus? status;
-      final statusValue = json['status']?.toString();
-      if (statusValue == 'completed') {
-        status = TransactionStatus.completed;
-      } else if (statusValue == 'pending') {
-        status = TransactionStatus.pending;
-      } else if (statusValue == 'failed') {
-        status = TransactionStatus.failed;
-      }
-      
-      // Extract dates
-      DateTime? startDate, endDate;
-      if (json['startDate'] is int) {
-        startDate = DateTime.fromMillisecondsSinceEpoch(json['startDate'] as int);
-      }
-      if (json['endDate'] is int) {
-        endDate = DateTime.fromMillisecondsSinceEpoch(json['endDate'] as int);
-      }
-      
-      // Extract other fields
-      String? counterpartyName = json['counterpartyName']?.toString();
-      
-      double? minAmount;
-      if (json['minAmount'] != null) {
-        minAmount = double.tryParse(json['minAmount'].toString());
-      }
-      
-      double? maxAmount;
-      if (json['maxAmount'] != null) {
-        maxAmount = double.tryParse(json['maxAmount'].toString());
-      }
-      
-      // Create and return the filter
-      return TransactionFilter(
-        type: type,
-        direction: direction,
-        status: status,
-        startDate: startDate,
-        endDate: endDate,
-        counterpartyName: counterpartyName,
-        minAmount: minAmount,
-        maxAmount: maxAmount,
-      );
-    } catch (e) {
-      // Return null in case of any error
-      return null;
     }
   }
   
@@ -251,146 +144,7 @@ class _HistoryViewState extends State<HistoryView> {
   }
 
   void _onFilterByAccount() {
-    try {
-      final bloc = context.read<TransactionsBloc>();
-      final state = bloc.state;
-      
-      if (state.accountId > 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Using selected account ID: ${state.accountId}',
-              style: GoogleFonts.outfit(),
-            ),
-            duration: const Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        
-        bloc.add(TransactionsEvent.accountChanged(accountId: state.accountId));
-      } else {
-        bloc.add(const TransactionsEvent.openAccountSelection());
-      }
-    } catch (e) {
-      // Provide feedback if account filtering fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Unable to filter by account. Please try again.',
-            style: GoogleFonts.outfit(),
-          ),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
-  
-  void _showAccountSelectionDialog() {
-    final accountsState = context.read<AccountsBloc>().state;
-    final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
-    final transactionsBloc = context.read<TransactionsBloc>();
-    
-    if (accountsState.accounts.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'No accounts available to select',
-            style: GoogleFonts.outfit(),
-          ),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Select Account',
-          style: GoogleFonts.outfit(
-            fontWeight: FontWeight.w600,
-            fontSize: 18.sp,
-            color: primaryColor,
-          ),
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 250.h,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: accountsState.accounts.length,
-            itemBuilder: (context, index) {
-              final account = accountsState.accounts[index];
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(color: primaryColor.withOpacity(0.1)),
-                ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                  title: Text(
-                    account.owner,
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ID: ${account.id}',
-                    style: GoogleFonts.outfit(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                trailing: Text(
-                  '${account.currency} ${account.balance}',
-                    style: GoogleFonts.outfit(
-                    fontWeight: FontWeight.bold,
-                      fontSize: 15.sp,
-                      color: primaryColor,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  transactionsBloc.accountSelectorClosed();
-                  
-                  transactionsBloc.add(
-                    TransactionsEvent.accountChanged(accountId: account.id)
-                  );
-                },
-                ),
-              );
-            },
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              transactionsBloc.accountSelectorClosed();
-            },
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.outfit(
-                color: primaryColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 15.sp,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    context.read<TransactionsBloc>().add(const TransactionsEvent.openAccountSelection());
   }
 
   @override
@@ -400,10 +154,17 @@ class _HistoryViewState extends State<HistoryView> {
 
     return BlocListener<TransactionsBloc, TransactionsState>(
       listenWhen: (previous, current) => 
-        previous.shouldOpenAccountSelector != current.shouldOpenAccountSelector,
+        previous.shouldOpenAccountSelector != current.shouldOpenAccountSelector ||
+        previous.shouldShowFilterDialog != current.shouldShowFilterDialog,
       listener: (context, state) {
         if (state.shouldOpenAccountSelector) {
           _showAccountSelectionDialog();
+        }
+        
+        if (state.shouldShowFilterDialog) {
+          _showFilterDialog();
+          // Reset flag after showing dialog
+          context.read<TransactionsBloc>().hideFilterDialog();
         }
       },
       child: Scaffold(
@@ -433,7 +194,9 @@ class _HistoryViewState extends State<HistoryView> {
                 children: [
                   FilterButton(
                     icon: Icons.filter_list,
-                    onPressed: _showFilterDialog,
+                      onPressed: () => context.read<TransactionsBloc>().add(
+                        const TransactionsEvent.showFilterDialog(),
+                      ),
                   ),
                     if (state.isFilterActive)
                     Positioned(
@@ -463,7 +226,6 @@ class _HistoryViewState extends State<HistoryView> {
                 return FilterButton(
                   icon: Icons.clear_all,
                   onPressed: () {
-                    try {
                       context.read<TransactionsBloc>().add(
                         const TransactionsEvent.clearAllFilters()
                       );
@@ -478,9 +240,6 @@ class _HistoryViewState extends State<HistoryView> {
                           behavior: SnackBarBehavior.floating,
                         ),
                       );
-                    } catch (e) {
-                      // Handle error
-                    }
                   },
               );
             },
@@ -830,12 +589,123 @@ class _HistoryViewState extends State<HistoryView> {
     }
   }
   
+  void _showAccountSelectionDialog() {
+    final accountsState = context.read<AccountsBloc>().state;
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final transactionsBloc = context.read<TransactionsBloc>();
+    
+    if (accountsState.accounts.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No accounts available to select',
+            style: GoogleFonts.outfit(),
+          ),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Select Account',
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.w600,
+            fontSize: 18.sp,
+            color: primaryColor,
+          ),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 250.h,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: accountsState.accounts.length,
+            itemBuilder: (context, index) {
+              final account = accountsState.accounts[index];
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(color: primaryColor.withOpacity(0.1)),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  title: Text(
+                    account.owner,
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'ID: ${account.id}',
+                    style: GoogleFonts.outfit(
+                      fontSize: 12.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  trailing: Text(
+                    '${account.currency} ${account.balance}',
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.sp,
+                      color: primaryColor,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    transactionsBloc.add(const TransactionsEvent.accountSelectorClosed());
+                    
+                    transactionsBloc.add(
+                      TransactionsEvent.accountChanged(accountId: account.id)
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.r),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              transactionsBloc.add(const TransactionsEvent.accountSelectorClosed());
+            },
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.outfit(
+                color: primaryColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 15.sp,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
   Widget _buildActiveFilterChip({
-    required FilterLabel filterLabel,
+    required dynamic filterLabel,
   }) {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
     final transactionsBloc = context.read<TransactionsBloc>();
+    
+    // Make sure we have the right properties
+    final String label = filterLabel.label as String;
+    final FilterLabelType type = filterLabel.type as FilterLabelType;
     
     return Container(
       decoration: BoxDecoration(
@@ -856,7 +726,7 @@ class _HistoryViewState extends State<HistoryView> {
           Padding(
             padding: EdgeInsets.only(left: 10.w, top: 6.h, bottom: 6.h),
             child: Text(
-              filterLabel.label,
+              label,
               style: GoogleFonts.outfit(
                 fontSize: 12.sp,
                 color: primaryColor,
@@ -872,7 +742,7 @@ class _HistoryViewState extends State<HistoryView> {
             child: InkWell(
               onTap: () {
                 try {
-                  switch (filterLabel.type) {
+                  switch (type) {
                     case FilterLabelType.type:
                       transactionsBloc.add(const TransactionsEvent.removeFilterType());
                       break;

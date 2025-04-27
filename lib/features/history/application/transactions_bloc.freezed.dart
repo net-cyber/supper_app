@@ -34,6 +34,15 @@ mixin _$TransactionsEvent {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -54,6 +63,15 @@ mixin _$TransactionsEvent {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -74,6 +92,15 @@ mixin _$TransactionsEvent {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -105,6 +132,21 @@ mixin _$TransactionsEvent {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -129,6 +171,20 @@ mixin _$TransactionsEvent {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -153,6 +209,20 @@ mixin _$TransactionsEvent {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -237,6 +307,15 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return fetched();
   }
@@ -260,6 +339,15 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return fetched?.call();
   }
@@ -283,6 +371,15 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (fetched != null) {
@@ -320,6 +417,21 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return fetched(this);
   }
@@ -347,6 +459,20 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return fetched?.call(this);
   }
@@ -374,6 +500,20 @@ class _$TransactionsFetchedImpl implements TransactionsFetched {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (fetched != null) {
@@ -446,6 +586,15 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return refreshed();
   }
@@ -469,6 +618,15 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return refreshed?.call();
   }
@@ -492,6 +650,15 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (refreshed != null) {
@@ -529,6 +696,21 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return refreshed(this);
   }
@@ -556,6 +738,20 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return refreshed?.call(this);
   }
@@ -583,6 +779,20 @@ class _$TransactionsRefreshedImpl implements TransactionsRefreshed {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (refreshed != null) {
@@ -694,6 +904,15 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return filtered(filter);
   }
@@ -717,6 +936,15 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return filtered?.call(filter);
   }
@@ -740,6 +968,15 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (filtered != null) {
@@ -777,6 +1014,21 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return filtered(this);
   }
@@ -804,6 +1056,20 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return filtered?.call(this);
   }
@@ -831,6 +1097,20 @@ class _$TransactionsFilteredImpl implements TransactionsFiltered {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (filtered != null) {
@@ -911,6 +1191,15 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return loadMore();
   }
@@ -934,6 +1223,15 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return loadMore?.call();
   }
@@ -957,6 +1255,15 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (loadMore != null) {
@@ -994,6 +1301,21 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return loadMore(this);
   }
@@ -1021,6 +1343,20 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return loadMore?.call(this);
   }
@@ -1048,6 +1384,20 @@ class _$TransactionsLoadMoreImpl implements TransactionsLoadMore {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (loadMore != null) {
@@ -1150,6 +1500,15 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return accountChanged(accountId);
   }
@@ -1173,6 +1532,15 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return accountChanged?.call(accountId);
   }
@@ -1196,6 +1564,15 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (accountChanged != null) {
@@ -1233,6 +1610,21 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return accountChanged(this);
   }
@@ -1260,6 +1652,20 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return accountChanged?.call(this);
   }
@@ -1287,6 +1693,20 @@ class _$TransactionsAccountChangedImpl implements TransactionsAccountChanged {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (accountChanged != null) {
@@ -1371,6 +1791,15 @@ class _$TransactionsRemoveFilterTypeImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return removeFilterType();
   }
@@ -1394,6 +1823,15 @@ class _$TransactionsRemoveFilterTypeImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return removeFilterType?.call();
   }
@@ -1417,6 +1855,15 @@ class _$TransactionsRemoveFilterTypeImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterType != null) {
@@ -1454,6 +1901,21 @@ class _$TransactionsRemoveFilterTypeImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return removeFilterType(this);
   }
@@ -1481,6 +1943,20 @@ class _$TransactionsRemoveFilterTypeImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return removeFilterType?.call(this);
   }
@@ -1508,6 +1984,20 @@ class _$TransactionsRemoveFilterTypeImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterType != null) {
@@ -1584,6 +2074,15 @@ class _$TransactionsRemoveFilterDirectionImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return removeFilterDirection();
   }
@@ -1607,6 +2106,15 @@ class _$TransactionsRemoveFilterDirectionImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return removeFilterDirection?.call();
   }
@@ -1630,6 +2138,15 @@ class _$TransactionsRemoveFilterDirectionImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterDirection != null) {
@@ -1667,6 +2184,21 @@ class _$TransactionsRemoveFilterDirectionImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return removeFilterDirection(this);
   }
@@ -1694,6 +2226,20 @@ class _$TransactionsRemoveFilterDirectionImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return removeFilterDirection?.call(this);
   }
@@ -1721,6 +2267,20 @@ class _$TransactionsRemoveFilterDirectionImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterDirection != null) {
@@ -1797,6 +2357,15 @@ class _$TransactionsRemoveFilterStatusImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return removeFilterStatus();
   }
@@ -1820,6 +2389,15 @@ class _$TransactionsRemoveFilterStatusImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return removeFilterStatus?.call();
   }
@@ -1843,6 +2421,15 @@ class _$TransactionsRemoveFilterStatusImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterStatus != null) {
@@ -1880,6 +2467,21 @@ class _$TransactionsRemoveFilterStatusImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return removeFilterStatus(this);
   }
@@ -1907,6 +2509,20 @@ class _$TransactionsRemoveFilterStatusImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return removeFilterStatus?.call(this);
   }
@@ -1934,6 +2550,20 @@ class _$TransactionsRemoveFilterStatusImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterStatus != null) {
@@ -2010,6 +2640,15 @@ class _$TransactionsRemoveFilterDatesImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return removeFilterDates();
   }
@@ -2033,6 +2672,15 @@ class _$TransactionsRemoveFilterDatesImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return removeFilterDates?.call();
   }
@@ -2056,6 +2704,15 @@ class _$TransactionsRemoveFilterDatesImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterDates != null) {
@@ -2093,6 +2750,21 @@ class _$TransactionsRemoveFilterDatesImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return removeFilterDates(this);
   }
@@ -2120,6 +2792,20 @@ class _$TransactionsRemoveFilterDatesImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return removeFilterDates?.call(this);
   }
@@ -2147,6 +2833,20 @@ class _$TransactionsRemoveFilterDatesImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterDates != null) {
@@ -2223,6 +2923,15 @@ class _$TransactionsRemoveFilterCounterpartyImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return removeFilterCounterparty();
   }
@@ -2246,6 +2955,15 @@ class _$TransactionsRemoveFilterCounterpartyImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return removeFilterCounterparty?.call();
   }
@@ -2269,6 +2987,15 @@ class _$TransactionsRemoveFilterCounterpartyImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterCounterparty != null) {
@@ -2306,6 +3033,21 @@ class _$TransactionsRemoveFilterCounterpartyImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return removeFilterCounterparty(this);
   }
@@ -2333,6 +3075,20 @@ class _$TransactionsRemoveFilterCounterpartyImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return removeFilterCounterparty?.call(this);
   }
@@ -2360,6 +3116,20 @@ class _$TransactionsRemoveFilterCounterpartyImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterCounterparty != null) {
@@ -2437,6 +3207,15 @@ class _$TransactionsRemoveFilterAmountsImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return removeFilterAmounts();
   }
@@ -2460,6 +3239,15 @@ class _$TransactionsRemoveFilterAmountsImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return removeFilterAmounts?.call();
   }
@@ -2483,6 +3271,15 @@ class _$TransactionsRemoveFilterAmountsImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterAmounts != null) {
@@ -2520,6 +3317,21 @@ class _$TransactionsRemoveFilterAmountsImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return removeFilterAmounts(this);
   }
@@ -2547,6 +3359,20 @@ class _$TransactionsRemoveFilterAmountsImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return removeFilterAmounts?.call(this);
   }
@@ -2574,6 +3400,20 @@ class _$TransactionsRemoveFilterAmountsImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (removeFilterAmounts != null) {
@@ -2649,6 +3489,15 @@ class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return clearAllFilters();
   }
@@ -2672,6 +3521,15 @@ class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return clearAllFilters?.call();
   }
@@ -2695,6 +3553,15 @@ class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (clearAllFilters != null) {
@@ -2732,6 +3599,21 @@ class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return clearAllFilters(this);
   }
@@ -2759,6 +3641,20 @@ class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return clearAllFilters?.call(this);
   }
@@ -2786,6 +3682,20 @@ class _$TransactionsClearAllFiltersImpl implements TransactionsClearAllFilters {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (clearAllFilters != null) {
@@ -2862,6 +3772,15 @@ class _$TransactionsScrolledToBottomImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return scrolledToBottom();
   }
@@ -2885,6 +3804,15 @@ class _$TransactionsScrolledToBottomImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return scrolledToBottom?.call();
   }
@@ -2908,6 +3836,15 @@ class _$TransactionsScrolledToBottomImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (scrolledToBottom != null) {
@@ -2945,6 +3882,21 @@ class _$TransactionsScrolledToBottomImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return scrolledToBottom(this);
   }
@@ -2972,6 +3924,20 @@ class _$TransactionsScrolledToBottomImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return scrolledToBottom?.call(this);
   }
@@ -2999,6 +3965,20 @@ class _$TransactionsScrolledToBottomImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (scrolledToBottom != null) {
@@ -3075,6 +4055,15 @@ class _$TransactionsOpenAccountSelectionImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return openAccountSelection();
   }
@@ -3098,6 +4087,15 @@ class _$TransactionsOpenAccountSelectionImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return openAccountSelection?.call();
   }
@@ -3121,6 +4119,15 @@ class _$TransactionsOpenAccountSelectionImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (openAccountSelection != null) {
@@ -3158,6 +4165,21 @@ class _$TransactionsOpenAccountSelectionImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return openAccountSelection(this);
   }
@@ -3185,6 +4207,20 @@ class _$TransactionsOpenAccountSelectionImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return openAccountSelection?.call(this);
   }
@@ -3212,6 +4248,20 @@ class _$TransactionsOpenAccountSelectionImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (openAccountSelection != null) {
@@ -3326,6 +4376,15 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return detailFetched(transactionId, accountId);
   }
@@ -3349,6 +4408,15 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return detailFetched?.call(transactionId, accountId);
   }
@@ -3372,6 +4440,15 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (detailFetched != null) {
@@ -3409,6 +4486,21 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return detailFetched(this);
   }
@@ -3436,6 +4528,20 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return detailFetched?.call(this);
   }
@@ -3463,6 +4569,20 @@ class _$TransactionDetailFetchedImpl implements TransactionDetailFetched {
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (detailFetched != null) {
@@ -3590,6 +4710,15 @@ class _$TransactionDetailSetFromCacheImpl
     required TResult Function() openAccountSelection,
     required TResult Function(int transactionId, int accountId) detailFetched,
     required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
   }) {
     return detailSetFromCache(transaction);
   }
@@ -3613,6 +4742,15 @@ class _$TransactionDetailSetFromCacheImpl
     TResult? Function()? openAccountSelection,
     TResult? Function(int transactionId, int accountId)? detailFetched,
     TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
   }) {
     return detailSetFromCache?.call(transaction);
   }
@@ -3636,6 +4774,15 @@ class _$TransactionDetailSetFromCacheImpl
     TResult Function()? openAccountSelection,
     TResult Function(int transactionId, int accountId)? detailFetched,
     TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (detailSetFromCache != null) {
@@ -3673,6 +4820,21 @@ class _$TransactionDetailSetFromCacheImpl
     required TResult Function(TransactionDetailFetched value) detailFetched,
     required TResult Function(TransactionDetailSetFromCache value)
         detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
   }) {
     return detailSetFromCache(this);
   }
@@ -3700,6 +4862,20 @@ class _$TransactionDetailSetFromCacheImpl
         openAccountSelection,
     TResult? Function(TransactionDetailFetched value)? detailFetched,
     TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
   }) {
     return detailSetFromCache?.call(this);
   }
@@ -3727,6 +4903,20 @@ class _$TransactionDetailSetFromCacheImpl
         openAccountSelection,
     TResult Function(TransactionDetailFetched value)? detailFetched,
     TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
     required TResult orElse(),
   }) {
     if (detailSetFromCache != null) {
@@ -3752,29 +4942,2485 @@ abstract class TransactionDetailSetFromCache implements TransactionsEvent {
 }
 
 /// @nodoc
+abstract class _$$TransactionsSaveFilterPreservationImplCopyWith<$Res> {
+  factory _$$TransactionsSaveFilterPreservationImplCopyWith(
+          _$TransactionsSaveFilterPreservationImpl value,
+          $Res Function(_$TransactionsSaveFilterPreservationImpl) then) =
+      __$$TransactionsSaveFilterPreservationImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({bool preserveFilters});
+}
+
+/// @nodoc
+class __$$TransactionsSaveFilterPreservationImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsSaveFilterPreservationImpl>
+    implements _$$TransactionsSaveFilterPreservationImplCopyWith<$Res> {
+  __$$TransactionsSaveFilterPreservationImplCopyWithImpl(
+      _$TransactionsSaveFilterPreservationImpl _value,
+      $Res Function(_$TransactionsSaveFilterPreservationImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? preserveFilters = null,
+  }) {
+    return _then(_$TransactionsSaveFilterPreservationImpl(
+      preserveFilters: null == preserveFilters
+          ? _value.preserveFilters
+          : preserveFilters // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransactionsSaveFilterPreservationImpl
+    implements TransactionsSaveFilterPreservation {
+  const _$TransactionsSaveFilterPreservationImpl(
+      {required this.preserveFilters});
+
+  @override
+  final bool preserveFilters;
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.saveFilterPreservation(preserveFilters: $preserveFilters)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsSaveFilterPreservationImpl &&
+            (identical(other.preserveFilters, preserveFilters) ||
+                other.preserveFilters == preserveFilters));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, preserveFilters);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransactionsSaveFilterPreservationImplCopyWith<
+          _$TransactionsSaveFilterPreservationImpl>
+      get copyWith => __$$TransactionsSaveFilterPreservationImplCopyWithImpl<
+          _$TransactionsSaveFilterPreservationImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return saveFilterPreservation(preserveFilters);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return saveFilterPreservation?.call(preserveFilters);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (saveFilterPreservation != null) {
+      return saveFilterPreservation(preserveFilters);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return saveFilterPreservation(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return saveFilterPreservation?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (saveFilterPreservation != null) {
+      return saveFilterPreservation(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsSaveFilterPreservation implements TransactionsEvent {
+  const factory TransactionsSaveFilterPreservation(
+          {required final bool preserveFilters}) =
+      _$TransactionsSaveFilterPreservationImpl;
+
+  bool get preserveFilters;
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransactionsSaveFilterPreservationImplCopyWith<
+          _$TransactionsSaveFilterPreservationImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransactionsSaveLastAppliedFilterImplCopyWith<$Res> {
+  factory _$$TransactionsSaveLastAppliedFilterImplCopyWith(
+          _$TransactionsSaveLastAppliedFilterImpl value,
+          $Res Function(_$TransactionsSaveLastAppliedFilterImpl) then) =
+      __$$TransactionsSaveLastAppliedFilterImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TransactionFilter filter});
+
+  $TransactionFilterCopyWith<$Res> get filter;
+}
+
+/// @nodoc
+class __$$TransactionsSaveLastAppliedFilterImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsSaveLastAppliedFilterImpl>
+    implements _$$TransactionsSaveLastAppliedFilterImplCopyWith<$Res> {
+  __$$TransactionsSaveLastAppliedFilterImplCopyWithImpl(
+      _$TransactionsSaveLastAppliedFilterImpl _value,
+      $Res Function(_$TransactionsSaveLastAppliedFilterImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? filter = null,
+  }) {
+    return _then(_$TransactionsSaveLastAppliedFilterImpl(
+      filter: null == filter
+          ? _value.filter
+          : filter // ignore: cast_nullable_to_non_nullable
+              as TransactionFilter,
+    ));
+  }
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TransactionFilterCopyWith<$Res> get filter {
+    return $TransactionFilterCopyWith<$Res>(_value.filter, (value) {
+      return _then(_value.copyWith(filter: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$TransactionsSaveLastAppliedFilterImpl
+    implements TransactionsSaveLastAppliedFilter {
+  const _$TransactionsSaveLastAppliedFilterImpl({required this.filter});
+
+  @override
+  final TransactionFilter filter;
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.saveLastAppliedFilter(filter: $filter)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsSaveLastAppliedFilterImpl &&
+            (identical(other.filter, filter) || other.filter == filter));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, filter);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransactionsSaveLastAppliedFilterImplCopyWith<
+          _$TransactionsSaveLastAppliedFilterImpl>
+      get copyWith => __$$TransactionsSaveLastAppliedFilterImplCopyWithImpl<
+          _$TransactionsSaveLastAppliedFilterImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return saveLastAppliedFilter(filter);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return saveLastAppliedFilter?.call(filter);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (saveLastAppliedFilter != null) {
+      return saveLastAppliedFilter(filter);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return saveLastAppliedFilter(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return saveLastAppliedFilter?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (saveLastAppliedFilter != null) {
+      return saveLastAppliedFilter(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsSaveLastAppliedFilter implements TransactionsEvent {
+  const factory TransactionsSaveLastAppliedFilter(
+          {required final TransactionFilter filter}) =
+      _$TransactionsSaveLastAppliedFilterImpl;
+
+  TransactionFilter get filter;
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransactionsSaveLastAppliedFilterImplCopyWith<
+          _$TransactionsSaveLastAppliedFilterImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransactionsLoadLastAppliedFilterImplCopyWith<$Res> {
+  factory _$$TransactionsLoadLastAppliedFilterImplCopyWith(
+          _$TransactionsLoadLastAppliedFilterImpl value,
+          $Res Function(_$TransactionsLoadLastAppliedFilterImpl) then) =
+      __$$TransactionsLoadLastAppliedFilterImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsLoadLastAppliedFilterImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsLoadLastAppliedFilterImpl>
+    implements _$$TransactionsLoadLastAppliedFilterImplCopyWith<$Res> {
+  __$$TransactionsLoadLastAppliedFilterImplCopyWithImpl(
+      _$TransactionsLoadLastAppliedFilterImpl _value,
+      $Res Function(_$TransactionsLoadLastAppliedFilterImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsLoadLastAppliedFilterImpl
+    implements TransactionsLoadLastAppliedFilter {
+  const _$TransactionsLoadLastAppliedFilterImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.loadLastAppliedFilter()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsLoadLastAppliedFilterImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return loadLastAppliedFilter();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return loadLastAppliedFilter?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (loadLastAppliedFilter != null) {
+      return loadLastAppliedFilter();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return loadLastAppliedFilter(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return loadLastAppliedFilter?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (loadLastAppliedFilter != null) {
+      return loadLastAppliedFilter(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsLoadLastAppliedFilter implements TransactionsEvent {
+  const factory TransactionsLoadLastAppliedFilter() =
+      _$TransactionsLoadLastAppliedFilterImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsLoadFilterPreservationSettingImplCopyWith<$Res> {
+  factory _$$TransactionsLoadFilterPreservationSettingImplCopyWith(
+          _$TransactionsLoadFilterPreservationSettingImpl value,
+          $Res Function(_$TransactionsLoadFilterPreservationSettingImpl) then) =
+      __$$TransactionsLoadFilterPreservationSettingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsLoadFilterPreservationSettingImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsLoadFilterPreservationSettingImpl>
+    implements _$$TransactionsLoadFilterPreservationSettingImplCopyWith<$Res> {
+  __$$TransactionsLoadFilterPreservationSettingImplCopyWithImpl(
+      _$TransactionsLoadFilterPreservationSettingImpl _value,
+      $Res Function(_$TransactionsLoadFilterPreservationSettingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsLoadFilterPreservationSettingImpl
+    implements TransactionsLoadFilterPreservationSetting {
+  const _$TransactionsLoadFilterPreservationSettingImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.loadFilterPreservationSetting()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsLoadFilterPreservationSettingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return loadFilterPreservationSetting();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return loadFilterPreservationSetting?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (loadFilterPreservationSetting != null) {
+      return loadFilterPreservationSetting();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return loadFilterPreservationSetting(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return loadFilterPreservationSetting?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (loadFilterPreservationSetting != null) {
+      return loadFilterPreservationSetting(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsLoadFilterPreservationSetting
+    implements TransactionsEvent {
+  const factory TransactionsLoadFilterPreservationSetting() =
+      _$TransactionsLoadFilterPreservationSettingImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsShareReceiptImplCopyWith<$Res> {
+  factory _$$TransactionsShareReceiptImplCopyWith(
+          _$TransactionsShareReceiptImpl value,
+          $Res Function(_$TransactionsShareReceiptImpl) then) =
+      __$$TransactionsShareReceiptImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Transaction transaction});
+
+  $TransactionCopyWith<$Res> get transaction;
+}
+
+/// @nodoc
+class __$$TransactionsShareReceiptImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsShareReceiptImpl>
+    implements _$$TransactionsShareReceiptImplCopyWith<$Res> {
+  __$$TransactionsShareReceiptImplCopyWithImpl(
+      _$TransactionsShareReceiptImpl _value,
+      $Res Function(_$TransactionsShareReceiptImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? transaction = null,
+  }) {
+    return _then(_$TransactionsShareReceiptImpl(
+      transaction: null == transaction
+          ? _value.transaction
+          : transaction // ignore: cast_nullable_to_non_nullable
+              as Transaction,
+    ));
+  }
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TransactionCopyWith<$Res> get transaction {
+    return $TransactionCopyWith<$Res>(_value.transaction, (value) {
+      return _then(_value.copyWith(transaction: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$TransactionsShareReceiptImpl implements TransactionsShareReceipt {
+  const _$TransactionsShareReceiptImpl({required this.transaction});
+
+  @override
+  final Transaction transaction;
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.shareReceipt(transaction: $transaction)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsShareReceiptImpl &&
+            (identical(other.transaction, transaction) ||
+                other.transaction == transaction));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, transaction);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransactionsShareReceiptImplCopyWith<_$TransactionsShareReceiptImpl>
+      get copyWith => __$$TransactionsShareReceiptImplCopyWithImpl<
+          _$TransactionsShareReceiptImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return shareReceipt(transaction);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return shareReceipt?.call(transaction);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (shareReceipt != null) {
+      return shareReceipt(transaction);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return shareReceipt(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return shareReceipt?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (shareReceipt != null) {
+      return shareReceipt(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsShareReceipt implements TransactionsEvent {
+  const factory TransactionsShareReceipt(
+          {required final Transaction transaction}) =
+      _$TransactionsShareReceiptImpl;
+
+  Transaction get transaction;
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransactionsShareReceiptImplCopyWith<_$TransactionsShareReceiptImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TransactionsAccountSelectorClosedImplCopyWith<$Res> {
+  factory _$$TransactionsAccountSelectorClosedImplCopyWith(
+          _$TransactionsAccountSelectorClosedImpl value,
+          $Res Function(_$TransactionsAccountSelectorClosedImpl) then) =
+      __$$TransactionsAccountSelectorClosedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsAccountSelectorClosedImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsAccountSelectorClosedImpl>
+    implements _$$TransactionsAccountSelectorClosedImplCopyWith<$Res> {
+  __$$TransactionsAccountSelectorClosedImplCopyWithImpl(
+      _$TransactionsAccountSelectorClosedImpl _value,
+      $Res Function(_$TransactionsAccountSelectorClosedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsAccountSelectorClosedImpl
+    implements TransactionsAccountSelectorClosed {
+  const _$TransactionsAccountSelectorClosedImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.accountSelectorClosed()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsAccountSelectorClosedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return accountSelectorClosed();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return accountSelectorClosed?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (accountSelectorClosed != null) {
+      return accountSelectorClosed();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return accountSelectorClosed(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return accountSelectorClosed?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (accountSelectorClosed != null) {
+      return accountSelectorClosed(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsAccountSelectorClosed implements TransactionsEvent {
+  const factory TransactionsAccountSelectorClosed() =
+      _$TransactionsAccountSelectorClosedImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsShowFilterDialogImplCopyWith<$Res> {
+  factory _$$TransactionsShowFilterDialogImplCopyWith(
+          _$TransactionsShowFilterDialogImpl value,
+          $Res Function(_$TransactionsShowFilterDialogImpl) then) =
+      __$$TransactionsShowFilterDialogImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$TransactionsShowFilterDialogImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsShowFilterDialogImpl>
+    implements _$$TransactionsShowFilterDialogImplCopyWith<$Res> {
+  __$$TransactionsShowFilterDialogImplCopyWithImpl(
+      _$TransactionsShowFilterDialogImpl _value,
+      $Res Function(_$TransactionsShowFilterDialogImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$TransactionsShowFilterDialogImpl
+    implements TransactionsShowFilterDialog {
+  const _$TransactionsShowFilterDialogImpl();
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.showFilterDialog()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsShowFilterDialogImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return showFilterDialog();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return showFilterDialog?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (showFilterDialog != null) {
+      return showFilterDialog();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return showFilterDialog(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return showFilterDialog?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (showFilterDialog != null) {
+      return showFilterDialog(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsShowFilterDialog implements TransactionsEvent {
+  const factory TransactionsShowFilterDialog() =
+      _$TransactionsShowFilterDialogImpl;
+}
+
+/// @nodoc
+abstract class _$$TransactionsScrollPositionChangedImplCopyWith<$Res> {
+  factory _$$TransactionsScrollPositionChangedImplCopyWith(
+          _$TransactionsScrollPositionChangedImpl value,
+          $Res Function(_$TransactionsScrollPositionChangedImpl) then) =
+      __$$TransactionsScrollPositionChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({double scrollOffset, double maxScrollExtent});
+}
+
+/// @nodoc
+class __$$TransactionsScrollPositionChangedImplCopyWithImpl<$Res>
+    extends _$TransactionsEventCopyWithImpl<$Res,
+        _$TransactionsScrollPositionChangedImpl>
+    implements _$$TransactionsScrollPositionChangedImplCopyWith<$Res> {
+  __$$TransactionsScrollPositionChangedImplCopyWithImpl(
+      _$TransactionsScrollPositionChangedImpl _value,
+      $Res Function(_$TransactionsScrollPositionChangedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? scrollOffset = null,
+    Object? maxScrollExtent = null,
+  }) {
+    return _then(_$TransactionsScrollPositionChangedImpl(
+      scrollOffset: null == scrollOffset
+          ? _value.scrollOffset
+          : scrollOffset // ignore: cast_nullable_to_non_nullable
+              as double,
+      maxScrollExtent: null == maxScrollExtent
+          ? _value.maxScrollExtent
+          : maxScrollExtent // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TransactionsScrollPositionChangedImpl
+    implements TransactionsScrollPositionChanged {
+  const _$TransactionsScrollPositionChangedImpl(
+      {required this.scrollOffset, required this.maxScrollExtent});
+
+  @override
+  final double scrollOffset;
+  @override
+  final double maxScrollExtent;
+
+  @override
+  String toString() {
+    return 'TransactionsEvent.scrollPositionChanged(scrollOffset: $scrollOffset, maxScrollExtent: $maxScrollExtent)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TransactionsScrollPositionChangedImpl &&
+            (identical(other.scrollOffset, scrollOffset) ||
+                other.scrollOffset == scrollOffset) &&
+            (identical(other.maxScrollExtent, maxScrollExtent) ||
+                other.maxScrollExtent == maxScrollExtent));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, scrollOffset, maxScrollExtent);
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TransactionsScrollPositionChangedImplCopyWith<
+          _$TransactionsScrollPositionChangedImpl>
+      get copyWith => __$$TransactionsScrollPositionChangedImplCopyWithImpl<
+          _$TransactionsScrollPositionChangedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetched,
+    required TResult Function() refreshed,
+    required TResult Function(TransactionFilter filter) filtered,
+    required TResult Function() loadMore,
+    required TResult Function(int accountId) accountChanged,
+    required TResult Function() removeFilterType,
+    required TResult Function() removeFilterDirection,
+    required TResult Function() removeFilterStatus,
+    required TResult Function() removeFilterDates,
+    required TResult Function() removeFilterCounterparty,
+    required TResult Function() removeFilterAmounts,
+    required TResult Function() clearAllFilters,
+    required TResult Function() scrolledToBottom,
+    required TResult Function() openAccountSelection,
+    required TResult Function(int transactionId, int accountId) detailFetched,
+    required TResult Function(Transaction transaction) detailSetFromCache,
+    required TResult Function(bool preserveFilters) saveFilterPreservation,
+    required TResult Function(TransactionFilter filter) saveLastAppliedFilter,
+    required TResult Function() loadLastAppliedFilter,
+    required TResult Function() loadFilterPreservationSetting,
+    required TResult Function(Transaction transaction) shareReceipt,
+    required TResult Function() accountSelectorClosed,
+    required TResult Function() showFilterDialog,
+    required TResult Function(double scrollOffset, double maxScrollExtent)
+        scrollPositionChanged,
+  }) {
+    return scrollPositionChanged(scrollOffset, maxScrollExtent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetched,
+    TResult? Function()? refreshed,
+    TResult? Function(TransactionFilter filter)? filtered,
+    TResult? Function()? loadMore,
+    TResult? Function(int accountId)? accountChanged,
+    TResult? Function()? removeFilterType,
+    TResult? Function()? removeFilterDirection,
+    TResult? Function()? removeFilterStatus,
+    TResult? Function()? removeFilterDates,
+    TResult? Function()? removeFilterCounterparty,
+    TResult? Function()? removeFilterAmounts,
+    TResult? Function()? clearAllFilters,
+    TResult? Function()? scrolledToBottom,
+    TResult? Function()? openAccountSelection,
+    TResult? Function(int transactionId, int accountId)? detailFetched,
+    TResult? Function(Transaction transaction)? detailSetFromCache,
+    TResult? Function(bool preserveFilters)? saveFilterPreservation,
+    TResult? Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult? Function()? loadLastAppliedFilter,
+    TResult? Function()? loadFilterPreservationSetting,
+    TResult? Function(Transaction transaction)? shareReceipt,
+    TResult? Function()? accountSelectorClosed,
+    TResult? Function()? showFilterDialog,
+    TResult? Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+  }) {
+    return scrollPositionChanged?.call(scrollOffset, maxScrollExtent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetched,
+    TResult Function()? refreshed,
+    TResult Function(TransactionFilter filter)? filtered,
+    TResult Function()? loadMore,
+    TResult Function(int accountId)? accountChanged,
+    TResult Function()? removeFilterType,
+    TResult Function()? removeFilterDirection,
+    TResult Function()? removeFilterStatus,
+    TResult Function()? removeFilterDates,
+    TResult Function()? removeFilterCounterparty,
+    TResult Function()? removeFilterAmounts,
+    TResult Function()? clearAllFilters,
+    TResult Function()? scrolledToBottom,
+    TResult Function()? openAccountSelection,
+    TResult Function(int transactionId, int accountId)? detailFetched,
+    TResult Function(Transaction transaction)? detailSetFromCache,
+    TResult Function(bool preserveFilters)? saveFilterPreservation,
+    TResult Function(TransactionFilter filter)? saveLastAppliedFilter,
+    TResult Function()? loadLastAppliedFilter,
+    TResult Function()? loadFilterPreservationSetting,
+    TResult Function(Transaction transaction)? shareReceipt,
+    TResult Function()? accountSelectorClosed,
+    TResult Function()? showFilterDialog,
+    TResult Function(double scrollOffset, double maxScrollExtent)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (scrollPositionChanged != null) {
+      return scrollPositionChanged(scrollOffset, maxScrollExtent);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TransactionsFetched value) fetched,
+    required TResult Function(TransactionsRefreshed value) refreshed,
+    required TResult Function(TransactionsFiltered value) filtered,
+    required TResult Function(TransactionsLoadMore value) loadMore,
+    required TResult Function(TransactionsAccountChanged value) accountChanged,
+    required TResult Function(TransactionsRemoveFilterType value)
+        removeFilterType,
+    required TResult Function(TransactionsRemoveFilterDirection value)
+        removeFilterDirection,
+    required TResult Function(TransactionsRemoveFilterStatus value)
+        removeFilterStatus,
+    required TResult Function(TransactionsRemoveFilterDates value)
+        removeFilterDates,
+    required TResult Function(TransactionsRemoveFilterCounterparty value)
+        removeFilterCounterparty,
+    required TResult Function(TransactionsRemoveFilterAmounts value)
+        removeFilterAmounts,
+    required TResult Function(TransactionsClearAllFilters value)
+        clearAllFilters,
+    required TResult Function(TransactionsScrolledToBottom value)
+        scrolledToBottom,
+    required TResult Function(TransactionsOpenAccountSelection value)
+        openAccountSelection,
+    required TResult Function(TransactionDetailFetched value) detailFetched,
+    required TResult Function(TransactionDetailSetFromCache value)
+        detailSetFromCache,
+    required TResult Function(TransactionsSaveFilterPreservation value)
+        saveFilterPreservation,
+    required TResult Function(TransactionsSaveLastAppliedFilter value)
+        saveLastAppliedFilter,
+    required TResult Function(TransactionsLoadLastAppliedFilter value)
+        loadLastAppliedFilter,
+    required TResult Function(TransactionsLoadFilterPreservationSetting value)
+        loadFilterPreservationSetting,
+    required TResult Function(TransactionsShareReceipt value) shareReceipt,
+    required TResult Function(TransactionsAccountSelectorClosed value)
+        accountSelectorClosed,
+    required TResult Function(TransactionsShowFilterDialog value)
+        showFilterDialog,
+    required TResult Function(TransactionsScrollPositionChanged value)
+        scrollPositionChanged,
+  }) {
+    return scrollPositionChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TransactionsFetched value)? fetched,
+    TResult? Function(TransactionsRefreshed value)? refreshed,
+    TResult? Function(TransactionsFiltered value)? filtered,
+    TResult? Function(TransactionsLoadMore value)? loadMore,
+    TResult? Function(TransactionsAccountChanged value)? accountChanged,
+    TResult? Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult? Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult? Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult? Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult? Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult? Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult? Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult? Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult? Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult? Function(TransactionDetailFetched value)? detailFetched,
+    TResult? Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult? Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult? Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult? Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult? Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult? Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult? Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult? Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult? Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+  }) {
+    return scrollPositionChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TransactionsFetched value)? fetched,
+    TResult Function(TransactionsRefreshed value)? refreshed,
+    TResult Function(TransactionsFiltered value)? filtered,
+    TResult Function(TransactionsLoadMore value)? loadMore,
+    TResult Function(TransactionsAccountChanged value)? accountChanged,
+    TResult Function(TransactionsRemoveFilterType value)? removeFilterType,
+    TResult Function(TransactionsRemoveFilterDirection value)?
+        removeFilterDirection,
+    TResult Function(TransactionsRemoveFilterStatus value)? removeFilterStatus,
+    TResult Function(TransactionsRemoveFilterDates value)? removeFilterDates,
+    TResult Function(TransactionsRemoveFilterCounterparty value)?
+        removeFilterCounterparty,
+    TResult Function(TransactionsRemoveFilterAmounts value)?
+        removeFilterAmounts,
+    TResult Function(TransactionsClearAllFilters value)? clearAllFilters,
+    TResult Function(TransactionsScrolledToBottom value)? scrolledToBottom,
+    TResult Function(TransactionsOpenAccountSelection value)?
+        openAccountSelection,
+    TResult Function(TransactionDetailFetched value)? detailFetched,
+    TResult Function(TransactionDetailSetFromCache value)? detailSetFromCache,
+    TResult Function(TransactionsSaveFilterPreservation value)?
+        saveFilterPreservation,
+    TResult Function(TransactionsSaveLastAppliedFilter value)?
+        saveLastAppliedFilter,
+    TResult Function(TransactionsLoadLastAppliedFilter value)?
+        loadLastAppliedFilter,
+    TResult Function(TransactionsLoadFilterPreservationSetting value)?
+        loadFilterPreservationSetting,
+    TResult Function(TransactionsShareReceipt value)? shareReceipt,
+    TResult Function(TransactionsAccountSelectorClosed value)?
+        accountSelectorClosed,
+    TResult Function(TransactionsShowFilterDialog value)? showFilterDialog,
+    TResult Function(TransactionsScrollPositionChanged value)?
+        scrollPositionChanged,
+    required TResult orElse(),
+  }) {
+    if (scrollPositionChanged != null) {
+      return scrollPositionChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class TransactionsScrollPositionChanged implements TransactionsEvent {
+  const factory TransactionsScrollPositionChanged(
+          {required final double scrollOffset,
+          required final double maxScrollExtent}) =
+      _$TransactionsScrollPositionChangedImpl;
+
+  double get scrollOffset;
+  double get maxScrollExtent;
+
+  /// Create a copy of TransactionsEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$TransactionsScrollPositionChangedImplCopyWith<
+          _$TransactionsScrollPositionChangedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$TransactionsState {
 // List status
   TransactionsListStatus get listStatus => throw _privateConstructorUsedError;
-  String get listErrorMessage =>
-      throw _privateConstructorUsedError; // Detail status
-  TransactionsDetailStatus get detailStatus =>
-      throw _privateConstructorUsedError;
-  String get detailErrorMessage =>
-      throw _privateConstructorUsedError; // Common data
-  int get accountId => throw _privateConstructorUsedError; // List data
   PaginatedTransactions? get paginatedTransactions =>
       throw _privateConstructorUsedError;
   int get currentPage => throw _privateConstructorUsedError;
   int get pageSize => throw _privateConstructorUsedError;
   bool get hasReachedMax => throw _privateConstructorUsedError;
-  TransactionFilter? get filter =>
-      throw _privateConstructorUsedError; // Filter related data
-  bool get isFilterActive => throw _privateConstructorUsedError;
+  String get listErrorMessage => throw _privateConstructorUsedError;
+  int get accountId =>
+      throw _privateConstructorUsedError; // Filter-related state
+  TransactionFilter? get filter => throw _privateConstructorUsedError;
   List<FilterLabel> get activeFilterLabels =>
-      throw _privateConstructorUsedError; // UI state flags
+      throw _privateConstructorUsedError;
+  bool get isFilterActive => throw _privateConstructorUsedError;
   bool get shouldOpenAccountSelector =>
-      throw _privateConstructorUsedError; // Detail data
+      throw _privateConstructorUsedError; // Detail status
+  TransactionsDetailStatus get detailStatus =>
+      throw _privateConstructorUsedError;
   Transaction? get selectedTransaction => throw _privateConstructorUsedError;
+  String get detailErrorMessage =>
+      throw _privateConstructorUsedError; // New UI-related state properties
+  bool get shouldPreserveFilters => throw _privateConstructorUsedError;
+  bool get shouldShowFilterDialog => throw _privateConstructorUsedError;
+  bool get isShareInProgress => throw _privateConstructorUsedError;
 
   /// Create a copy of TransactionsState
   /// with the given fields replaced by the non-null parameter values.
@@ -3791,19 +7437,22 @@ abstract class $TransactionsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {TransactionsListStatus listStatus,
-      String listErrorMessage,
-      TransactionsDetailStatus detailStatus,
-      String detailErrorMessage,
-      int accountId,
       PaginatedTransactions? paginatedTransactions,
       int currentPage,
       int pageSize,
       bool hasReachedMax,
+      String listErrorMessage,
+      int accountId,
       TransactionFilter? filter,
-      bool isFilterActive,
       List<FilterLabel> activeFilterLabels,
+      bool isFilterActive,
       bool shouldOpenAccountSelector,
-      Transaction? selectedTransaction});
+      TransactionsDetailStatus detailStatus,
+      Transaction? selectedTransaction,
+      String detailErrorMessage,
+      bool shouldPreserveFilters,
+      bool shouldShowFilterDialog,
+      bool isShareInProgress});
 
   $PaginatedTransactionsCopyWith<$Res>? get paginatedTransactions;
   $TransactionFilterCopyWith<$Res>? get filter;
@@ -3826,41 +7475,28 @@ class _$TransactionsStateCopyWithImpl<$Res, $Val extends TransactionsState>
   @override
   $Res call({
     Object? listStatus = null,
-    Object? listErrorMessage = null,
-    Object? detailStatus = null,
-    Object? detailErrorMessage = null,
-    Object? accountId = null,
     Object? paginatedTransactions = freezed,
     Object? currentPage = null,
     Object? pageSize = null,
     Object? hasReachedMax = null,
+    Object? listErrorMessage = null,
+    Object? accountId = null,
     Object? filter = freezed,
-    Object? isFilterActive = null,
     Object? activeFilterLabels = null,
+    Object? isFilterActive = null,
     Object? shouldOpenAccountSelector = null,
+    Object? detailStatus = null,
     Object? selectedTransaction = freezed,
+    Object? detailErrorMessage = null,
+    Object? shouldPreserveFilters = null,
+    Object? shouldShowFilterDialog = null,
+    Object? isShareInProgress = null,
   }) {
     return _then(_value.copyWith(
       listStatus: null == listStatus
           ? _value.listStatus
           : listStatus // ignore: cast_nullable_to_non_nullable
               as TransactionsListStatus,
-      listErrorMessage: null == listErrorMessage
-          ? _value.listErrorMessage
-          : listErrorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      detailStatus: null == detailStatus
-          ? _value.detailStatus
-          : detailStatus // ignore: cast_nullable_to_non_nullable
-              as TransactionsDetailStatus,
-      detailErrorMessage: null == detailErrorMessage
-          ? _value.detailErrorMessage
-          : detailErrorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      accountId: null == accountId
-          ? _value.accountId
-          : accountId // ignore: cast_nullable_to_non_nullable
-              as int,
       paginatedTransactions: freezed == paginatedTransactions
           ? _value.paginatedTransactions
           : paginatedTransactions // ignore: cast_nullable_to_non_nullable
@@ -3877,26 +7513,54 @@ class _$TransactionsStateCopyWithImpl<$Res, $Val extends TransactionsState>
           ? _value.hasReachedMax
           : hasReachedMax // ignore: cast_nullable_to_non_nullable
               as bool,
+      listErrorMessage: null == listErrorMessage
+          ? _value.listErrorMessage
+          : listErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+      accountId: null == accountId
+          ? _value.accountId
+          : accountId // ignore: cast_nullable_to_non_nullable
+              as int,
       filter: freezed == filter
           ? _value.filter
           : filter // ignore: cast_nullable_to_non_nullable
               as TransactionFilter?,
-      isFilterActive: null == isFilterActive
-          ? _value.isFilterActive
-          : isFilterActive // ignore: cast_nullable_to_non_nullable
-              as bool,
       activeFilterLabels: null == activeFilterLabels
           ? _value.activeFilterLabels
           : activeFilterLabels // ignore: cast_nullable_to_non_nullable
               as List<FilterLabel>,
+      isFilterActive: null == isFilterActive
+          ? _value.isFilterActive
+          : isFilterActive // ignore: cast_nullable_to_non_nullable
+              as bool,
       shouldOpenAccountSelector: null == shouldOpenAccountSelector
           ? _value.shouldOpenAccountSelector
           : shouldOpenAccountSelector // ignore: cast_nullable_to_non_nullable
               as bool,
+      detailStatus: null == detailStatus
+          ? _value.detailStatus
+          : detailStatus // ignore: cast_nullable_to_non_nullable
+              as TransactionsDetailStatus,
       selectedTransaction: freezed == selectedTransaction
           ? _value.selectedTransaction
           : selectedTransaction // ignore: cast_nullable_to_non_nullable
               as Transaction?,
+      detailErrorMessage: null == detailErrorMessage
+          ? _value.detailErrorMessage
+          : detailErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+      shouldPreserveFilters: null == shouldPreserveFilters
+          ? _value.shouldPreserveFilters
+          : shouldPreserveFilters // ignore: cast_nullable_to_non_nullable
+              as bool,
+      shouldShowFilterDialog: null == shouldShowFilterDialog
+          ? _value.shouldShowFilterDialog
+          : shouldShowFilterDialog // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isShareInProgress: null == isShareInProgress
+          ? _value.isShareInProgress
+          : isShareInProgress // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -3954,19 +7618,22 @@ abstract class _$$TransactionsStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {TransactionsListStatus listStatus,
-      String listErrorMessage,
-      TransactionsDetailStatus detailStatus,
-      String detailErrorMessage,
-      int accountId,
       PaginatedTransactions? paginatedTransactions,
       int currentPage,
       int pageSize,
       bool hasReachedMax,
+      String listErrorMessage,
+      int accountId,
       TransactionFilter? filter,
-      bool isFilterActive,
       List<FilterLabel> activeFilterLabels,
+      bool isFilterActive,
       bool shouldOpenAccountSelector,
-      Transaction? selectedTransaction});
+      TransactionsDetailStatus detailStatus,
+      Transaction? selectedTransaction,
+      String detailErrorMessage,
+      bool shouldPreserveFilters,
+      bool shouldShowFilterDialog,
+      bool isShareInProgress});
 
   @override
   $PaginatedTransactionsCopyWith<$Res>? get paginatedTransactions;
@@ -3990,41 +7657,28 @@ class __$$TransactionsStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? listStatus = null,
-    Object? listErrorMessage = null,
-    Object? detailStatus = null,
-    Object? detailErrorMessage = null,
-    Object? accountId = null,
     Object? paginatedTransactions = freezed,
     Object? currentPage = null,
     Object? pageSize = null,
     Object? hasReachedMax = null,
+    Object? listErrorMessage = null,
+    Object? accountId = null,
     Object? filter = freezed,
-    Object? isFilterActive = null,
     Object? activeFilterLabels = null,
+    Object? isFilterActive = null,
     Object? shouldOpenAccountSelector = null,
+    Object? detailStatus = null,
     Object? selectedTransaction = freezed,
+    Object? detailErrorMessage = null,
+    Object? shouldPreserveFilters = null,
+    Object? shouldShowFilterDialog = null,
+    Object? isShareInProgress = null,
   }) {
     return _then(_$TransactionsStateImpl(
       listStatus: null == listStatus
           ? _value.listStatus
           : listStatus // ignore: cast_nullable_to_non_nullable
               as TransactionsListStatus,
-      listErrorMessage: null == listErrorMessage
-          ? _value.listErrorMessage
-          : listErrorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      detailStatus: null == detailStatus
-          ? _value.detailStatus
-          : detailStatus // ignore: cast_nullable_to_non_nullable
-              as TransactionsDetailStatus,
-      detailErrorMessage: null == detailErrorMessage
-          ? _value.detailErrorMessage
-          : detailErrorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      accountId: null == accountId
-          ? _value.accountId
-          : accountId // ignore: cast_nullable_to_non_nullable
-              as int,
       paginatedTransactions: freezed == paginatedTransactions
           ? _value.paginatedTransactions
           : paginatedTransactions // ignore: cast_nullable_to_non_nullable
@@ -4041,26 +7695,54 @@ class __$$TransactionsStateImplCopyWithImpl<$Res>
           ? _value.hasReachedMax
           : hasReachedMax // ignore: cast_nullable_to_non_nullable
               as bool,
+      listErrorMessage: null == listErrorMessage
+          ? _value.listErrorMessage
+          : listErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+      accountId: null == accountId
+          ? _value.accountId
+          : accountId // ignore: cast_nullable_to_non_nullable
+              as int,
       filter: freezed == filter
           ? _value.filter
           : filter // ignore: cast_nullable_to_non_nullable
               as TransactionFilter?,
-      isFilterActive: null == isFilterActive
-          ? _value.isFilterActive
-          : isFilterActive // ignore: cast_nullable_to_non_nullable
-              as bool,
       activeFilterLabels: null == activeFilterLabels
           ? _value._activeFilterLabels
           : activeFilterLabels // ignore: cast_nullable_to_non_nullable
               as List<FilterLabel>,
+      isFilterActive: null == isFilterActive
+          ? _value.isFilterActive
+          : isFilterActive // ignore: cast_nullable_to_non_nullable
+              as bool,
       shouldOpenAccountSelector: null == shouldOpenAccountSelector
           ? _value.shouldOpenAccountSelector
           : shouldOpenAccountSelector // ignore: cast_nullable_to_non_nullable
               as bool,
+      detailStatus: null == detailStatus
+          ? _value.detailStatus
+          : detailStatus // ignore: cast_nullable_to_non_nullable
+              as TransactionsDetailStatus,
       selectedTransaction: freezed == selectedTransaction
           ? _value.selectedTransaction
           : selectedTransaction // ignore: cast_nullable_to_non_nullable
               as Transaction?,
+      detailErrorMessage: null == detailErrorMessage
+          ? _value.detailErrorMessage
+          : detailErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+      shouldPreserveFilters: null == shouldPreserveFilters
+          ? _value.shouldPreserveFilters
+          : shouldPreserveFilters // ignore: cast_nullable_to_non_nullable
+              as bool,
+      shouldShowFilterDialog: null == shouldShowFilterDialog
+          ? _value.shouldShowFilterDialog
+          : shouldShowFilterDialog // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isShareInProgress: null == isShareInProgress
+          ? _value.isShareInProgress
+          : isShareInProgress // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -4069,61 +7751,45 @@ class __$$TransactionsStateImplCopyWithImpl<$Res>
 
 class _$TransactionsStateImpl implements _TransactionsState {
   const _$TransactionsStateImpl(
-      {this.listStatus = TransactionsListStatus.initial,
-      this.listErrorMessage = '',
-      this.detailStatus = TransactionsDetailStatus.initial,
-      this.detailErrorMessage = '',
-      this.accountId = 0,
-      this.paginatedTransactions,
-      this.currentPage = 1,
-      this.pageSize = 5,
-      this.hasReachedMax = false,
-      this.filter,
-      this.isFilterActive = false,
-      final List<FilterLabel> activeFilterLabels = const [],
-      this.shouldOpenAccountSelector = false,
-      this.selectedTransaction})
+      {required this.listStatus,
+      required this.paginatedTransactions,
+      required this.currentPage,
+      required this.pageSize,
+      required this.hasReachedMax,
+      required this.listErrorMessage,
+      required this.accountId,
+      required this.filter,
+      required final List<FilterLabel> activeFilterLabels,
+      required this.isFilterActive,
+      required this.shouldOpenAccountSelector,
+      required this.detailStatus,
+      required this.selectedTransaction,
+      required this.detailErrorMessage,
+      required this.shouldPreserveFilters,
+      required this.shouldShowFilterDialog,
+      required this.isShareInProgress})
       : _activeFilterLabels = activeFilterLabels;
 
 // List status
   @override
-  @JsonKey()
   final TransactionsListStatus listStatus;
-  @override
-  @JsonKey()
-  final String listErrorMessage;
-// Detail status
-  @override
-  @JsonKey()
-  final TransactionsDetailStatus detailStatus;
-  @override
-  @JsonKey()
-  final String detailErrorMessage;
-// Common data
-  @override
-  @JsonKey()
-  final int accountId;
-// List data
   @override
   final PaginatedTransactions? paginatedTransactions;
   @override
-  @JsonKey()
   final int currentPage;
   @override
-  @JsonKey()
   final int pageSize;
   @override
-  @JsonKey()
   final bool hasReachedMax;
   @override
-  final TransactionFilter? filter;
-// Filter related data
+  final String listErrorMessage;
   @override
-  @JsonKey()
-  final bool isFilterActive;
+  final int accountId;
+// Filter-related state
+  @override
+  final TransactionFilter? filter;
   final List<FilterLabel> _activeFilterLabels;
   @override
-  @JsonKey()
   List<FilterLabel> get activeFilterLabels {
     if (_activeFilterLabels is EqualUnmodifiableListView)
       return _activeFilterLabels;
@@ -4131,17 +7797,28 @@ class _$TransactionsStateImpl implements _TransactionsState {
     return EqualUnmodifiableListView(_activeFilterLabels);
   }
 
-// UI state flags
   @override
-  @JsonKey()
+  final bool isFilterActive;
+  @override
   final bool shouldOpenAccountSelector;
-// Detail data
+// Detail status
+  @override
+  final TransactionsDetailStatus detailStatus;
   @override
   final Transaction? selectedTransaction;
+  @override
+  final String detailErrorMessage;
+// New UI-related state properties
+  @override
+  final bool shouldPreserveFilters;
+  @override
+  final bool shouldShowFilterDialog;
+  @override
+  final bool isShareInProgress;
 
   @override
   String toString() {
-    return 'TransactionsState(listStatus: $listStatus, listErrorMessage: $listErrorMessage, detailStatus: $detailStatus, detailErrorMessage: $detailErrorMessage, accountId: $accountId, paginatedTransactions: $paginatedTransactions, currentPage: $currentPage, pageSize: $pageSize, hasReachedMax: $hasReachedMax, filter: $filter, isFilterActive: $isFilterActive, activeFilterLabels: $activeFilterLabels, shouldOpenAccountSelector: $shouldOpenAccountSelector, selectedTransaction: $selectedTransaction)';
+    return 'TransactionsState(listStatus: $listStatus, paginatedTransactions: $paginatedTransactions, currentPage: $currentPage, pageSize: $pageSize, hasReachedMax: $hasReachedMax, listErrorMessage: $listErrorMessage, accountId: $accountId, filter: $filter, activeFilterLabels: $activeFilterLabels, isFilterActive: $isFilterActive, shouldOpenAccountSelector: $shouldOpenAccountSelector, detailStatus: $detailStatus, selectedTransaction: $selectedTransaction, detailErrorMessage: $detailErrorMessage, shouldPreserveFilters: $shouldPreserveFilters, shouldShowFilterDialog: $shouldShowFilterDialog, isShareInProgress: $isShareInProgress)';
   }
 
   @override
@@ -4151,14 +7828,6 @@ class _$TransactionsStateImpl implements _TransactionsState {
             other is _$TransactionsStateImpl &&
             (identical(other.listStatus, listStatus) ||
                 other.listStatus == listStatus) &&
-            (identical(other.listErrorMessage, listErrorMessage) ||
-                other.listErrorMessage == listErrorMessage) &&
-            (identical(other.detailStatus, detailStatus) ||
-                other.detailStatus == detailStatus) &&
-            (identical(other.detailErrorMessage, detailErrorMessage) ||
-                other.detailErrorMessage == detailErrorMessage) &&
-            (identical(other.accountId, accountId) ||
-                other.accountId == accountId) &&
             (identical(other.paginatedTransactions, paginatedTransactions) ||
                 other.paginatedTransactions == paginatedTransactions) &&
             (identical(other.currentPage, currentPage) ||
@@ -4167,35 +7836,52 @@ class _$TransactionsStateImpl implements _TransactionsState {
                 other.pageSize == pageSize) &&
             (identical(other.hasReachedMax, hasReachedMax) ||
                 other.hasReachedMax == hasReachedMax) &&
+            (identical(other.listErrorMessage, listErrorMessage) ||
+                other.listErrorMessage == listErrorMessage) &&
+            (identical(other.accountId, accountId) ||
+                other.accountId == accountId) &&
             (identical(other.filter, filter) || other.filter == filter) &&
-            (identical(other.isFilterActive, isFilterActive) ||
-                other.isFilterActive == isFilterActive) &&
             const DeepCollectionEquality()
                 .equals(other._activeFilterLabels, _activeFilterLabels) &&
+            (identical(other.isFilterActive, isFilterActive) ||
+                other.isFilterActive == isFilterActive) &&
             (identical(other.shouldOpenAccountSelector,
                     shouldOpenAccountSelector) ||
                 other.shouldOpenAccountSelector == shouldOpenAccountSelector) &&
+            (identical(other.detailStatus, detailStatus) ||
+                other.detailStatus == detailStatus) &&
             (identical(other.selectedTransaction, selectedTransaction) ||
-                other.selectedTransaction == selectedTransaction));
+                other.selectedTransaction == selectedTransaction) &&
+            (identical(other.detailErrorMessage, detailErrorMessage) ||
+                other.detailErrorMessage == detailErrorMessage) &&
+            (identical(other.shouldPreserveFilters, shouldPreserveFilters) ||
+                other.shouldPreserveFilters == shouldPreserveFilters) &&
+            (identical(other.shouldShowFilterDialog, shouldShowFilterDialog) ||
+                other.shouldShowFilterDialog == shouldShowFilterDialog) &&
+            (identical(other.isShareInProgress, isShareInProgress) ||
+                other.isShareInProgress == isShareInProgress));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       listStatus,
-      listErrorMessage,
-      detailStatus,
-      detailErrorMessage,
-      accountId,
       paginatedTransactions,
       currentPage,
       pageSize,
       hasReachedMax,
+      listErrorMessage,
+      accountId,
       filter,
-      isFilterActive,
       const DeepCollectionEquality().hash(_activeFilterLabels),
+      isFilterActive,
       shouldOpenAccountSelector,
-      selectedTransaction);
+      detailStatus,
+      selectedTransaction,
+      detailErrorMessage,
+      shouldPreserveFilters,
+      shouldShowFilterDialog,
+      isShareInProgress);
 
   /// Create a copy of TransactionsState
   /// with the given fields replaced by the non-null parameter values.
@@ -4209,32 +7895,27 @@ class _$TransactionsStateImpl implements _TransactionsState {
 
 abstract class _TransactionsState implements TransactionsState {
   const factory _TransactionsState(
-      {final TransactionsListStatus listStatus,
-      final String listErrorMessage,
-      final TransactionsDetailStatus detailStatus,
-      final String detailErrorMessage,
-      final int accountId,
-      final PaginatedTransactions? paginatedTransactions,
-      final int currentPage,
-      final int pageSize,
-      final bool hasReachedMax,
-      final TransactionFilter? filter,
-      final bool isFilterActive,
-      final List<FilterLabel> activeFilterLabels,
-      final bool shouldOpenAccountSelector,
-      final Transaction? selectedTransaction}) = _$TransactionsStateImpl;
+      {required final TransactionsListStatus listStatus,
+      required final PaginatedTransactions? paginatedTransactions,
+      required final int currentPage,
+      required final int pageSize,
+      required final bool hasReachedMax,
+      required final String listErrorMessage,
+      required final int accountId,
+      required final TransactionFilter? filter,
+      required final List<FilterLabel> activeFilterLabels,
+      required final bool isFilterActive,
+      required final bool shouldOpenAccountSelector,
+      required final TransactionsDetailStatus detailStatus,
+      required final Transaction? selectedTransaction,
+      required final String detailErrorMessage,
+      required final bool shouldPreserveFilters,
+      required final bool shouldShowFilterDialog,
+      required final bool isShareInProgress}) = _$TransactionsStateImpl;
 
 // List status
   @override
   TransactionsListStatus get listStatus;
-  @override
-  String get listErrorMessage; // Detail status
-  @override
-  TransactionsDetailStatus get detailStatus;
-  @override
-  String get detailErrorMessage; // Common data
-  @override
-  int get accountId; // List data
   @override
   PaginatedTransactions? get paginatedTransactions;
   @override
@@ -4244,15 +7925,29 @@ abstract class _TransactionsState implements TransactionsState {
   @override
   bool get hasReachedMax;
   @override
-  TransactionFilter? get filter; // Filter related data
+  String get listErrorMessage;
+  @override
+  int get accountId; // Filter-related state
+  @override
+  TransactionFilter? get filter;
+  @override
+  List<FilterLabel> get activeFilterLabels;
   @override
   bool get isFilterActive;
   @override
-  List<FilterLabel> get activeFilterLabels; // UI state flags
+  bool get shouldOpenAccountSelector; // Detail status
   @override
-  bool get shouldOpenAccountSelector; // Detail data
+  TransactionsDetailStatus get detailStatus;
   @override
   Transaction? get selectedTransaction;
+  @override
+  String get detailErrorMessage; // New UI-related state properties
+  @override
+  bool get shouldPreserveFilters;
+  @override
+  bool get shouldShowFilterDialog;
+  @override
+  bool get isShareInProgress;
 
   /// Create a copy of TransactionsState
   /// with the given fields replaced by the non-null parameter values.

@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/history/domain/entities/paginated_transactions/paginated_transactions.dart';
 import 'package:super_app/features/history/domain/entities/transaction/transaction.dart';
+import 'package:super_app/features/history/domain/entities/transaction_extensions.dart';
 import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
+import 'package:super_app/features/history/domain/entities/transaction_type.dart';
 import 'package:super_app/features/history/domain/repositories/transaction_repository.dart';
 
 part 'transactions_event.dart';
@@ -21,6 +26,10 @@ part 'transactions_bloc.freezed.dart';
 class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
   final TransactionRepository _transactionRepository;
   final AccountsBloc _accountsBloc;
+  
+  // Constants for SharedPreferences keys
+  static const String _preserveFiltersKey = 'preserve_transaction_filters';
+  static const String _lastFilterKey = 'last_transaction_filter';
 
   TransactionsBloc(
     this._transactionRepository,
@@ -37,7 +46,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     on<TransactionDetailFetched>(_onTransactionDetailFetched);
     on<TransactionDetailSetFromCache>(_onTransactionDetailSetFromCache);
     
-    // New filter-related events
+    // Filter-related events
     on<TransactionsRemoveFilterType>(_onRemoveFilterType);
     on<TransactionsRemoveFilterDirection>(_onRemoveFilterDirection);
     on<TransactionsRemoveFilterStatus>(_onRemoveFilterStatus);
@@ -46,7 +55,17 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     on<TransactionsRemoveFilterAmounts>(_onRemoveFilterAmounts);
     on<TransactionsClearAllFilters>(_onClearAllFilters);
     on<TransactionsScrolledToBottom>(_onScrolledToBottom);
+    on<TransactionsScrollPositionChanged>(_onScrollPositionChanged);
     on<TransactionsOpenAccountSelection>(_onOpenAccountSelection);
+    
+    // New UI-related events
+    on<TransactionsSaveFilterPreservation>(_onSaveFilterPreservation);
+    on<TransactionsSaveLastAppliedFilter>(_onSaveLastAppliedFilter);
+    on<TransactionsLoadLastAppliedFilter>(_onLoadLastAppliedFilter);
+    on<TransactionsLoadFilterPreservationSetting>(_onLoadFilterPreservationSetting);
+    on<TransactionsShareReceipt>(_onShareReceipt);
+    on<TransactionsAccountSelectorClosed>(_onAccountSelectorClosed);
+    on<TransactionsShowFilterDialog>(_onShowFilterDialog);
   }
 
   // Static method to initialize the state with the account ID from AccountsBloc
@@ -504,7 +523,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     );
   }
 
-  // New filter event handlers
+  // Filter event handlers
   void _onRemoveFilterType(
     TransactionsRemoveFilterType event,
     Emitter<TransactionsState> emit,
@@ -585,6 +604,22 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     if (!state.hasReachedMax) {
       add(const TransactionsEvent.loadMore());
     }
+  }
+  
+  void _onScrollPositionChanged(
+    TransactionsScrollPositionChanged event,
+    Emitter<TransactionsState> emit,
+  ) {
+    // Check if we've reached the bottom threshold
+    if (_isBottomOfList(event.scrollOffset, event.maxScrollExtent)) {
+      add(const TransactionsEvent.scrolledToBottom());
+    }
+  }
+  
+  // Helper method to determine if we're at the bottom of the list
+  bool _isBottomOfList(double currentScroll, double maxScroll) {
+    // Consider as "at the bottom" when we're within 10% of the max scroll extent
+    return maxScroll > 0 && currentScroll >= (maxScroll * 0.9);
   }
   
   void _onOpenAccountSelection(
@@ -756,5 +791,224 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
            (filter.counterpartyName != null && filter.counterpartyName!.isNotEmpty) ||
            filter.minAmount != null ||
            filter.maxAmount != null;
+  }
+
+  // New UI-related event handlers
+  Future<void> _onSaveFilterPreservation(
+    TransactionsSaveFilterPreservation event,
+    Emitter<TransactionsState> emit,
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_preserveFiltersKey, event.preserveFilters);
+      
+      emit(state.copyWith(
+        shouldPreserveFilters: event.preserveFilters,
+      ));
+    } catch (e) {
+      // Handle error silently, state remains unchanged
+    }
+  }
+  
+  Future<void> _onSaveLastAppliedFilter(
+    TransactionsSaveLastAppliedFilter event,
+    Emitter<TransactionsState> emit,
+  ) async {
+    if (!state.shouldPreserveFilters) return; // Only save if preserving filters
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // Create a simple map representation of the filter
+      final filterMap = {
+        'type': event.filter.type?.value,
+        'direction': event.filter.direction?.value,
+        'status': event.filter.status?.value,
+        'startDate': event.filter.startDate?.millisecondsSinceEpoch,
+        'endDate': event.filter.endDate?.millisecondsSinceEpoch,
+        'counterpartyName': event.filter.counterpartyName,
+        'minAmount': event.filter.minAmount,
+        'maxAmount': event.filter.maxAmount,
+      };
+      
+      // Save as a properly encoded JSON string
+      await prefs.setString(_lastFilterKey, jsonEncode(filterMap));
+    } catch (e) {
+      // Handle error silently
+    }
+  }
+  
+  Future<void> _onLoadLastAppliedFilter(
+    TransactionsLoadLastAppliedFilter event,
+    Emitter<TransactionsState> emit,
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final filterString = prefs.getString(_lastFilterKey);
+      
+      if (filterString == null || filterString.isEmpty) {
+        return;
+      }
+      
+      // Parse the JSON and work with it directly without type casting the map
+      final dynamic json = jsonDecode(filterString);
+      
+      // Extract type
+      TransactionType? type;
+      final typeValue = json['type']?.toString();
+      if (typeValue == 'external_transfer') {
+        type = TransactionType.externalTransfer;
+      } else if (typeValue == 'internal_transfer') {
+        type = TransactionType.internalTransfer;
+      } else if (typeValue == 'topup') {
+        type = TransactionType.topUp;
+      }
+      
+      // Extract direction
+      TransactionDirection? direction;
+      final directionValue = json['direction']?.toString();
+      if (directionValue == 'incoming') {
+        direction = TransactionDirection.incoming;
+      } else if (directionValue == 'outgoing') {
+        direction = TransactionDirection.outgoing;
+      }
+      
+      // Extract status
+      TransactionStatus? status;
+      final statusValue = json['status']?.toString();
+      if (statusValue == 'completed') {
+        status = TransactionStatus.completed;
+      } else if (statusValue == 'pending') {
+        status = TransactionStatus.pending;
+      } else if (statusValue == 'failed') {
+        status = TransactionStatus.failed;
+      }
+      
+      // Extract dates
+      DateTime? startDate, endDate;
+      if (json['startDate'] is int) {
+        startDate = DateTime.fromMillisecondsSinceEpoch(json['startDate'] as int);
+      }
+      if (json['endDate'] is int) {
+        endDate = DateTime.fromMillisecondsSinceEpoch(json['endDate'] as int);
+      }
+      
+      // Extract other fields
+      String? counterpartyName = json['counterpartyName']?.toString();
+      
+      double? minAmount;
+      if (json['minAmount'] != null) {
+        minAmount = double.tryParse(json['minAmount'].toString());
+      }
+      
+      double? maxAmount;
+      if (json['maxAmount'] != null) {
+        maxAmount = double.tryParse(json['maxAmount'].toString());
+      }
+      
+      // Create and return the filter
+      final loadedFilter = TransactionFilter(
+        type: type,
+        direction: direction,
+        status: status,
+        startDate: startDate,
+        endDate: endDate,
+        counterpartyName: counterpartyName,
+        minAmount: minAmount,
+        maxAmount: maxAmount,
+      );
+      
+      add(TransactionsEvent.filtered(filter: loadedFilter));
+    } catch (e) {
+      // Return null in case of any error
+    }
+  }
+  
+  Future<void> _onLoadFilterPreservationSetting(
+    TransactionsLoadFilterPreservationSetting event,
+    Emitter<TransactionsState> emit,
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final shouldPreserveFilters = prefs.getBool(_preserveFiltersKey) ?? false;
+      
+      emit(state.copyWith(
+        shouldPreserveFilters: shouldPreserveFilters,
+      ));
+      
+      // If we should preserve filters, load the last applied filter
+      if (shouldPreserveFilters) {
+        add(const TransactionsEvent.loadLastAppliedFilter());
+      }
+    } catch (e) {
+      // In case of error, default to false
+      emit(state.copyWith(shouldPreserveFilters: false));
+    }
+  }
+  
+  Future<void> _onShareReceipt(
+    TransactionsShareReceipt event,
+    Emitter<TransactionsState> emit,
+  ) async {
+    emit(state.copyWith(isShareInProgress: true));
+    
+    try {
+      final transaction = event.transaction;
+      
+      // Format transaction data into a receipt-like string
+      final dateFormat = DateFormat('MMM dd, yyyy • hh:mm a');
+      final formattedDate = dateFormat.format(transaction.created_at);
+      
+      final statusEmoji = transaction.isCompleted 
+        ? '✅' 
+        : transaction.isPending 
+          ? '⏳' 
+          : '❌';
+      
+      final receipt = '''
+TRANSACTION RECEIPT $statusEmoji
+
+$formattedDate
+ID: ${transaction.id}
+
+Transaction Type: ${transaction.transactionTypeDisplay}
+Status: ${transaction.status.toUpperCase()}
+
+Amount: ${transaction.currency} ${transaction.amount}
+${transaction.hasFees ? 'Fee: ${transaction.currency} ${transaction.transaction_fees}' : ''}
+Total: ${transaction.currency} ${transaction.totalAmount}
+
+${transaction.isOutgoing ? 'Recipient' : 'Sender'}: ${transaction.counterparty_name ?? 'Not Available'}
+${transaction.bank_code != null ? 'Bank: ${transaction.bank_code}' : ''}
+${transaction.account_number != null ? 'Account: ${transaction.account_number}' : ''}
+
+Reference: ${transaction.reference ?? 'Not Available'}
+''';
+
+      await Share.share(receipt, subject: 'Transaction Receipt');
+    } catch (e) {
+      // Error handled at UI level through state
+    } finally {
+      emit(state.copyWith(isShareInProgress: false));
+    }
+  }
+  
+  void _onAccountSelectorClosed(
+    TransactionsAccountSelectorClosed event,
+    Emitter<TransactionsState> emit,
+  ) {
+    emit(state.copyWith(shouldOpenAccountSelector: false));
+  }
+  
+  void _onShowFilterDialog(
+    TransactionsShowFilterDialog event,
+    Emitter<TransactionsState> emit,
+  ) {
+    emit(state.copyWith(shouldShowFilterDialog: true));
+  }
+  
+  // Method to hide filter dialog
+  void hideFilterDialog() {
+    emit(state.copyWith(shouldShowFilterDialog: false));
   }
 } 

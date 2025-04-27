@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_app/features/history/application/transactions_bloc.dart';
 import 'package:super_app/features/history/domain/entities/transaction_filter/transaction_filter.dart';
 import 'package:super_app/features/history/domain/entities/transaction_type.dart';
@@ -36,8 +35,6 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
   bool _preserveFilters = false;
   
   final DateFormat _dateFormat = DateFormat('MMM dd, yyyy');
-  static const String _preserveFiltersKey = 'preserve_transaction_filters';
-  static const String _lastFilterKey = 'last_transaction_filter';
   
   @override
   void initState() {
@@ -48,7 +45,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
     _startDate = _filter.startDate;
     _endDate = _filter.endDate;
     
-    // Load the preserve filters setting
+    // Load the preserve filters setting from bloc state
     _loadPreserveFiltersSetting();
     
     if (_filter.counterpartyName != null) {
@@ -64,51 +61,15 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
     }
   }
   
-  Future<void> _loadPreserveFiltersSetting() async {
+  void _loadPreserveFiltersSetting() {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final transactionsState = context.read<TransactionsBloc>().state;
       setState(() {
-        _preserveFilters = prefs.getBool(_preserveFiltersKey) ?? false;
+        _preserveFilters = transactionsState.shouldPreserveFilters;
       });
     } catch (e) {
       // Fallback to default in case of error
       _preserveFilters = false;
-    }
-  }
-  
-  Future<void> _savePreserveFiltersSetting(bool value) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_preserveFiltersKey, value);
-      _preserveFilters = value;
-    } catch (e) {
-      // Handle error silently
-    }
-  }
-  
-  // Used to save the last applied filter to SharedPreferences
-  Future<void> _saveLastAppliedFilter(TransactionFilter filter) async {
-    if (!_preserveFilters) return; // Only save if preserving filters
-    
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      
-      // Create a simple map representation of the filter
-      final filterMap = {
-        'type': filter.type?.value,
-        'direction': filter.direction?.value,
-        'status': filter.status?.value,
-        'startDate': filter.startDate?.millisecondsSinceEpoch,
-        'endDate': filter.endDate?.millisecondsSinceEpoch,
-        'counterpartyName': filter.counterpartyName,
-        'minAmount': filter.minAmount,
-        'maxAmount': filter.maxAmount,
-      };
-      
-      // Save as a properly encoded JSON string
-      await prefs.setString(_lastFilterKey, jsonEncode(filterMap));
-    } catch (e) {
-      // Handle error silently
     }
   }
   
@@ -141,15 +102,19 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
       
       // Save the filter preservation preference
       if (widget.showFilterPreservationOption) {
-        _savePreserveFiltersSetting(_preserveFilters);
+        transactionsBloc.add(TransactionsEvent.saveFilterPreservation(
+          preserveFilters: _preserveFilters
+        ));
         
         // Also save the current filter if preservation is enabled
         if (_preserveFilters) {
-          _saveLastAppliedFilter(updatedFilter);
+          transactionsBloc.add(TransactionsEvent.saveLastAppliedFilter(
+            filter: updatedFilter
+          ));
         }
       }
       
-      // Try to add the event - we'll catch any exceptions
+      // Add filtered event to apply the filters
       transactionsBloc.add(
         TransactionsEvent.filtered(filter: updatedFilter)
       );
@@ -283,14 +248,14 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
       insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
       child: DefaultTabController(
         length: 3,
-      child: Container(
+        child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.r),
             color: Colors.white,
           ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               // Header with gradient background
               Container(
                 padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
@@ -302,7 +267,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                ),
+                  ),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.r),
                     topRight: Radius.circular(20.r),
@@ -414,7 +379,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                 runSpacing: 6.h,
                                 children: [
                                   _buildCompactChip(
-                          label: 'All',
+                                    label: 'All',
                                     isSelected: _filter.type == null,
                                     onSelected: (selected) {
                                       if (selected) {
@@ -436,7 +401,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                         );
                                       });
                                     },
-                        ),
+                                  ),
                                   _buildCompactChip(
                                     label: 'Internal',
                                     isSelected: _filter.type?.value == 'internal_transfer',
@@ -514,9 +479,9 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                         );
                                       });
                                     },
-                        ),
-                      ],
-                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 10.h),
                     
@@ -527,9 +492,9 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                               child: Wrap(
                                 spacing: 6.w,
                                 runSpacing: 6.h,
-                      children: [
+                                children: [
                                   _buildCompactChip(
-                          label: 'All',
+                                    label: 'All',
                                     isSelected: _filter.status == null,
                                     onSelected: (selected) {
                                       if (selected) {
@@ -538,7 +503,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                         });
                                       }
                                     },
-                        ),
+                                  ),
                                   _buildCompactChip(
                                     label: 'Done',
                                     icon: Icons.check_circle_rounded,
@@ -553,9 +518,9 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                         );
                                       });
                                     },
-                        ),
+                                  ),
                                   _buildCompactChip(
-                          label: 'Pending',
+                                    label: 'Pending',
                                     icon: Icons.pending_rounded,
                                     iconColor: Colors.orange,
                                     isSelected: _filter.status?.value == 'pending',
@@ -568,9 +533,9 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                         );
                                       });
                                     },
-                        ),
+                                  ),
                                   _buildCompactChip(
-                          label: 'Failed',
+                                    label: 'Failed',
                                     icon: Icons.error_rounded,
                                     iconColor: Colors.red,
                                     isSelected: _filter.status?.value == 'failed',
@@ -583,9 +548,9 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                         );
                                       });
                                     },
-                        ),
-                      ],
-                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -604,26 +569,26 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                               iconData: Icons.calendar_today_rounded,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                                children: [
                                   InkWell(
                                     onTap: () => _selectStartDate(context),
                                     borderRadius: BorderRadius.circular(12.r),
-                            child: Container(
+                                    child: Container(
                                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                              decoration: BoxDecoration(
+                                      decoration: BoxDecoration(
                                         border: Border.all(color: primaryColor.withOpacity(0.2)),
                                         borderRadius: BorderRadius.circular(12.r),
                                         color: primaryColor.withOpacity(0.05),
-                          ),
-                              child: Row(
-                                children: [
-                                  Icon(
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
                                             Icons.calendar_month_rounded,
-                                    size: 18.sp,
+                                            size: 18.sp,
                                             color: primaryColor.withOpacity(0.7),
-                        ),
-                                  SizedBox(width: 8.w),
-                                  Expanded(
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Expanded(
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
@@ -636,66 +601,16 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                                 ),
                                                 SizedBox(height: 2.h),
                                                 Text(
-                                      _startDate != null 
-                                          ? _dateFormat.format(_startDate!) 
-                                                      : 'Select start date',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 14.sp,
+                                                  _startDate != null 
+                                                      ? _dateFormat.format(_startDate!) 
+                                                          : 'Select start date',
+                                                  style: GoogleFonts.outfit(
+                                                    fontSize: 14.sp,
                                                     fontWeight: _startDate != null ? FontWeight.w500 : FontWeight.normal,
                                                     color: _startDate != null ? Colors.black : Colors.grey[600],
-                            ),
-                                                  maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                          ),
-                                              ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                                  SizedBox(height: 10.h),
-                                  InkWell(
-                                    onTap: () => _selectEndDate(context),
-                                    borderRadius: BorderRadius.circular(12.r),
-                            child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                              decoration: BoxDecoration(
-                                        border: Border.all(color: primaryColor.withOpacity(0.2)),
-                                        borderRadius: BorderRadius.circular(12.r),
-                                        color: primaryColor.withOpacity(0.05),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                            Icons.calendar_month_rounded,
-                                    size: 18.sp,
-                                            color: primaryColor.withOpacity(0.7),
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'To',
-                                                  style: GoogleFonts.outfit(
-                                                    fontSize: 12.sp,
-                                                    color: Colors.grey[600],
                                                   ),
-                                                ),
-                                                SizedBox(height: 2.h),
-                                                Text(
-                                      _endDate != null 
-                                          ? _dateFormat.format(_endDate!) 
-                                                      : 'Select end date',
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 14.sp,
-                                                    fontWeight: _endDate != null ? FontWeight.w500 : FontWeight.normal,
-                                                    color: _endDate != null ? Colors.black : Colors.grey[600],
-                                      ),
                                                   maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               ],
                                             ),
@@ -704,18 +619,6 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                       ),
                                     ),
                                   ),
-                                  if (_startDate != null && _endDate != null && _startDate!.isAfter(_endDate!))
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 8.h),
-                                      child: Text(
-                                        'Start date should be before end date',
-                                        style: GoogleFonts.outfit(
-                                          fontSize: 12.sp,
-                                          color: Colors.red[700],
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
                                 ],
                               ),
                             ),
@@ -795,16 +698,16 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                               fillColor: primaryColor.withOpacity(0.05),
                                             ),
                                             style: GoogleFonts.outfit(fontSize: 14.sp),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
-                    SizedBox(height: 16.h),
-                    
+                            SizedBox(height: 16.h),
+                            
                             // Counterparty name section
                             _buildCompactSection(
                               title: 'Counterparty',
@@ -812,22 +715,22 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                               child: Container(
                                 height: 40.h,
                                 child: TextField(
-                      controller: _counterpartyController,
-                      decoration: InputDecoration(
-                      hintText: 'Search by name',
+                                  controller: _counterpartyController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Search by name',
                                     prefixIcon: Icon(Icons.search_rounded, color: primaryColor.withOpacity(0.7), size: 18.sp),
-                        border: OutlineInputBorder(
+                                    border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12.r),
                                       borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12.r),
                                       borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12.r),
                                       borderSide: BorderSide(color: primaryColor, width: 1.5),
-                        ),
+                                    ),
                                     contentPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                                     filled: true,
                                     fillColor: primaryColor.withOpacity(0.05),
@@ -851,7 +754,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                   color: Colors.grey[50],
                   border: Border(
                     top: BorderSide(color: Colors.grey[200]!),
-                                ),
+                  ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -869,7 +772,6 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                 onChanged: (value) {
                                   setState(() {
                                     _preserveFilters = value ?? false;
-                                    _savePreserveFiltersSetting(_preserveFilters);
                                   });
                                 },
                                 activeColor: primaryColor,
@@ -905,8 +807,8 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
                               foregroundColor: primaryColor,
-                              ),
                             ),
+                          ),
                         ),
                         SizedBox(width: 12.w),
                         Expanded(
@@ -922,16 +824,16 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
-                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ],
-                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -956,13 +858,13 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
             ),
             SizedBox(width: 6.w),
             Text(
-          title,
-          style: GoogleFonts.outfit(
-          fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-        ),
+              title,
+              style: GoogleFonts.outfit(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
           ],
         ),
         SizedBox(height: 8.h),
@@ -996,7 +898,7 @@ class _TransactionFilterDialogState extends State<TransactionFilterDialog> {
           Text(
             label,
             style: GoogleFonts.outfit(
-          fontSize: 12.sp,
+              fontSize: 12.sp,
               color: isSelected ? Colors.white : Colors.black87,
               fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
             ),
