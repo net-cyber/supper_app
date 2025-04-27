@@ -76,14 +76,11 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       
       if (accountsState.accounts.isNotEmpty) {
         accountId = accountsState.accounts.first.id;
-      } else {
-        // Try to trigger account loading if not already loading
-        if (!accountsState.isLoading) {
-          accountsBloc.add(const AccountsEvent.fetchAccounts());
-        }
+      } else if (!accountsState.isLoading) {
+        accountsBloc.add(const AccountsEvent.fetchAccounts());
       }
     } catch (e) {
-      // Error handling with empty catch block
+      // Error handled silently
     }
     
     return TransactionsState.initial().copyWith(accountId: accountId);
@@ -145,7 +142,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     try {
       final result = await _transactionRepository.getTransactions(
         pageId: 1,
-        pageSize: state.pageSize,
+        pageSize: 5, // Hardcoded to 5
         accountId: accountId,
         filter: state.filter,
       );
@@ -168,7 +165,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
             transactions: filteredTransactions,
             totalCount: filteredTransactions.length,
             currentPage: paginatedTransactions.currentPage,
-            pageSize: paginatedTransactions.pageSize,
+            pageSize: 5, // Hardcoded to 5
             hasReachedMax: paginatedTransactions.hasReachedMax,
           );
           
@@ -247,7 +244,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       
       final result = await _transactionRepository.getTransactions(
         pageId: 1,
-        pageSize: state.pageSize,
+        pageSize: 5, // Hardcoded to 5
         accountId: accountId,
         filter: event.filter,
       );
@@ -265,23 +262,26 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
           final filteredTransactions = event.filter != null 
               ? _applyLocalFilter(paginatedTransactions.transactions, event.filter!)
               : paginatedTransactions.transactions;
+          
+          // Handle empty results specifically
+          final bool hasReachedMax = paginatedTransactions.hasReachedMax || filteredTransactions.isEmpty;
               
           final filteredPaginatedTransactions = PaginatedTransactions(
             transactions: filteredTransactions,
             totalCount: filteredTransactions.length,
             currentPage: paginatedTransactions.currentPage,
-            pageSize: paginatedTransactions.pageSize,
-            hasReachedMax: paginatedTransactions.hasReachedMax,
+            pageSize: 5, // Hardcoded to 5
+            hasReachedMax: hasReachedMax,
           );
           
-          // Emit success state immediately without artificial delay
+          // Immediately update to success state, even if empty results
           emit(
             state.copyWith(
               listStatus: TransactionsListStatus.success,
               paginatedTransactions: filteredPaginatedTransactions,
               accountId: accountId,
               currentPage: 1,
-              hasReachedMax: paginatedTransactions.hasReachedMax || filteredTransactions.isEmpty,
+              hasReachedMax: hasReachedMax,
               listErrorMessage: '',
             ),
           );
@@ -347,7 +347,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
       
       final result = await _transactionRepository.getTransactions(
         pageId: nextPage,
-        pageSize: state.pageSize,
+        pageSize: 5, // Hardcoded to 5
         accountId: accountId,
         filter: state.filter,
       );
@@ -388,7 +388,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
             transactions: allTransactions,
             totalCount: allTransactions.length,
             currentPage: nextPage,
-            pageSize: state.pageSize,
+            pageSize: 5, // Hardcoded to 5
             hasReachedMax: newPaginatedTransactions.hasReachedMax,
           );
           
