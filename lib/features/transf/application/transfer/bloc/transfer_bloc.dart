@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/transf/domain/entities/internal_transfer_response/transfer_response.dart';
 import 'package:super_app/features/transf/domain/repositories/transfer_repository.dart';
 
@@ -185,6 +186,10 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         },
         (transferResponse) {
           log('TransferBloc: Transfer successful, ID: ${transferResponse.transferId}');
+          
+          // Refresh accounts after successful transfer
+          _accountsBloc.add(const AccountsEvent.refreshAccounts());
+          
           emit(
             state.copyWith(
               isTransferring: false,

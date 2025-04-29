@@ -103,7 +103,40 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
     RefreshAccounts event, 
     Emitter<AccountsState> emit,
   ) async {
-    add(const FetchAccounts());
+    final connected = await AppConnectivity.connectivity();
+
+    if (!connected) {
+      emit(state.copyWith(hasError: true, isLoading: false));
+      return;
+    }
+
+    // Set loading state but preserve the existing accounts until we get new data
+    emit(state.copyWith(isLoading: true, hasError: false));
+
+    final result = await _accountRepository.getAccounts(
+      pageId: 1,
+      pageSize: state.pageSize,
+    );
+
+    await result.fold(
+      (failure) async => emit(state.copyWith(
+        isLoading: false,
+        hasError: true,
+      )),
+      (accounts) async {
+        final hasReachedMax = accounts.length < state.pageSize;
+        
+        if (!emit.isDone) {
+          emit(state.copyWith(
+            accounts: accounts,
+            isLoading: false,
+            hasError: false,
+            currentPage: 1,
+            hasReachedMax: hasReachedMax,
+          ));
+        }
+      },
+    );
   }
   
   void _onResetAccounts(

@@ -180,6 +180,7 @@ class _MainScreenState extends State<MainScreen> {
       _currentAccountIndex = 0;
     });
     context.read<AccountsBloc>().add(const AccountsEvent.refreshAccounts());
+    
   }
 
   Widget _buildBalanceCard() {

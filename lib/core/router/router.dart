@@ -30,7 +30,7 @@ import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet
 import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_amount_screen.dart';
 import 'package:super_app/features/transf/presentation/sendToWallet/pages/wallet_confirmation_screen.dart';
 import 'package:super_app/features/history/presentation/pages/history_page.dart';
-
+import 'package:get_it/get_it.dart';
 
 final router = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
@@ -122,6 +122,20 @@ final router = GoRouter(
               name: RouteName.mortgageDashboard,
               path: '/${RouteName.mortgageDashboard}',
               builder: (context, state) => const MortgageDashboardScreen(),
+            ),
+          ],
+        ),
+        // History Branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: RouteName.history,
+              path: '/${RouteName.history}',
+              builder: (context, state) {
+                // Return the history page with accountId parameter
+                // The page will handle getting the account ID internally
+                return const HistoryPage();
+              },
             ),
           ],
         ),
@@ -239,8 +253,6 @@ final router = GoRouter(
       ),
     ),
 
-
-
     // Wallet transfer routes
     GoRoute(
       name: RouteName.walletSelection,
@@ -281,19 +293,6 @@ final router = GoRouter(
         return WalletConfirmationScreen(
           transferData: extra,
         );
-      },
-    ),
-    
-    // Transaction history route
-    GoRoute(
-      name: RouteName.history,
-      path: '/${RouteName.history}',
-      builder: (context, state) {
-        // Extract account ID from extra parameters
-        final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
-        final int accountId = extra != null ? extra['accountId'] as int? ?? 0 : 0;
-        
-        return HistoryPage(accountId: accountId);
       },
     ),
   ],

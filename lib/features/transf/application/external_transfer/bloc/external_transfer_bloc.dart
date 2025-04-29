@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import 'package:super_app/core/handlers/app_connectivity.dart';
 import 'package:super_app/core/handlers/network_exceptions.dart';
 import 'package:super_app/features/accounts/application/list/bloc/accounts_bloc.dart';
+import 'package:super_app/features/accounts/application/list/bloc/accounts_event.dart';
 import 'package:super_app/features/transf/domain/entities/external_transfer/external_transfer.dart';
 import 'package:super_app/features/transf/domain/entities/external_transfer/external_transfer_request.dart';
 import 'package:super_app/features/transf/domain/repositories/external_transfer_repository.dart';
@@ -202,6 +203,10 @@ class ExternalTransferBloc extends Bloc<ExternalTransferEvent, ExternalTransferS
         },
         (transferResponse) {
           log('ExternalTransferBloc: Transfer successful, ID: ${transferResponse.id}');
+          
+          // Refresh accounts after successful transfer
+          _accountsBloc.add(const AccountsEvent.refreshAccounts());
+          
           emit(
             state.copyWith(
               isTransferring: false,
