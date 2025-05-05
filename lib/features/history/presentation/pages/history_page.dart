@@ -21,8 +21,6 @@ import 'package:super_app/features/history/presentation/widgets/transaction_filt
 import 'package:go_router/go_router.dart';
 import 'package:super_app/core/router/route_name.dart';
 
-/// The main history page that shows transaction history
-/// This is a stateless component that uses BlocProvider to handle TransactionsBloc
 class HistoryPage extends StatelessWidget {
   final int accountId;
   
@@ -30,11 +28,7 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use BlocProvider to provide a new TransactionsBloc instance to the widget tree
-    // We use BlocProvider.value because the bloc is a singleton managed by dependency injection
-    // This prevents the bloc from being closed when the widget is disposed
     final bloc = getIt<TransactionsBloc>();
-    
     return BlocProvider.value(
       value: bloc,
       child: _HistoryPageContent(accountId: accountId),
@@ -42,10 +36,8 @@ class HistoryPage extends StatelessWidget {
   }
 }
 
-/// A wrapper widget that initializes the TransactionsBloc safely
 class _HistoryPageContent extends StatefulWidget {
   final int accountId;
-  
   const _HistoryPageContent({required this.accountId});
   
   @override
@@ -56,19 +48,13 @@ class _HistoryPageContentState extends State<_HistoryPageContent> {
   @override
   void initState() {
     super.initState();
-    // Initialize the bloc here, which is safer than in the BlocProvider.create
     _initializeFiltersAndData();
   }
   
   Future<void> _initializeFiltersAndData() async {
     if (!mounted) return;
-    
     final bloc = context.read<TransactionsBloc>();
-    
-    // Load filter preservation setting from SharedPreferences via bloc
     bloc.add(const TransactionsEvent.loadFilterPreservationSetting());
-    
-    // Then initialize with the appropriate account or fetch data
     if (widget.accountId > 0) {
       bloc.add(TransactionsEvent.accountChanged(accountId: widget.accountId));
     } else {
@@ -83,7 +69,6 @@ class _HistoryPageContentState extends State<_HistoryPageContent> {
 }
 
 /// The main view for transaction history
-/// Receives TransactionsBloc via BlocProvider
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
 
